@@ -12,6 +12,10 @@ $(function () {
             { width : '50px' },
             { width : '50px' },
         ],
+        columnDefs: [{
+            orderable: false,
+            targets: "no-sort"
+        }],
         lengthMenu: [5, 10, 20, 50, 100],
     });
 

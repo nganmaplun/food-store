@@ -41,9 +41,9 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
 
     /**
      * @param $user
-     * @return mixed
+     * @return false|void
      */
-    public function createCheckin($user): mixed
+    public function createCheckin($user)
     {
         try {
             $this->create([
@@ -61,9 +61,9 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
 
     /**
      * @param $user
-     * @return mixed
+     * @return false|void
      */
-    public function createCheckout($user): mixed
+    public function createCheckout($user)
     {
         try {
             $userTimesheet = $this->findWhere([

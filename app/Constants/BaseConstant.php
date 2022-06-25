@@ -24,4 +24,12 @@ class BaseConstant
 
     // expression
     const EQUAL = '=';
+
+    // all tables
+    const ALL_TABLE = 'all';
+
+    // table status
+    const TABLE_AVAILABLE = '0';
+    const TABLE_ORDERED = '1';
+    const TABLE_PAID = '2';
 }

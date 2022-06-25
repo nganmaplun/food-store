@@ -92,7 +92,7 @@ class AdminController  extends Controller
     public function settingFood(Request $request)
     {
         $listFoods = $this->foodRepository->getListFoods($this->today);
-//        dd($listFoods);
+
         return view('admin.setting-food', ['listFoods' => $listFoods, 'today' => $this->today]);
     }
 

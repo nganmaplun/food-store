@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommonController;
 use App\Http\Controllers\SendMessageController;
+use App\Http\Controllers\Waiter\WaiterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,6 +25,7 @@ Route::any('/logout', [AuthController::class, 'logout'])->name('post.logout');
  * Route for admin
  */
 Route::middleware('auth')->group(function () {
+    Route::post('/change-table-status', [CommonController::class, 'changeTableStatus'])->name('change-table-status');
     Route::prefix('admin')->group(function () {
         Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
         Route::get('/timesheet', [AdminController::class, 'timesheet'])->name('timesheet');
@@ -31,10 +34,14 @@ Route::middleware('auth')->group(function () {
         Route::post('set-food', [AdminController::class, 'setFood'])->name('admin.post.set-food');
     });
 });
+Route::middleware('auth', 'waiter')->group(function () {
+    Route::prefix('waiter')->group(function () {
+        Route::get('/waiter-dashboard', [WaiterController::class, 'dashboard'])->name('waiter-dashboard');
+        Route::get('/{tableId}/food-list', [WaiterController::class, 'listFoodsForOrder'])->name('food-list');
+        Route::get('/{tableId}/food-list/{menuId}', [WaiterController::class, 'listFoodsByMenu'])->name('food-list-by-menu');
+    });
+});
 
-Route::get('/waiter-dashboard', function() {
-    dd('waiter');
-})->name('waiter-dashboard');
 
 
 Route::get('/chef-dashboard', function() {

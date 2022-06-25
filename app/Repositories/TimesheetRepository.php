@@ -13,15 +13,15 @@ interface TimesheetRepository extends RepositoryInterface
 {
     /**
      * @param $user
-     * @return mixed
+     * @return false|void
      */
-    public function createCheckin($user): mixed;
+    public function createCheckin($user);
 
     /**
      * @param $user
-     * @return mixed
+     * @return false|void
      */
-    public function createCheckout($user): mixed;
+    public function createCheckout($user);
 
     /**
      * @param $today

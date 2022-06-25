@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Repositories;
+
+use Prettus\Repository\Contracts\RepositoryInterface;
+
+/**
+ * Interface TableRepository.
+ *
+ * @package namespace App\Repositories;
+ */
+interface TableRepository extends RepositoryInterface
+{
+    /**
+     * @param null $floor
+     * @return mixed
+     */
+    public function getListTables($floor = null): mixed;
+
+    /**
+     * @return mixed
+     */
+    public function getListFloors(): mixed;
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function changeTableStatus($id): mixed;
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function checkTableStatus($id): mixed;
+}

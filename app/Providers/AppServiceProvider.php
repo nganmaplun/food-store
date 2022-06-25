@@ -6,6 +6,8 @@ use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodDayRepositoryEloquent;
 use App\Repositories\FoodRepository;
 use App\Repositories\FoodRepositoryEloquent;
+use App\Repositories\TableRepository;
+use App\Repositories\TableRepositoryEloquent;
 use App\Repositories\TimesheetRepository;
 use App\Repositories\TimesheetRepositoryEloquent;
 use Illuminate\Pagination\Paginator;
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TimesheetRepository::class, TimesheetRepositoryEloquent::class);
         $this->app->bind(FoodRepository::class, FoodRepositoryEloquent::class);
         $this->app->bind(FoodDayRepository::class, FoodDayRepositoryEloquent::class);
+        $this->app->bind(TableRepository::class, TableRepositoryEloquent::class);
     }
 
     /**

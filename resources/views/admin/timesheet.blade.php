@@ -15,7 +15,6 @@
     </section>
 
     <section class="content">
-
         <!-- Default box -->
         <div class="card">
             <div class="card-body p-0">
@@ -75,7 +74,6 @@
             {{ $listTimesheet->links('vendor.pagination.bootstrap-4', ['page' => $page]) }}
         </div>
         <!-- /.card-footer -->
-        </div>
     </section>
 @endsection
 @section('script')

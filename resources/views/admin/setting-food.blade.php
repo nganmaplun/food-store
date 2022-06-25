@@ -28,8 +28,8 @@
                                 <thead>
                                 <tr>
                                     <th>Tên món</th>
-                                    <th>Số lượng</th>
-                                    <th></th>
+                                    <th class="no-sort">Số lượng</th>
+                                    <th class="no-sort"></th>
                                 </tr>
                                 </thead>
                                 <tbody>

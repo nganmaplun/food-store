@@ -6,3 +6,6 @@ table.dataTable tbody td {
     word-break: break-word;
     vertical-align: top;
 }
+.custom-header, .custom-content {
+    margin-left: 0 !important;
+}
