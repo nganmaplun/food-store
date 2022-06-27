@@ -61,11 +61,13 @@
         <div class="card-footer">
             {{ $listTables->links('vendor.pagination.bootstrap-4', ['page' => $page]) }}
         </div>
+        @include('waiter.modal-create-order')
     </section>
 @endsection
 @section('script')
     <script>
         var changeStatusUrl = "{{ route('change-table-status') }}";
+        var createOrder = "{{ route('create-order') }}";
         $(function() {
             $(document).on('click', '.bg-green, .bg-red, .bg-yellow', function() {
                 let index = $(this).parent().attr('index');
@@ -73,16 +75,31 @@
                 let msgGreen = 'Order cho bàn này?'
                 if ($(this).hasClass('bg-green')) {
                     if (confirm(msgGreen)) {
-                        sendRequestChangeStatus(index).then(function(r) {
-                            if (r.code != '333') {
-                                let url = "{{ route('food-list', ":index") }}";
-                                url = url.replace(':index', index);
-                                location.href = url;
-                                return
-                            }
-                            alert(r.message)
-                            location.reload();
+                        $('#modal-order').modal('show');
+                        $(document).on('click', '.add-order', async function() {
+                            let guestType = $('#modal-order').find('.guest-type').val();
+                            let guestNum = $('#modal-order').find('.guest-num').val();
+                            let otherNote = $('#modal-order').find('.other-note').val();
+                            let orderId = await sendRequestCreateOrder(index, guestType, guestNum, otherNote).then(function(s) {
+                                if (s.code == '333') {
+                                    alert(r.message)
+                                    return location.reload();
+                                }
+                                return s.order_id;
+                            })
+                            sendRequestChangeStatus(index).then(function(r) {
+                                if (r.code != '333') {
+                                    let url = "{{ route('food-list', [":index", ":orderId"]) }}";
+                                    url = url.replace(':index', index);
+                                    url = url.replace(':orderId', orderId);
+                                    location.href = url;
+                                    return
+                                }
+                                alert(r.message)
+                                location.reload();
+                            })
                         })
+
                     }
                 }
                 if ($(this).hasClass('bg-yellow')) {

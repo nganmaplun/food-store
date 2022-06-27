@@ -33,4 +33,10 @@ interface TableRepository extends RepositoryInterface
      * @return mixed
      */
     public function checkTableStatus($id): mixed;
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getTableName($id): mixed;
 }

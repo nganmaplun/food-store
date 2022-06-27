@@ -29,8 +29,6 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
         return Timesheet::class;
     }
 
-
-
     /**
      * Boot up the repository, pushing criteria
      */

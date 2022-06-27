@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Constants\BaseConstant;
+use App\Constants\UserConstant;
 use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
@@ -23,7 +25,20 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                $role = Auth::user()[UserConstant::ROLE_FIELD];
+                switch (true) {
+                    case ($role != BaseConstant::ADMIN_ROLE):
+                        return redirect()->back();
+
+                    case (!in_array($role, [BaseConstant::ADMIN_ROLE, BaseConstant::WAITER_ROLE])):
+                        return redirect()->back();
+
+                    case (!in_array($role, [BaseConstant::ADMIN_ROLE, BaseConstant::CHEF_ROLE])):
+                        return redirect()->back();
+
+                    case (!in_array($role, [BaseConstant::ADMIN_ROLE, BaseConstant::CASHIER_ROLE])):
+                        return redirect()->back();
+                }
             }
         }
 

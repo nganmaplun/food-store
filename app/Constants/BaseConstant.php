@@ -32,4 +32,11 @@ class BaseConstant
     const TABLE_AVAILABLE = '0';
     const TABLE_ORDERED = '1';
     const TABLE_PAID = '2';
+
+    // food menu
+    const FOOD_SALAD = '1';
+    const FOOD_GRILL = '2';
+    const FOOD_STEAM = '3';
+    const FOOD_DRYING = '4';
+    const FOOD_DRINK = '5';
 }

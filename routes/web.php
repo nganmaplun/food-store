@@ -26,19 +26,24 @@ Route::any('/logout', [AuthController::class, 'logout'])->name('post.logout');
  */
 Route::middleware('auth')->group(function () {
     Route::post('/change-table-status', [CommonController::class, 'changeTableStatus'])->name('change-table-status');
-    Route::prefix('admin')->group(function () {
-        Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
-        Route::get('/timesheet', [AdminController::class, 'timesheet'])->name('timesheet');
-        Route::post('/approval-timesheet', [AdminController::class, 'approveTimesheet'])->name('post.timesheet');
-        Route::get('/setting-foods', [AdminController::class, 'settingFood'])->name('admin.food');
-        Route::post('set-food', [AdminController::class, 'setFood'])->name('admin.post.set-food');
+    Route::post('/add-food-to-order', [CommonController::class, 'addFoodToOrder'])->name('add-food');
+    Route::post('/create-new-order', [CommonController::class, 'createOrder'])->name('create-order');
+    Route::middleware('admin')->group(function () {
+        Route::prefix('admin')->group(function () {
+            Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
+            Route::get('/timesheet', [AdminController::class, 'timesheet'])->name('timesheet');
+            Route::post('/approval-timesheet', [AdminController::class, 'approveTimesheet'])->name('post.timesheet');
+            Route::get('/setting-foods', [AdminController::class, 'settingFood'])->name('admin.food');
+            Route::post('set-food', [AdminController::class, 'setFood'])->name('admin.post.set-food');
+        });
     });
-});
-Route::middleware('auth', 'waiter')->group(function () {
-    Route::prefix('waiter')->group(function () {
-        Route::get('/waiter-dashboard', [WaiterController::class, 'dashboard'])->name('waiter-dashboard');
-        Route::get('/{tableId}/food-list', [WaiterController::class, 'listFoodsForOrder'])->name('food-list');
-        Route::get('/{tableId}/food-list/{menuId}', [WaiterController::class, 'listFoodsByMenu'])->name('food-list-by-menu');
+
+    Route::middleware(['waiter'])->group(function () {
+        Route::prefix('waiter')->group(function () {
+            Route::get('/waiter-dashboard', [WaiterController::class, 'dashboard'])->name('waiter-dashboard');
+            Route::get('/{tableId}/{orderId}/food-list', [WaiterController::class, 'listFoodsForOrder'])->name('food-list');
+            Route::get('/{tableId}/{orderId}/food-list/{menuId}', [WaiterController::class, 'listFoodsByMenu'])->name('food-list-by-menu');
+        });
     });
 });
 

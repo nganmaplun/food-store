@@ -9,3 +9,6 @@ table.dataTable tbody td {
 .custom-header, .custom-content {
     margin-left: 0 !important;
 }
+.custom-img {
+    width: 100px;
+}

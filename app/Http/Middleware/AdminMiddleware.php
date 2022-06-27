@@ -8,7 +8,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class WaiterMiddleware
+class AdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -21,11 +21,10 @@ class WaiterMiddleware
     public function handle(Request $request, Closure $next, ...$guards)
     {
         $guards = empty($guards) ? [null] : $guards;
-
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 $role = Auth::user()[UserConstant::ROLE_FIELD];
-                if ($role != BaseConstant::WAITER_ROLE) {
+                if ($role != BaseConstant::ADMIN_ROLE) {
                     return redirect()->back();
                 }
             }

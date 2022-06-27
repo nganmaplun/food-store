@@ -17,7 +17,7 @@ class FoodDay extends Model implements Transformable
 {
     use TransformableTrait, SoftDeletes;
 
-    protected $table = 'food_day';
+    protected $table = FoodDayConstant::TABLE_NAME;
 
     /**
      * The attributes that are mass assignable.

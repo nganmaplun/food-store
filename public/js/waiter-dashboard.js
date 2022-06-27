@@ -10,3 +10,18 @@ async function sendRequestChangeStatus(index) {
         }
     });
 }
+async function sendRequestCreateOrder(index, guestType, guestNum, otherNote) {
+    return await $.ajax({
+        url: createOrder,
+        type: 'POST',
+        data: {
+            id: index,
+            guestType: guestType,
+            guestNum: guestNum,
+            otherNote: otherNote
+        },
+        success:function(response) {
+            return response
+        }
+    })
+}

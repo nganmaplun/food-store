@@ -4,8 +4,12 @@ namespace App\Providers;
 
 use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodDayRepositoryEloquent;
+use App\Repositories\FoodOrderRepository;
+use App\Repositories\FoodOrderRepositoryEloquent;
 use App\Repositories\FoodRepository;
 use App\Repositories\FoodRepositoryEloquent;
+use App\Repositories\OrderRepository;
+use App\Repositories\OrderRepositoryEloquent;
 use App\Repositories\TableRepository;
 use App\Repositories\TableRepositoryEloquent;
 use App\Repositories\TimesheetRepository;
@@ -30,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FoodRepository::class, FoodRepositoryEloquent::class);
         $this->app->bind(FoodDayRepository::class, FoodDayRepositoryEloquent::class);
         $this->app->bind(TableRepository::class, TableRepositoryEloquent::class);
+        $this->app->bind(OrderRepository::class, OrderRepositoryEloquent::class);
+        $this->app->bind(FoodOrderRepository::class, FoodOrderRepositoryEloquent::class);
     }
 
     /**

@@ -29,15 +29,15 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-header">
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light {{ $route !== 'waiter-dashboard' ? '' : 'custom-header' }}">
         @include('layout.nav-bar')
     </nav>
-    @if ($route === 'food-list')
+    @if ($route !== 'waiter-dashboard')
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         @include('layout.food-menu')
     </aside>
     @endif
-    <div class="content-wrapper custom-content">
+    <div class="content-wrapper {{ $route !== 'waiter-dashboard' ? '' : 'custom-content' }}">
         @yield('content')
     </div>
 </div>

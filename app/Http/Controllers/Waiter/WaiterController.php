@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Waiter;
 use App\Constants\BaseConstant;
 use App\Constants\TableConstant;
 use App\Http\Controllers\Controller;
+use App\Repositories\FoodRepository;
 use App\Repositories\TableRepository;
 use App\Services\TableService;
 use Illuminate\Http\Request;
@@ -17,6 +18,11 @@ class WaiterController extends Controller
     private TableRepository $tableRepository;
 
     /**
+     * @var FoodRepository
+     */
+    private FoodRepository $foodRepository;
+
+    /**
      * @var TableService
      */
     private TableService $tableService;
@@ -26,9 +32,11 @@ class WaiterController extends Controller
      */
     public function __construct(
         TableRepository $tableRepository,
+        FoodRepository $foodRepository,
         TableService $tableService
     ){
         $this->tableRepository = $tableRepository;
+        $this->foodRepository = $foodRepository;
         $this->tableService = $tableService;
     }
 
@@ -47,8 +55,16 @@ class WaiterController extends Controller
         ]);
     }
 
-    public function listFoodsForOrder(Request $request, $tableId)
+    public function listFoodsForOrder(Request $request, $tableId, $orderId)
     {
-        return view('waiter.list-food-order');
+        $tableName = $this->tableRepository->getTableName($tableId);
+        $listFoods = $this->foodRepository->getListFoods();
+
+        return view('waiter.list-food-order', [
+            'tableName' => $tableName,
+            'tableId' => $tableId,
+            'orderId' => $orderId,
+            'listFoods' => $listFoods
+        ]);
     }
 }

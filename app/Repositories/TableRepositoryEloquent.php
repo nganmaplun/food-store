@@ -99,4 +99,15 @@ class TableRepositoryEloquent extends BaseRepository implements TableRepository
 
         return $tableStatus[BaseConstant::STATUS_FIELD];
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getTableName($id): mixed
+    {
+        return $this->select(TableConstant::NAME_FIELD)
+            ->where(BaseConstant::ID_FIELD, $id)
+            ->first();
+    }
 }
