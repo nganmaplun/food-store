@@ -11,5 +11,10 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface UserRepository extends RepositoryInterface
 {
-    //
+    /**
+     * @param string $today
+     * @param array $request
+     * @return mixed
+     */
+    public function getListEmployee(string $today, array $request);
 }

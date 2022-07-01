@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodRepository;
 use App\Repositories\TimesheetRepository;
+use App\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,15 +35,22 @@ class AdminController  extends Controller
     private FoodDayRepository $foodDayRepository;
 
     /**
+     * @var UserRepository
+     */
+    private UserRepository $userRepository;
+
+    /**
      * @param TimesheetRepository $timesheetRepository
      * @param FoodRepository $foodRepository
      */
     public function __construct(
         TimesheetRepository $timesheetRepository,
+        UserRepository $userRepository,
         FoodRepository $foodRepository,
         FoodDayRepository $foodDayRepository
     ) {
         $this->timesheetRepository = $timesheetRepository;
+        $this->userRepository = $userRepository;
         $this->foodRepository = $foodRepository;
         $this->foodDayRepository = $foodDayRepository;
         $this->today = Carbon::now()->toDateString();
@@ -64,7 +72,7 @@ class AdminController  extends Controller
     {
         $request = $request->all();
         $page = $request[BaseConstant::PAGE_TEXT] ?? 1;
-        $listTimesheet = $this->timesheetRepository->getListEmployee($this->today, $request);
+        $listTimesheet = $this->userRepository->getListEmployee($this->today, $request);
 
         return view('admin.timesheet', ['listTimesheet' => $listTimesheet, 'today' => $this->today, 'page' => $page]);
     }

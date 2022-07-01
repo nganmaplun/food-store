@@ -38,7 +38,7 @@
                     @foreach($listTimesheet as $timesheet)
                     <tr index="{{$timesheet[\App\Constants\BaseConstant::ID_FIELD]}}">
                         <td>
-                            {{$timesheet->employee[0][\App\Constants\UserConstant::FULLNAME_FIELD]}}
+                            {{$timesheet[\App\Constants\UserConstant::FULLNAME_FIELD]}}
                         </td>
                         <td >
                             {{$timesheet[\App\Constants\TimesheetConstant::CHECKIN_TIME_FIELD] ?? ''}}

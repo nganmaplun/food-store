@@ -47,6 +47,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             $data = [
                 OrderConstant::EMPLOYEE_ID_FIELD => $userId,
                 OrderConstant::TABLE_ID_FIELD => $request[BaseConstant::ID_FIELD],
+                OrderConstant::PARENT_TABLE_ID_FIELD => $request['subIndex'] ?? null,
                 OrderConstant::CUSTOMER_TYPE_FIELD => $request['guestType'],
                 OrderConstant::NUMBER_OF_CUSTOMER_FIELD => $request['guestNum'],
                 OrderConstant::DESCRIPTION_FIELD => $request['otherNote'],

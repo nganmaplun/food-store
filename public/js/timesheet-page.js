@@ -11,6 +11,7 @@ $(function () {
                     return;
                 }
                 alert('Duyệt timesheet cho nhân viên thành công!');
+                location.reload();
             }
         })
     });

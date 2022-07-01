@@ -9,6 +9,9 @@
                 <div class="col-sm-6">
                     <h1>Danh sách bàn ăn</h1>
                 </div>
+                <div class="col-sm-6">
+                    <button class="btn btn-info float-right btn-combine-table">Gộp bàn</button>
+                </div>
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -62,6 +65,7 @@
             {{ $listTables->links('vendor.pagination.bootstrap-4', ['page' => $page]) }}
         </div>
         @include('waiter.modal-create-order')
+        @include('waiter.modal-combine-table')
     </section>
 @endsection
 @section('script')
@@ -79,6 +83,10 @@
                         $(document).on('click', '.add-order', async function() {
                             let guestType = $('#modal-order').find('.guest-type').val();
                             let guestNum = $('#modal-order').find('.guest-num').val();
+                            if (guestNum == '' || parseInt(guestNum) == 0) {
+                                alert('Hãy điền số lượng khách');
+                                return false;
+                            }
                             let otherNote = $('#modal-order').find('.other-note').val();
                             let orderId = await sendRequestCreateOrder(index, guestType, guestNum, otherNote).then(function(s) {
                                 if (s.code == '333') {
@@ -99,16 +107,64 @@
                                 location.reload();
                             })
                         })
-
                     }
                 }
                 if ($(this).hasClass('bg-yellow')) {
                     if (confirm(msgYellow)) {
-                        sendRequestChangeStatus(index).then(function(r) {
+                        let code = sendRequestChangeStatus(index).then(function(r) {
                             alert(r.message)
+                            return r.code;
                         })
+                        code.then(() => {
+                            $(this).removeClass('bg-yellow').addClass('bg-green');
+                        });
                     }
                 }
+            })
+
+            $(document).on('click', '.btn-combine-table', function() {
+                $('#modal-combine-table').modal('show');
+                $(document).on('click', '.combine-table', function () {
+                    let listTables = $('#multi-table').val()
+                    if (listTables.length <= 1) {
+                        alert('Hãy chọn bàn để gộp');
+                        return false;
+                    }
+                    let index = listTables[0];
+                    $('#modal-order').modal('show');
+                    $('#modal-combine-table').modal('hide');
+                    $(document).on('click', '.add-order', async function() {
+                        let guestType = $('#modal-order').find('.guest-type').val();
+                        let guestNum = $('#modal-order').find('.guest-num').val();
+                        if (guestNum == '' || parseInt(guestNum) == 0) {
+                            alert('Hãy điền số lượng khách');
+                            return false;
+                        }
+                        let otherNote = $('#modal-order').find('.other-note').val();
+                        let orderId = await sendRequestCreateOrder(index, guestType, guestNum, otherNote).then(function(s) {
+                            if (s.code == '333') {
+                                alert(r.message)
+                                return location.reload();
+                            }
+                            return s.order_id;
+                        })
+                        sendRequestChangeStatus(index).then(function(r) {
+                            if (r.code != '333') {
+                                let url = "{{ route('food-list', [":index", ":orderId"]) }}";
+                                url = url.replace(':index', index);
+                                url = url.replace(':orderId', orderId);
+                                for (let i=1; i < listTables.length; i++) {
+                                    sendRequestChangeStatus(listTables[i]);
+                                    createSubOrderTable(listTables[i], orderId, guestType, guestNum, otherNote);
+                                }
+                                location.href = url;
+                                return
+                            }
+                            alert(r.message)
+                            location.reload();
+                        })
+                    })
+                })
             })
         })
     </script>

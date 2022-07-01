@@ -31,6 +31,7 @@ class Order extends Model implements Transformable
         OrderConstant::TABLE_NAME,
         OrderConstant::EMPLOYEE_ID_FIELD,
         OrderConstant::TABLE_ID_FIELD,
+        OrderConstant::PARENT_TABLE_ID_FIELD,
         OrderConstant::CUSTOMER_TYPE_FIELD,
         OrderConstant::NUMBER_OF_CUSTOMER_FIELD,
         OrderConstant::TOTAL_PRICE_FIELD,

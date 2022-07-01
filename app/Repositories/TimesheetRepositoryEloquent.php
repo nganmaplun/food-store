@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Constants\BaseConstant;
 use App\Constants\TimesheetConstant;
+use App\Constants\UserConstant;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -87,9 +88,10 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
     public function getListEmployee($today, $request): mixed
     {
 
-        return $this->with('employee')
-            ->where([
-                TimesheetConstant::WORKING_DATE_FIELD => $today
+        return $this->with(['employee' => function ($query) {
+            $query->where(UserConstant::ROLE_FIELD, BaseConstant::DIFFERENCE, BaseConstant::ADMIN_ROLE);
+            }])->where([
+                TimesheetConstant::WORKING_DATE_FIELD => $today,
             ])->paginate(BaseConstant::DEFAULT_LIMIT);
     }
 

@@ -48,16 +48,4 @@ class Timesheet extends Model implements Transformable
             $model[TimesheetConstant::TOTAL_HOURS_FIELD] = $seconds / 3600;
         });
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function employee()
-    {
-        return $this->hasMany(
-            User::class,
-            BaseConstant::ID_FIELD,
-            TimesheetConstant::EMPLOYEE_ID_FIELD
-        );
-    }
 }

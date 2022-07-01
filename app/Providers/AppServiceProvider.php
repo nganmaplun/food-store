@@ -14,6 +14,8 @@ use App\Repositories\TableRepository;
 use App\Repositories\TableRepositoryEloquent;
 use App\Repositories\TimesheetRepository;
 use App\Repositories\TimesheetRepositoryEloquent;
+use App\Repositories\UserRepository;
+use App\Repositories\UserRepositoryEloquent;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TableRepository::class, TableRepositoryEloquent::class);
         $this->app->bind(OrderRepository::class, OrderRepositoryEloquent::class);
         $this->app->bind(FoodOrderRepository::class, FoodOrderRepositoryEloquent::class);
+        $this->app->bind(UserRepository::class, UserRepositoryEloquent::class);
     }
 
     /**

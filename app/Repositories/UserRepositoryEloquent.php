@@ -2,6 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Constants\BaseConstant;
+use App\Constants\TimesheetConstant;
+use App\Constants\UserConstant;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\UserRepository;
@@ -25,8 +28,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         return User::class;
     }
 
-    
-
     /**
      * Boot up the repository, pushing criteria
      */
@@ -34,5 +35,32 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
+    /**
+     * @param string $today
+     * @param array $request
+     * @return mixed
+     */
+    public function getListEmployee(string $today, array $request): mixed
+    {
+        $select = [
+            UserConstant::FULLNAME_FIELD,
+            TimesheetConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+            TimesheetConstant::CHECKIN_TIME_FIELD,
+            TimesheetConstant::CHECKOUT_TIME_FIELD,
+            TimesheetConstant::IS_APPROVED_FIELD,
+            UserConstant::ROLE_FIELD
+        ];
+        return $this->select($select)
+            ->leftJoin(
+                TimesheetConstant::TABLE_NAME,
+                TimesheetConstant::EMPLOYEE_ID_FIELD,
+                BaseConstant::EQUAL,
+                UserConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD
+            )->where([
+                TimesheetConstant::WORKING_DATE_FIELD => $today
+            ])->whereNotIn(
+                UserConstant::ROLE_FIELD, [BaseConstant::ADMIN_ROLE]
+            )->paginate(BaseConstant::DEFAULT_LIMIT);
+    }
 }

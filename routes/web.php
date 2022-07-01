@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/change-table-status', [CommonController::class, 'changeTableStatus'])->name('change-table-status');
     Route::post('/add-food-to-order', [CommonController::class, 'addFoodToOrder'])->name('add-food');
     Route::post('/create-new-order', [CommonController::class, 'createOrder'])->name('create-order');
+    Route::post('/create-new-sub-order', [CommonController::class, 'createSubOrder'])->name('create-sub-order');
     Route::middleware('admin')->group(function () {
         Route::prefix('admin')->group(function () {
             Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');

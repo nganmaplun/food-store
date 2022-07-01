@@ -24,6 +24,7 @@ class BaseConstant
 
     // expression
     const EQUAL = '=';
+    const DIFFERENCE = '!=';
 
     // all tables
     const ALL_TABLE = 'all';

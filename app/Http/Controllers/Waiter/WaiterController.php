@@ -55,6 +55,12 @@ class WaiterController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param $tableId
+     * @param $orderId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function listFoodsForOrder(Request $request, $tableId, $orderId)
     {
         $tableName = $this->tableRepository->getTableName($tableId);
@@ -64,6 +70,27 @@ class WaiterController extends Controller
             'tableName' => $tableName,
             'tableId' => $tableId,
             'orderId' => $orderId,
+            'listFoods' => $listFoods
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $tableId
+     * @param $orderId
+     * @param $menuId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function listFoodsByMenu(Request $request, $tableId, $orderId, $menuId)
+    {
+        $tableName = $this->tableRepository->getTableName($tableId);
+        $listFoods = $this->foodRepository->getListFoods($menuId);
+
+        return view('waiter.list-food-order', [
+            'tableName' => $tableName,
+            'tableId' => $tableId,
+            'orderId' => $orderId,
+            'menuId' => $menuId,
             'listFoods' => $listFoods
         ]);
     }
