@@ -18,6 +18,11 @@ Docker
   - DB_DATABASE=(same as above)
   - DB_USERNAME=(same as above)
   - DB_PASSWORD=(same as above)
+  - BROADCAST_DRIVER=pusher
+  - PUSHER_APP_ID=1424811
+  - PUSHER_APP_KEY=26af0bf4797465adc5fe
+  - PUSHER_APP_SECRET=e03c315cb380ce838794
+  - PUSHER_APP_CLUSTER=ap1
 - Run docker exec -it laradock-php-fpm-1 /bin/bash to access docker container
 - Run php artisan migrate for migration
 - Run php artisan db:seed for data test
