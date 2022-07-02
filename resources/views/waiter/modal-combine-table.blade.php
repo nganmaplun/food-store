@@ -13,7 +13,7 @@
                         <div class="form-group">
                             <select multiple="" class="custom-select" id="multi-table">
                                 @foreach($listTables as $table)
-                                    @if ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 0)
+                                    @if ($table[\App\Constants\BaseConstant::STATUS_FIELD] != 2)
                                         <option value="{{ $table[\App\Constants\BaseConstant::ID_FIELD] }}">{{ $table[\App\Constants\TableConstant::NAME_FIELD] }}</option>
                                     @endif
                                 @endforeach

@@ -2,10 +2,21 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckUserLoginRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserLoginRequest extends FormRequest
+class ChangePasswodRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -14,8 +25,9 @@ class UserLoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required',
+            'old_password' => ['required', new CheckUserLoginRule()],
             'password' => 'required|min:8',
+            'password_confirm' => 'same:password',
         ];
     }
 
@@ -27,9 +39,10 @@ class UserLoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'username.required' => "Hãy điền tài khoản",
+            'old_password.required' => "Hãy điền mật khẩu hiện tại",
             'password.required' => "Hãy điền mật khẩu",
             'password.min' => "Mật khẩu phải có 8 kí tự",
+            'password_confirm.same' => "Hãy xác nhận mật khẩu mới",
         ];
     }
 }

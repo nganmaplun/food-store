@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Constants\BaseConstant;
+use App\Constants\FoodConstant;
+use App\Constants\FoodOrderConstant;
 use App\Constants\OrderConstant;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -57,8 +59,38 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             ];
             return $this->create($data);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::channel('customError')->error($e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * @param $orderId
+     * @return mixed
+     */
+    public function getListFoodsInOrder($orderId)
+    {
+        $select = [
+            FoodConstant::VIETNAMESE_NAME_FIELD,
+            FoodConstant::CATEGORY_FIELD,
+            FoodOrderConstant::ORDER_NUM_FIELD,
+            FoodOrderConstant::IS_DELIVERED_FIELD,
+        ];
+        return $this->select($select)
+                ->leftJoin(
+                    FoodOrderConstant::TABLE_NAME,
+                    FoodOrderConstant::TABLE_NAME . '.' . FoodOrderConstant::ORDER_ID_FIELD,
+                    BaseConstant::EQUAL,
+                    OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD
+                )
+                ->leftJoin(
+                    FoodConstant::TABLE_NAME,
+                    FoodConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                    BaseConstant::EQUAL,
+                    FoodOrderConstant::TABLE_NAME . '.' . FoodOrderConstant::FOOD_ID_FIELD
+                )
+                ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $orderId)
+                ->whereNotNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD)
+                ->get();
     }
 }

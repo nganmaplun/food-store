@@ -17,4 +17,11 @@ interface UserRepository extends RepositoryInterface
      * @return mixed
      */
     public function getListEmployee(string $today, array $request);
+
+    /**
+     * @param $id
+     * @param array $request
+     * @return mixed
+     */
+    public function changePassword($id, array $request);
 }

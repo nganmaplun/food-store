@@ -57,6 +57,18 @@ return [
             'ignore_exceptions' => false,
         ],
 
+        'customError' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/error-log-' . date('Y-m-d') . '.log'),
+            'level' => 'debug',
+        ],
+
+        'customInfo' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/info-log-' . date('Y-m-d') . '.log'),
+            'level' => 'debug',
+        ],
+
         'single' => [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),

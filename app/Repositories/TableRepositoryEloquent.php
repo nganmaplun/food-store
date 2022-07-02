@@ -82,7 +82,7 @@ class TableRepositoryEloquent extends BaseRepository implements TableRepository
                 ], $table[BaseConstant::ID_FIELD]);
             }
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::channel('customError')->error($e->getMessage());
             return false;
         }
     }
@@ -106,7 +106,7 @@ class TableRepositoryEloquent extends BaseRepository implements TableRepository
      */
     public function getTableName($id): mixed
     {
-        return $this->select(TableConstant::NAME_FIELD)
+        return $this->select([BaseConstant::ID_FIELD, TableConstant::NAME_FIELD])
             ->where(BaseConstant::ID_FIELD, $id)
             ->first();
     }

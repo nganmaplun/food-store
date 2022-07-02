@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Constants\BaseConstant;
 use App\Constants\TimesheetConstant;
 use App\Constants\UserConstant;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\UserRepository;
@@ -62,5 +64,22 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             ])->whereNotIn(
                 UserConstant::ROLE_FIELD, [BaseConstant::ADMIN_ROLE]
             )->paginate(BaseConstant::DEFAULT_LIMIT);
+    }
+
+    /**
+     * @param $id
+     * @param array $request
+     * @return mixed
+     */
+    public function changePassword($id, array $request)
+    {
+        try {
+            return $this->update([
+                UserConstant::PASSWORD_FIELD => Hash::make($request['password'])
+            ], $id);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
     }
 }

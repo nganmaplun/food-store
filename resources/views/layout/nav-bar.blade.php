@@ -10,7 +10,7 @@ use App\Constants\UserConstant;
 @endif
 <ul class="navbar-nav ml-auto">
     <li class="nav-item">
-        <a class="nav-link" data-toggle="dropdown" href="javascript:void(0)"> Xin chào, {{$user[UserConstant::FULLNAME_FIELD] ?? ''}}
+        <a class="nav-link" href="{{ route('view.change-password') }}"> Xin chào, {{$user[UserConstant::FULLNAME_FIELD] ?? ''}}
         </a>
     </li>
     <li class="nav-item">

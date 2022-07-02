@@ -40,4 +40,18 @@ class BaseConstant
     const FOOD_STEAM = '3';
     const FOOD_DRYING = '4';
     const FOOD_DRINK = '5';
+
+    // channel notify
+    const CHEF_SALAD_CHANNEL = 'chef-salad-channel';
+    const CHEF_GRILL_CHANNEL = 'chef-grill-channel';
+    const CHEF_STEAM_CHANNEL = 'chef-steam-channel';
+    const CHEF_DRYING_CHANNEL = 'chef-drying-channel';
+    const CHEF_DRINK_CHANNEL = 'chef-drink-channel';
+    const CASHIER_CHANNEL = 'cashier-channel';
+    const WAITER_CHANNEL = 'waiter-channel';
+
+    // message type
+    const SEND_CHEF = 'send-chef';
+    const SEND_CASHIER = 'send-cashier';
+    const SEND_WAITER = 'send-waiter';
 }

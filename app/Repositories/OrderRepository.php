@@ -17,4 +17,10 @@ interface OrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function createOrder(array $request, $userId);
+
+    /**
+     * @param $orderId
+     * @return mixed
+     */
+    public function getListFoodsInOrder($orderId);
 }

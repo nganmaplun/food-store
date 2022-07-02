@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Constants\BaseConstant;
 use App\Constants\UserConstant;
+use App\Http\Requests\ChangePasswodRequest;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +31,11 @@ class CommonController extends Controller
     private FoodOrderRepository $foodOrderRepository;
 
     /**
+     * @var UserRepository
+     */
+    private UserRepository $userRepository;
+
+    /**
      * @param TableRepository $tableRepository
      * @param OrderRepository $orderRepository
      * @param FoodOrderRepository $foodOrderRepository
@@ -36,11 +43,34 @@ class CommonController extends Controller
     public function __construct(
         TableRepository $tableRepository,
         OrderRepository $orderRepository,
-        FoodOrderRepository $foodOrderRepository
+        FoodOrderRepository $foodOrderRepository,
+        UserRepository $userRepository
     ) {
         $this->tableRepository = $tableRepository;
         $this->orderRepository = $orderRepository;
         $this->foodOrderRepository = $foodOrderRepository;
+        $this->userRepository = $userRepository;
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function index()
+    {
+        return view('change-password');
+    }
+
+    public function changePassword(ChangePasswodRequest $request)
+    {
+        $request = $request->all();
+        $user = Auth::user();
+        $result = $this->userRepository->changePassword($user[BaseConstant::ID_FIELD], $request);
+        if (!$result) {
+
+            return redirect()->back()->with(['message' => 'Đổi mật khẩu thất bại, vui lòng thử lại']);
+        }
+
+        return redirect()->back()->with(['message' => 'Đổi mật khẩu thành công']);
     }
 
     /**

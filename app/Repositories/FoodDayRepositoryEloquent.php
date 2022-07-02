@@ -58,7 +58,7 @@ class FoodDayRepositoryEloquent extends BaseRepository implements FoodDayReposit
                 FoodDayConstant::DATE_FIELD => $request['today']
             ]);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::channel('customError')->error($e->getMessage());
             return false;
         }
     }

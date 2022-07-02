@@ -50,7 +50,7 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
             ];
             return $this->create($data);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::channel('customError')->error($e->getMessage());
             return false;
         }
     }

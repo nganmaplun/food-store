@@ -52,7 +52,7 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
                 BaseConstant::STATUS_FIELD => false
             ]);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::channel('customError')->error($e->getMessage());
             return false;
         }
     }
@@ -75,7 +75,7 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
                 BaseConstant::STATUS_FIELD => true
             ], $userTimesheet[BaseConstant::ID_FIELD]);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::channel('customError')->error($e->getMessage());
             return false;
         }
     }
@@ -110,7 +110,7 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
                 TimesheetConstant::IS_APPROVED_FIELD => true
             ], $timesheet[BaseConstant::ID_FIELD]);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::channel('customError')->error($e->getMessage());
             return false;
         }
     }

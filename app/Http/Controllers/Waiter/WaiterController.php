@@ -6,6 +6,7 @@ use App\Constants\BaseConstant;
 use App\Constants\TableConstant;
 use App\Http\Controllers\Controller;
 use App\Repositories\FoodRepository;
+use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
 use App\Services\TableService;
 use Illuminate\Http\Request;
@@ -28,16 +29,23 @@ class WaiterController extends Controller
     private TableService $tableService;
 
     /**
+     * @var OrderRepository
+     */
+    private OrderRepository $orderRepository;
+
+    /**
      * @param TableRepository $tableRepository
      */
     public function __construct(
         TableRepository $tableRepository,
         FoodRepository $foodRepository,
-        TableService $tableService
+        TableService $tableService,
+        OrderRepository $orderRepository
     ){
         $this->tableRepository = $tableRepository;
         $this->foodRepository = $foodRepository;
         $this->tableService = $tableService;
+        $this->orderRepository = $orderRepository;
     }
 
     /**
@@ -92,6 +100,19 @@ class WaiterController extends Controller
             'orderId' => $orderId,
             'menuId' => $menuId,
             'listFoods' => $listFoods
+        ]);
+    }
+
+    public function orderTable($tableId, $orderId)
+    {
+        $tableName = $this->tableRepository->getTableName($tableId);
+        $listFoodsInOrder = $this->orderRepository->getListFoodsInOrder($orderId);
+
+        return view('vendor.table-order', [
+            'tableName' => $tableName,
+            'tableId' => $tableId,
+            'orderId' => $orderId,
+            'listFoods' => $listFoodsInOrder
         ]);
     }
 }

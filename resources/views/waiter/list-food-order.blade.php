@@ -12,7 +12,7 @@
                     <h1>{{ $tableName[\App\Constants\TableConstant::NAME_FIELD] }}</h1>
                 </div>
                 <div class="offset-md-3 col-sm-3">
-                    <a class="btn btn-default justify-content-end" href="#">Xem món đã order</a>
+                    <a class="btn btn-default float-right" href="{{ route('view.order', ['tableId' => $tableId, 'orderId' => $orderId]) }}">Xem món đã order</a>
                 </div>
             </div>
         </div><!-- /.container-fluid -->

@@ -9,4 +9,5 @@ class FoodOrderConstant
     const FOOD_ID_FIELD = 'food_id';
     const ORDER_NUM_FIELD = 'order_num';
     const NOTE_FIELD = 'note';
+    const IS_DELIVERED_FIELD = 'is_delivered';
 }

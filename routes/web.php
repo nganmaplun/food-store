@@ -25,10 +25,13 @@ Route::any('/logout', [AuthController::class, 'logout'])->name('post.logout');
  * Route for admin
  */
 Route::middleware('auth')->group(function () {
+    Route::get('/change-password', [CommonController::class, 'index'])->name('view.change-password');
+    Route::post('/change-password', [CommonController::class, 'changePassword'])->name('post.change-password');
     Route::post('/change-table-status', [CommonController::class, 'changeTableStatus'])->name('change-table-status');
     Route::post('/add-food-to-order', [CommonController::class, 'addFoodToOrder'])->name('add-food');
     Route::post('/create-new-order', [CommonController::class, 'createOrder'])->name('create-order');
     Route::post('/create-new-sub-order', [CommonController::class, 'createSubOrder'])->name('create-sub-order');
+    Route::post('/send-message', [SendMessageController::class, 'sendMessage'])->name('send-message');
     Route::middleware('admin')->group(function () {
         Route::prefix('admin')->group(function () {
             Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
@@ -44,6 +47,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/waiter-dashboard', [WaiterController::class, 'dashboard'])->name('waiter-dashboard');
             Route::get('/{tableId}/{orderId}/food-list', [WaiterController::class, 'listFoodsForOrder'])->name('food-list');
             Route::get('/{tableId}/{orderId}/food-list/{menuId}', [WaiterController::class, 'listFoodsByMenu'])->name('food-list-by-menu');
+            Route::get('/{tableId}/{orderId}', [WaiterController::class, 'orderTable'])->name('view.order');
         });
     });
 });

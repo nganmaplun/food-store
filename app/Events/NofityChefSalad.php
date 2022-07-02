@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Constants\TableConstant;
+use App\Constants\BaseConstant;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,14 +11,9 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Notify
+class NofityChefSalad extends Notify
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    /**
-     * @var string
-     */
-    private string $tableName;
 
     /**
      * Create a new event instance.
@@ -27,6 +22,16 @@ class Notify
      */
     public function __construct($data)
     {
-        $this->tableName = $data[TableConstant::NAME_FIELD];
+        parent::__construct($data);
+    }
+
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return \Illuminate\Broadcasting\Channel|array
+     */
+    public function broadcastOn()
+    {
+        return new PrivateChannel(BaseConstant::CHEF_SALAD_CHANNEL);
     }
 }

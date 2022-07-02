@@ -53,7 +53,9 @@ class AppServiceProvider extends ServiceProvider
             if (Auth::check()) {
                 $view->with('user', Auth::user());
             }
-            $view->with('route', Route::current()->getName());
+            if (Route::current()->getName()) {
+                $view->with('route', Route::current()->getName());
+            }
         });
     }
 }

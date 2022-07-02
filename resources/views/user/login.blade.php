@@ -15,10 +15,6 @@
 
 <body class="hold-transition login-page">
     <div class="login-box">
-        <!--
-            <div class="login-logo"><b>Logo</b>
-            </div>
-        -->
         <div class="card">
             <div class="card-body login-card-body">
                 <h2 class="login-box-msg font-weight-bolder">Sign in</h2>
