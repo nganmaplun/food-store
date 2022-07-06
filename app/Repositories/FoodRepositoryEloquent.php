@@ -71,7 +71,35 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
         if ($condition && !$this->checkValidDate($condition)) {
             $result->where([FoodConstant::CATEGORY_FIELD => $condition]);
         }
+        if ($condition && $this->checkValidDate($condition)) {
+            $result->whereNotNull(FoodDayConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD);
+        }
 
         return $result->get();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function listAllFoodName()
+    {
+        $results = $this->select(FoodConstant::VIETNAMESE_NAME_FIELD)
+            ->get();
+        $lstFoods = [];
+        foreach ($results as $result) {
+            $lstFoods[] = $result[FoodConstant::VIETNAMESE_NAME_FIELD];
+        }
+        return json_encode($lstFoods);
+    }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function getFoodIdByName(array $request)
+    {
+        return $this->select(BaseConstant::ID_FIELD)
+            ->where(FoodConstant::VIETNAMESE_NAME_FIELD, $request['fid'])
+            ->first();
     }
 }

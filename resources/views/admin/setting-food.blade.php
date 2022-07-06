@@ -2,6 +2,7 @@
 @section('other-css')
     <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/responsive.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{asset('css/jquery-ui.min.css')}}">
 @endsection
 @section('content')
     <section class="content-header">
@@ -9,6 +10,9 @@
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>Thiết lập món</h1>
+                </div>
+                <div class="col-sm-6">
+                    <button class="btn btn-info float-right" onclick="openModal(this)">Thiết lập món</button>
                 </div>
             </div>
         </div><!-- /.container-fluid -->
@@ -57,12 +61,15 @@
                 </div>
             </div>
         </div>
+        @include('admin.modal-seting-food')
     </section>
 @endsection
 
 @section('script')
     <script>
         var setFoodUrl = "{{ route('admin.post.set-food') }}";
+        var listAllFoodName = "{{ $listAllFoodName }}";
+        var listAllName = JSON.parse(listAllFoodName.replace(/&quot;/g, '"'));
     </script>
     <script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('js/dataTables.bootstrap4.min.js')}}"></script>

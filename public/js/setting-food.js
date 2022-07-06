@@ -58,3 +58,39 @@ $(function () {
         })
     })
 });
+
+function openModal(that) {
+    $('#modal-setting-food').modal('show');
+    $('.food-name').val('');
+    $('.food-num').val('');
+    $('.food-name').autocomplete({
+        source: listAllName
+    });
+    $('.set-food').on('click', function () {
+        let foodName = $('.food-name').val();
+        let setNumber = $('.food-num').val();
+        let today = $('#today').text();
+        if (setNumber < 0 || setNumber === '') {
+            alert('Hãy nhập số suất sẽ bán trong ngày!');
+            $('.food-num').val('');
+            return;
+        }
+        $.ajax({
+            url: setFoodUrl,
+            type: 'POST',
+            data: {
+                fid: foodName,
+                setNumber: setNumber,
+                today: today
+            },
+            success: function (response) {
+                if (!response.status) {
+                    alert('Lỗi hệ thống, vui lòng đặt lại!');
+                    return;
+                }
+                alert('Đặt số suất sẽ bán trong ngày thành công!');
+                location.reload();
+            }
+        })
+    })
+}

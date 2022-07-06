@@ -16,4 +16,15 @@ interface FoodRepository extends RepositoryInterface
      * @return mixed
      */
     public function getListFoods($today = null): mixed;
+
+    /**
+     * @return mixed
+     */
+    public function listAllFoodName();
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function getFoodIdByName(array $request);
 }

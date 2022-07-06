@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Constants\BaseConstant;
+use App\Constants\FoodConstant;
 use App\Http\Controllers\Controller;
 use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodRepository;
@@ -100,8 +101,13 @@ class AdminController  extends Controller
     public function settingFood(Request $request)
     {
         $listFoods = $this->foodRepository->getListFoods($this->today);
+        $listAllFoodName = $this->foodRepository->listAllFoodName();
 
-        return view('admin.setting-food', ['listFoods' => $listFoods, 'today' => $this->today]);
+        return view('admin.setting-food', [
+            'listFoods' => $listFoods,
+            'today' => $this->today,
+            'listAllFoodName' => $listAllFoodName
+        ]);
     }
 
     /**
@@ -111,6 +117,8 @@ class AdminController  extends Controller
     public function setFood(Request $request): JsonResponse
     {
         $request = $request->all();
+        $foodId = $this->foodRepository->getFoodIdByName($request);
+        $request['index'] = $foodId[BaseConstant::ID_FIELD] ?? $request['index'] ;
         $result = $this->foodDayRepository->setFoodNumberToday($request);
         if ($result) {
 
