@@ -6,6 +6,8 @@ use App\Constants\BaseConstant;
 use App\Constants\FoodConstant;
 use App\Constants\FoodOrderConstant;
 use App\Constants\OrderConstant;
+use App\Constants\TableConstant;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -54,8 +56,9 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 OrderConstant::NUMBER_OF_CUSTOMER_FIELD => $request['guestNum'],
                 OrderConstant::DESCRIPTION_FIELD => $request['otherNote'],
                 OrderConstant::TOTAL_PRICE_FIELD => 0,
+                OrderConstant::ORDER_DATE_FIELD => Carbon::now()->toDateString(),
                 OrderConstant::IS_PAID_FIELD => false,
-                BaseConstant::STATUS_FIELD => false,
+                BaseConstant::STATUS_FIELD => 0,
             ];
             return $this->create($data);
         } catch (\Exception $e) {
@@ -91,6 +94,78 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 )
                 ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $orderId)
                 ->whereNotNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD)
+                ->where(OrderConstant::ORDER_DATE_FIELD, Carbon::now()->toDateString())
+                ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, 0)
                 ->get();
+    }
+
+    /**
+     * @param $category
+     * @return mixed
+     */
+    public function getFoodsByCategory($category)
+    {
+        $select = [
+            FoodOrderConstant::TABLE_NAME .  '.' . BaseConstant::ID_FIELD,
+            TableConstant::TABLE_NAME .  '.' . BaseConstant::ID_FIELD . ' AS tblId',
+            TableConstant::NAME_FIELD,
+            FoodConstant::VIETNAMESE_NAME_FIELD,
+            FoodConstant::CATEGORY_FIELD,
+            FoodConstant::RECIPE_FIELD,
+            FoodOrderConstant::ORDER_NUM_FIELD,
+            FoodOrderConstant::NOTE_FIELD,
+            FoodOrderConstant::IS_DELIVERED_FIELD,
+        ];
+
+        return $this->select($select)
+            ->leftJoin(
+                FoodOrderConstant::TABLE_NAME,
+                FoodOrderConstant::TABLE_NAME . '.' . FoodOrderConstant::ORDER_ID_FIELD,
+                BaseConstant::EQUAL,
+                OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD
+            )
+            ->leftJoin(
+                FoodConstant::TABLE_NAME,
+                FoodConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                FoodOrderConstant::TABLE_NAME . '.' . FoodOrderConstant::FOOD_ID_FIELD
+            )
+            ->leftJoin(
+                TableConstant::TABLE_NAME,
+                TableConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                OrderConstant::TABLE_NAME . '.' . OrderConstant::TABLE_ID_FIELD
+            )
+            ->whereNotNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD)
+            ->where(FoodConstant::CATEGORY_FIELD, $category)
+            ->where(FoodOrderConstant::IS_COMPLETED_FIELD, false)
+            ->where(FoodOrderConstant::IS_DELIVERED_FIELD, false)
+            ->where(OrderConstant::ORDER_DATE_FIELD, Carbon::now()->toDateString())
+            ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, 1)
+            ->get();
+    }
+
+    /**
+     * @param $orderId
+     * @param string $type
+     * @return void
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function updateOrderStatus($orderId, string $type)
+    {
+        $status = match ($type) {
+            BaseConstant::SEND_CHEF => 1,
+            BaseConstant::SEND_WAITER => 2
+        };
+        $this->update([
+            BaseConstant::STATUS_FIELD => $status
+        ], $orderId);
+    }
+
+    public function updateFoodInOrderStatus($orderId, $foodId, $type)
+    {
+        $status = match ($type) {
+
+        }
     }
 }

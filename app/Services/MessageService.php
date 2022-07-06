@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Constants\BaseConstant;
 use App\Constants\FoodConstant;
+use App\Repositories\OrderRepository;
 use Illuminate\Support\Facades\Log;
 use Pusher\Pusher;
 
@@ -15,10 +16,17 @@ class MessageService
     private array $options;
 
     /**
+     * @var OrderRepository
+     */
+    private OrderRepository $orderRepository;
+
+    /**
      *
      */
-    public function __construct()
-    {
+    public function __construct(
+        OrderRepository $orderRepository
+    ) {
+        $this->orderRepository = $orderRepository;
         $this->options = [
             'cluster' => 'ap1',
             'encrypted' => true
@@ -26,11 +34,16 @@ class MessageService
     }
 
     /**
-     * @throws \Pusher\PusherException
-     * @throws \Pusher\ApiErrorException
+     * @param $tableName
+     * @param $orderId
+     * @param $data
+     * @param $type
+     * @return void
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Pusher\ApiErrorException
+     * @throws \Pusher\PusherException
      */
-    public function sendNotify($tableName, $data, $type)
+    public function sendNotify($tableName, $orderId, $data, $type)
     {
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
@@ -62,14 +75,17 @@ class MessageService
                             break;
                     }
                 }
+                $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_CHEF);
                 break;
 
             case BaseConstant::SEND_WAITER:
                 $pusher->trigger('NotifyWaiter', BaseConstant::WAITER_CHANNEL, $tableName);
+                $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_WAITER);
                 break;
 
             case BaseConstant::SEND_CASHIER:
                 $pusher->trigger('NotifyCashier', BaseConstant::CASHIER_CHANNEL, $tableName);
+                $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_CASHIER);
                 break;
         }
 

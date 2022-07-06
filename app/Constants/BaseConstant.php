@@ -15,7 +15,11 @@ class BaseConstant
     const ADMIN_ROLE = 'admin';
     const CASHIER_ROLE = 'cashier';
     const WAITER_ROLE = 'waiter/waitress';
-    const CHEF_ROLE = 'chef';
+    const CHEF_SALAD_ROLE = 'chef_salad';
+    const CHEF_STEAM_ROLE = 'chef_steam';
+    const CHEF_GRILL_ROLE = 'chef_grill';
+    const CHEF_DRYING_ROLE = 'chef_drying';
+    const CHEF_DRINK_ROLE = 'chef_drink';
 
     // pagination
     const DEFAULT_PAGE = 1;

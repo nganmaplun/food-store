@@ -23,4 +23,16 @@ interface OrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function getListFoodsInOrder($orderId);
+
+    /**
+     * @param $category
+     * @return mixed
+     */
+    public function getFoodsByCategory($category);
+
+    /**
+     * @param $orderId
+     * @param string $type
+     */
+    public function updateOrderStatus($orderId, string $type);
 }

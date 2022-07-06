@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Chef\ChefController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\SendMessageController;
 use App\Http\Controllers\Waiter\WaiterController;
@@ -50,13 +51,17 @@ Route::middleware('auth')->group(function () {
             Route::get('/{tableId}/{orderId}', [WaiterController::class, 'orderTable'])->name('view.order');
         });
     });
+
+    Route::middleware(['chef'])->group(function () {
+        Route::prefix('chef')->group(function () {
+            Route::get('/chef-dashboard/{category}', [ChefController::class, 'dashboard'])->name('chef-dashboard');
+        });
+    });
 });
 
 
 
-Route::get('/chef-dashboard', function() {
-    dd('chef');
-})->name('chef-dashboard');
+
 Route::get('/cashier-dashboard', function() {
     dd('cashier');
 })->name('cashier-dashboard');

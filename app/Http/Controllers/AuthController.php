@@ -83,8 +83,24 @@ class AuthController extends Controller
                 return redirect()->route('waiter-dashboard');
                 break;
 
-            case BaseConstant::CHEF_ROLE:
-                return redirect()->route('chef-dashboard');
+            case BaseConstant::CHEF_SALAD_ROLE:
+                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_SALAD]);
+                break;
+
+            case BaseConstant::CHEF_STEAM_ROLE:
+                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_STEAM]);
+                break;
+
+            case BaseConstant::CHEF_GRILL_ROLE:
+                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_GRILL]);
+                break;
+
+            case BaseConstant::CHEF_DRYING_ROLE:
+                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_DRYING]);
+                break;
+
+            case BaseConstant::CHEF_DRINK_ROLE:
+                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_DRINK]);
                 break;
 
             default:

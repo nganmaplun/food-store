@@ -13,4 +13,5 @@ class OrderConstant
     const TOTAL_PRICE_FIELD = 'total_price';
     const IS_PAID_FIELD = 'is_paid';
     const DESCRIPTION_FIELD = 'description';
+    const ORDER_DATE_FIELD = 'order_date';
 }

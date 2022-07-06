@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Constants\BaseConstant;
 use App\Constants\FoodOrderConstant;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -42,6 +43,16 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
     public function addFoodToOrder(array $request)
     {
         try {
+            $foodOrder = $this->where(FoodOrderConstant::ORDER_ID_FIELD, $request['orderId'])
+                ->where(FoodOrderConstant::FOOD_ID_FIELD, $request['foodId'])
+                ->where(FoodOrderConstant::IS_DELIVERED_FIELD, false)
+                ->first();
+            if (!empty($foodOrder)) {
+                return $this->update([
+                    FoodOrderConstant::ORDER_NUM_FIELD => $foodOrder[FoodOrderConstant::ORDER_NUM_FIELD] + $request['orderNum']
+                ], $foodOrder[BaseConstant::ID_FIELD]);
+            }
+
             $data = [
                 FoodOrderConstant::ORDER_ID_FIELD => $request['orderId'],
                 FoodOrderConstant::FOOD_ID_FIELD => $request['foodId'],
@@ -49,6 +60,7 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
                 FoodOrderConstant::NOTE_FIELD => $request['note'],
             ];
             return $this->create($data);
+
         } catch (\Exception $e) {
             Log::channel('customError')->error($e->getMessage());
             return false;

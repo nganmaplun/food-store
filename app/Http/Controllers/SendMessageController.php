@@ -57,7 +57,7 @@ class SendMessageController extends Controller
             $messageType = $request['messageType'];
             $tableData = $this->tableRepository->getTableName($tableId);
             $listFoodInOrder = $this->orderRepository->getListFoodsInOrder($orderId);
-            $this->messageService->sendNotify($tableData, $listFoodInOrder, $messageType);
+            $this->messageService->sendNotify($tableData, $orderId, $listFoodInOrder, $messageType);
 
             return response()->json([
                 'code' => '222',
