@@ -95,7 +95,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $orderId)
                 ->whereNotNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD)
                 ->where(OrderConstant::ORDER_DATE_FIELD, Carbon::now()->toDateString())
-                ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, 0)
+                ->whereIn(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, [0, 1, 2])
                 ->get();
     }
 
