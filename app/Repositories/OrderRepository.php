@@ -35,4 +35,15 @@ interface OrderRepository extends RepositoryInterface
      * @param string $type
      */
     public function updateOrderStatus($orderId, string $type);
+
+    /**
+     * @return mixed
+     */
+    public function getToPaidOrder();
+
+    /**
+     * @param $orderId
+     * @return mixed
+     */
+    public function getDetailOrder($orderId);
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Cashier\CashierController;
 use App\Http\Controllers\Chef\ChefController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\SendMessageController;
@@ -57,13 +58,14 @@ Route::middleware('auth')->group(function () {
             Route::get('/chef-dashboard/{category}', [ChefController::class, 'dashboard'])->name('chef-dashboard');
         });
     });
+
+    Route::middleware(['cashier'])->group(function () {
+        Route::prefix('cashier')->group(function () {
+            Route::get('/dashboard', [CashierController::class, 'dashboard'])->name('cashier-dashboard');
+            Route::get('/detail/{orderId}', [CashierController::class, 'detailOrder'])->name('detail-order');
+        });
+    });
 });
 
-
-
-
-Route::get('/cashier-dashboard', function() {
-    dd('cashier');
-})->name('cashier-dashboard');
 Route::get('/send', [SendMessageController::class, 'index'])->name('send');
 Route::post('/postMessage', [SendMessageController::class, 'sendMessage'])->name('postMessage');

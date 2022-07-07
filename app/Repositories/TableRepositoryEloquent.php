@@ -110,4 +110,18 @@ class TableRepositoryEloquent extends BaseRepository implements TableRepository
             ->where(BaseConstant::ID_FIELD, $id)
             ->first();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getListTable()
+    {
+        $results = $this->select([BaseConstant::ID_FIELD, TableConstant::NAME_FIELD])
+            ->get();
+        $lstTables = [];
+        foreach ($results as $result) {
+            $lstTables[$result[BaseConstant::ID_FIELD]] = $result[TableConstant::NAME_FIELD];
+        }
+        return $lstTables;
+    }
 }

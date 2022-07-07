@@ -39,4 +39,9 @@ interface TableRepository extends RepositoryInterface
      * @return mixed
      */
     public function getTableName($id): mixed;
+
+    /**
+     * @return mixed
+     */
+    public function getListTable();
 }

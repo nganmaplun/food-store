@@ -164,8 +164,49 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
     public function updateFoodInOrderStatus($orderId, $foodId, $type)
     {
-        $status = match ($type) {
+//        $status = match ($type) {
+//
+//        }
+    }
 
-        }
+    /**
+     * @return mixed
+     */
+    public function getToPaidOrder()
+    {
+        return $this->where(OrderConstant::IS_PAID_FIELD, false)
+            ->where(BaseConstant::STATUS_FIELD, 2)
+            ->get();
+    }
+
+    /**
+     * @param $orderId
+     * @return mixed
+     */
+    public function getDetailOrder($orderId)
+    {
+        $select = [
+            FoodConstant::VIETNAMESE_NAME_FIELD,
+            FoodConstant::PRICE_FIELD,
+            FoodOrderConstant::ORDER_NUM_FIELD,
+        ];
+        return $this->select($select)
+            ->leftJoin(
+                FoodOrderConstant::TABLE_NAME,
+                FoodOrderConstant::TABLE_NAME . '.' . FoodOrderConstant::ORDER_ID_FIELD,
+                BaseConstant::EQUAL,
+                OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD
+            )
+            ->leftJoin(
+                FoodConstant::TABLE_NAME,
+                FoodConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                FoodOrderConstant::TABLE_NAME . '.' . FoodOrderConstant::FOOD_ID_FIELD
+            )
+            ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $orderId)
+            ->whereNotNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD)
+            ->where(OrderConstant::ORDER_DATE_FIELD, Carbon::now()->toDateString())
+            ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, 2)
+            ->get();
     }
 }
