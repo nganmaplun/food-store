@@ -8,6 +8,7 @@ $(function () {
             messageType: 'send-chef'
         };
         sendRequest(data);
+        location.reload();
     });
     $(document).on('click', '#send-cashier', function () {
         let tblRows = $('#list-order > tbody > tr');
@@ -18,6 +19,7 @@ $(function () {
             messageType: 'send-cashier'
         };
         sendRequest(data);
+        location.reload();
     });
 })
 function sendRequest(data)
