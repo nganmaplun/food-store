@@ -1,16 +1,37 @@
 @extends('layout.no-menubar')
 
 @section('content')
+<ul class="nav justify-content-center pt-3">
+    @if ($category != 1)
+    <li class="nav-item">
+        <a class="nav-link btn btn-default" href="{{ route('chef-dashboard', ['category' => 1])}}">Xem món salad</a>
+    </li>
+    @endif
+    @if ($category != 2)
+    <li class="nav-item">
+        <a class="nav-link btn btn-default" href="{{ route('chef-dashboard', ['category' => 2])}}">Xem món nướng</a>
+    </li>
+    @endif
+    @if ($category != 3)
+    <li class="nav-item">
+        <a class="nav-link btn btn-default" href="{{ route('chef-dashboard', ['category' => 3])}}">Xem món hấp</a>
+    </li>
+    @endif
+    @if ($category != 4)
+    <li class="nav-item">
+        <a class="nav-link btn btn-default" href="{{ route('chef-dashboard', ['category' => 4])}}">Xem món rán</a>
+    </li>
+    @endif
+</ul>
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Danh sách order hiện tại</h1>
+                <h1>Danh sách món hiện tại</h1>
             </div>
         </div>
     </div><!-- /.container-fluid -->
 </section>
-
 <section class="content pt-3">
     <div class="card">
         <div class="card-body p-0">
@@ -83,7 +104,7 @@
         channel.bind('{{ $channel }}', function(data) {
             $(document).Toasts('create', {
                 class: 'bg-info',
-                title: 'Có order mới',
+                title: 'Có thay đổi order',
                 body: bodyText
             })
         });

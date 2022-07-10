@@ -66,4 +66,18 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
             return false;
         }
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function removeOrderFood($id)
+    {
+        try {
+            return $this->delete($id);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
 }

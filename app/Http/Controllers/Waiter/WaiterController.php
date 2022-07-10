@@ -9,6 +9,7 @@ use App\Repositories\FoodRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
 use App\Services\TableService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class WaiterController extends Controller
@@ -72,7 +73,7 @@ class WaiterController extends Controller
     public function listFoodsForOrder(Request $request, $tableId, $orderId)
     {
         $tableName = $this->tableRepository->getTableName($tableId);
-        $listFoods = $this->foodRepository->getListFoods();
+        $listFoods = $this->foodRepository->getListFoodsMenu();
 
         return view('waiter.list-food-order', [
             'tableName' => $tableName,

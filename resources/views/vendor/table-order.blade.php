@@ -14,6 +14,9 @@
         </div>
     </div><!-- /.container-fluid -->
 </section>
+@error('error')
+<div class="alert alert-danger">{{ $message }}</div>
+@enderror
 <section class="content">
     <div class="container-fluid">
         <div class="card">
@@ -25,6 +28,7 @@
                             <th style="width: 40%">Món</th>
                             <th style="width: 20%">Số lượng</th>
                             <th style="width: 30%">Trạng thái</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,6 +40,7 @@
                             <td>{{ $food[\App\Constants\FoodOrderConstant::ORDER_NUM_FIELD] }}</td>
                             <td>{{ $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'Đã lên' :
                                 'Chưa lên' }}</td>
+                            <td><button class="btn btn-warning btn-delete" index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Xóa</button></td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -61,6 +66,7 @@
 @section('script')
     <script>
         var sendMessage = "{{ route('send-message') }}";
+        var sendMessageDelete = "{{ route('remove-order-food') }}";
         var orderId = {{ $orderId }};
         var tableId = {{ $tableId }};
     </script>

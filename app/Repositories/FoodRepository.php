@@ -20,6 +20,11 @@ interface FoodRepository extends RepositoryInterface
     /**
      * @return mixed
      */
+    public function getListFoodsMenu();
+
+    /**
+     * @return mixed
+     */
     public function listAllFoodName();
 
     /**

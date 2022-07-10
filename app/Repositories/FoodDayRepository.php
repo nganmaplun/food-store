@@ -16,4 +16,10 @@ interface FoodDayRepository extends RepositoryInterface
      * @return mixed
      */
     public function setFoodNumberToday($request): mixed;
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function checkFoodRemain($id, $today);
 }

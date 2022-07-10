@@ -40,7 +40,7 @@
                                 <div class="col-sm-4 pt-4" index="{{ $table[\App\Constants\BaseConstant::ID_FIELD] }}">
                                     <div class="position-relative p-3 {{ $table[\App\Constants\BaseConstant::STATUS_FIELD] == 0 ? 'bg-green' : ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1 ?  'bg-red' : 'bg-yellow') }}" style="height: 180px">
                                         <div class="ribbon-wrapper ribbon-lg">
-                                            <div class="ribbon bg-gradient-light">
+                                            <div class="ribbon bg-gradient-light ribbon-text">
                                                 {{ $table[\App\Constants\BaseConstant::STATUS_FIELD] == 0 ? 'Bàn trống' : ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1 ?  'Bàn order' : 'Bàn thanh toán') }}
                                             </div>
                                         </div>
@@ -117,6 +117,7 @@
                         })
                         code.then(() => {
                             $(this).removeClass('bg-yellow').addClass('bg-green');
+                            $(this).find('.ribbon-text').text('Bàn trống');
                         });
                     }
                 }

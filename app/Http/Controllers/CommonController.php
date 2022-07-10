@@ -3,15 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Constants\BaseConstant;
+use App\Constants\FoodDayConstant;
 use App\Constants\UserConstant;
 use App\Http\Requests\ChangePasswodRequest;
+use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
 use App\Repositories\UserRepository;
+use App\Services\MessageService;
+use Carbon\Carbon;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Pusher\ApiErrorException;
+use Pusher\PusherException;
 
 class CommonController extends Controller
 {
@@ -36,20 +44,36 @@ class CommonController extends Controller
     private UserRepository $userRepository;
 
     /**
+     * @var MessageService
+     */
+    private MessageService $messageService;
+
+    /**
+     * @var FoodDayRepository
+     */
+    private FoodDayRepository $foodDayRepository;
+
+    /**
      * @param TableRepository $tableRepository
      * @param OrderRepository $orderRepository
      * @param FoodOrderRepository $foodOrderRepository
+     * @param UserRepository $userRepository
+     * @param MessageService $messageService
      */
     public function __construct(
         TableRepository $tableRepository,
         OrderRepository $orderRepository,
         FoodOrderRepository $foodOrderRepository,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        MessageService $messageService,
+        FoodDayRepository $foodDayRepository,
     ) {
         $this->tableRepository = $tableRepository;
         $this->orderRepository = $orderRepository;
         $this->foodOrderRepository = $foodOrderRepository;
         $this->userRepository = $userRepository;
+        $this->messageService = $messageService;
+        $this->foodDayRepository = $foodDayRepository;
     }
 
     /**
@@ -113,6 +137,13 @@ class CommonController extends Controller
     public function addFoodToOrder(Request $request)
     {
         $request = $request->all();
+        $result = $this->checkFoodRemain($request);
+        if (!$result) {
+            return response()->json([
+                'code' => '333',
+                'message' => 'Đã hết món. vui lòng chọn món khác'
+            ]);
+        }
         $result = $this->foodOrderRepository->addFoodToOrder($request);
 
         if ($result) {
@@ -126,6 +157,16 @@ class CommonController extends Controller
             'code' => '333',
             'message' => 'Lỗi hệ thông, vui lòng thử lại'
         ]);
+    }
+
+    public function checkFoodRemain($request)
+    {
+        $today = Carbon::now()->toDateString();
+        $result = $this->foodDayRepository->checkFoodRemain($request['foodId'], $today);
+        if ($result && $request['orderNum'] > $result[FoodDayConstant::NUMBER_FIELD]) {
+            return false;
+        }
+        return true;
     }
 
     public function createOrder(Request $request)
@@ -146,5 +187,41 @@ class CommonController extends Controller
             'code' => '333',
             'message' => 'Lỗi hệ thông, vui lòng thử lại'
         ]);
+    }
+
+    /**
+     * @param $id
+     * @return JsonResponse
+     */
+    public function removeOrderFood(Request $request)
+    {
+            $request = $request->all();
+            $id = $request['tId'];
+            $tableId = $request['tableId'];
+            $orderId = $request['orderId'];
+            $messageType = $request['messageType'];
+            $tableData = $this->tableRepository->getTableName($tableId);
+            $listFoodInOrder = $this->orderRepository->getListFoodsInOrder($orderId);
+            try {
+                $this->messageService->sendNotify($tableData, $orderId, $listFoodInOrder, $messageType);
+            } catch (\Exception $e) {
+                Log::channel('customError')->error($e->getMessage());
+                return response()->json([
+                    'code' => '333',
+                    'message' => 'Hãy thử lại'
+                ]);
+            } catch (GuzzleException $e) {
+                Log::channel('customError')->error($e->getMessage());
+                return response()->json([
+                    'code' => '333',
+                    'message' => 'Hãy thử lại'
+                ]);
+            }
+            $this->foodOrderRepository->removeOrderFood($id);
+
+            return response()->json([
+                'code' => '222',
+                'message' => 'Đã xóa'
+            ]);
     }
 }

@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/create-new-order', [CommonController::class, 'createOrder'])->name('create-order');
     Route::post('/create-new-sub-order', [CommonController::class, 'createSubOrder'])->name('create-sub-order');
     Route::post('/send-message', [SendMessageController::class, 'sendMessage'])->name('send-message');
+    Route::post('/remove-order-food', [CommonController::class, 'removeOrderFood'])->name('remove-order-food');
     Route::middleware('admin')->group(function () {
         Route::prefix('admin')->group(function () {
             Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');

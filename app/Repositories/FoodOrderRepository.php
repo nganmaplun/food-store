@@ -16,4 +16,10 @@ interface FoodOrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function addFoodToOrder(array $request);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function removeOrderFood($id);
 }

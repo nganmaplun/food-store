@@ -62,4 +62,15 @@ class FoodDayRepositoryEloquent extends BaseRepository implements FoodDayReposit
             return false;
         }
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function checkFoodRemain($id,$today)
+    {
+        return $this->where(FoodDayConstant::FOOD_ID_FIELD, $id)
+            ->where(FoodDayConstant::DATE_FIELD, $today)
+            ->first();
+    }
 }

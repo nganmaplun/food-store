@@ -79,6 +79,16 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
     }
 
     /**
+     * @param null $today
+     * @return mixed
+     */
+    public function getListFoodsMenu(): mixed
+    {
+        return $this->get();
+    }
+
+
+    /**
      * @return mixed
      */
     public function listAllFoodName()
