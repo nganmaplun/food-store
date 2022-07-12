@@ -2,26 +2,18 @@
 
 @section('content')
 <ul class="nav justify-content-center pt-3">
-    @if ($category != 1)
     <li class="nav-item">
-        <a class="nav-link btn btn-default" href="{{ route('chef-dashboard', ['category' => 1])}}">Xem món salad</a>
+        <a class="nav-link btn btn-default {{ $category == 1 ? 'bg-dark-red' : '' }}" href="{{ route('chef-dashboard', ['category' => 1])}}">{{ \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_SALAD] }}</a>
     </li>
-    @endif
-    @if ($category != 2)
     <li class="nav-item">
-        <a class="nav-link btn btn-default" href="{{ route('chef-dashboard', ['category' => 2])}}">Xem món nướng</a>
+        <a class="nav-link btn btn-default {{ $category == 2 ? 'bg-dark-red' : '' }}" href="{{ route('chef-dashboard', ['category' => 2])}}">{{ \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_GRILL] }}</a>
     </li>
-    @endif
-    @if ($category != 3)
     <li class="nav-item">
-        <a class="nav-link btn btn-default" href="{{ route('chef-dashboard', ['category' => 3])}}">Xem món hấp</a>
+        <a class="nav-link btn btn-default {{ $category == 3 ? 'bg-dark-red' : '' }}" href="{{ route('chef-dashboard', ['category' => 3])}}">{{ \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_STEAM] }}</a>
     </li>
-    @endif
-    @if ($category != 4)
     <li class="nav-item">
-        <a class="nav-link btn btn-default" href="{{ route('chef-dashboard', ['category' => 4])}}">Xem món rán</a>
+        <a class="nav-link btn btn-default {{ $category == 4 ? 'bg-dark-red' : '' }}" href="{{ route('chef-dashboard', ['category' => 4])}}">{{ \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_DRYING] }}</a>
     </li>
-    @endif
 </ul>
 <section class="content-header">
     <div class="container-fluid">
@@ -70,8 +62,9 @@
                         </td>
                         <td class="text-right custom-td" width="40%">
                             <button class="btn btn-outline-primary check-food"
-                                index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}" rel={{ $food['tblId'] }}>Trả
-                                món</button>
+                                index="{{ $food[\App\Constants\FoodOrderConstant::ORDER_ID_FIELD] }}" rel="{{ $food['tblId'] }}"
+                                food="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}"
+                            >Trả món</button>
                         </td>
                     </tr>
                     @endforeach
@@ -89,12 +82,11 @@
     var listFoods = "{{json_encode($listFoods->toArray())}}"
     var urlSendFoodToWaiter = "{{ route('send-message') }}";
 </script>
-<script src="{{ asset('js/pusher.min.js' )}}"></script>
 <script>
     let link = "{{ route('chef-dashboard', ['category' => $category]) }}"
         let bodyText = "<span>Hãy bấm vào <a style='color: red' href='" + link + "'>đây</a> để kiểm tra lại danh sách món</span>";
 
-        var pusher = new Pusher("{{env('PUSHER_APP_KEY')}}", {
+        var pusher = new Pusher(app_key, {
             cluster: 'ap1',
             encrypted: true
         });

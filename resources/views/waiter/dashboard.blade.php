@@ -37,16 +37,18 @@
                         <div class="card-body">
                             <div class="row">
                             @foreach($listTables as $key => $table)
-                                <div class="col-sm-4 pt-4" index="{{ $table[\App\Constants\BaseConstant::ID_FIELD] }}">
+                                <div class="col-4 pt-4" index="{{ $table[\App\Constants\BaseConstant::ID_FIELD] }}" rel="{{ $lstCount['table_order'][$table[\App\Constants\BaseConstant::ID_FIELD]] ?? '' }}">
                                     <div class="position-relative p-3 {{ $table[\App\Constants\BaseConstant::STATUS_FIELD] == 0 ? 'bg-green' : ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1 ?  'bg-red' : 'bg-yellow') }}" style="height: 180px">
-                                        <div class="ribbon-wrapper ribbon-lg">
+                                        <div class="ribbon-wrapper ribbon">
                                             <div class="ribbon bg-gradient-light ribbon-text">
                                                 {{ $table[\App\Constants\BaseConstant::STATUS_FIELD] == 0 ? 'Bàn trống' : ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1 ?  'Bàn order' : 'Bàn thanh toán') }}
                                             </div>
                                         </div>
                                         {{ $table[\App\Constants\TableConstant::NAME_FIELD] }}<br />
                                         @if ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1)
-                                        <small>.ribbon-wrapper.ribbon-lg .ribbon</small>
+                                        <small>Tổng số món order : {{ $lstCount['total_order'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small><br />
+                                        <small>Tổng số món đã xong : {{ $lstCount['total_completed'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small><br />
+                                        <small>Tổng số món đang order : {{ $lstCount['total_inorder'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small>
                                         @endif
                                     </div>
                                 </div>
@@ -97,7 +99,7 @@
                             })
                             sendRequestChangeStatus(index).then(function(r) {
                                 if (r.code != '333') {
-                                    let url = "{{ route('food-list', [":index", ":orderId"]) }}";
+                                    let url = "{{ route('view.order', [":index", ":orderId"]) }}";
                                     url = url.replace(':index', index);
                                     url = url.replace(':orderId', orderId);
                                     location.href = url;
@@ -120,6 +122,14 @@
                             $(this).find('.ribbon-text').text('Bàn trống');
                         });
                     }
+                }
+                if ($(this).hasClass('bg-red')) {
+                    let rel = $(this).parent().attr('rel');
+                    let url = "{{ route('view.order', [":index", ":orderId"]) }}";
+                    url = url.replace(':index', index);
+                    url = url.replace(':orderId', rel);
+                    location.href = url;
+                    return
                 }
             })
 
@@ -170,4 +180,5 @@
         })
     </script>
     <script src="{{ asset('js/waiter-dashboard.js' )}}"></script>
+    <script src="{{ asset('js/custom-waiter-only.js' )}}"></script>
 @endsection

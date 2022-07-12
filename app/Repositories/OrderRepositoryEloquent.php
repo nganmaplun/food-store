@@ -69,9 +69,10 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
     /**
      * @param $orderId
+     * @param null $foodId
      * @return mixed
      */
-    public function getListFoodsInOrder($orderId)
+    public function getListFoodsInOrder($orderId, $foodId = null)
     {
         $select = [
             FoodConstant::VIETNAMESE_NAME_FIELD,
@@ -79,8 +80,10 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
             FoodOrderConstant::ORDER_NUM_FIELD,
             FoodOrderConstant::IS_DELIVERED_FIELD,
+            FoodOrderConstant::IS_COMPLETED_FIELD,
+            FoodOrderConstant::IS_NEW_FIELD,
         ];
-        return $this->select($select)
+        $result = $this->select($select)
                 ->leftJoin(
                     FoodOrderConstant::TABLE_NAME,
                     FoodOrderConstant::TABLE_NAME . '.' . FoodOrderConstant::ORDER_ID_FIELD,
@@ -96,8 +99,12 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $orderId)
                 ->whereNotNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD)
                 ->where(OrderConstant::ORDER_DATE_FIELD, Carbon::now()->toDateString())
-                ->whereIn(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, [0, 1, 2])
-                ->get();
+                ->whereIn(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, [0, 1, 2]);
+        if ($foodId) {
+            $result->where(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $foodId);
+        }
+
+        return $result->get();
     }
 
     /**
@@ -113,6 +120,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             FoodConstant::VIETNAMESE_NAME_FIELD,
             FoodConstant::CATEGORY_FIELD,
             FoodConstant::RECIPE_FIELD,
+            FoodOrderConstant::ORDER_ID_FIELD,
             FoodOrderConstant::ORDER_NUM_FIELD,
             FoodOrderConstant::NOTE_FIELD,
             FoodOrderConstant::IS_DELIVERED_FIELD,
@@ -156,18 +164,11 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     {
         $status = match ($type) {
             BaseConstant::SEND_CHEF => 1,
-            BaseConstant::SEND_WAITER => 2
+            BaseConstant::SEND_CASHIER => 2
         };
         $this->update([
             BaseConstant::STATUS_FIELD => $status
         ], $orderId);
-    }
-
-    public function updateFoodInOrderStatus($orderId, $foodId, $type)
-    {
-//        $status = match ($type) {
-//
-//        }
     }
 
     /**
@@ -209,5 +210,19 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             ->where(OrderConstant::ORDER_DATE_FIELD, Carbon::now()->toDateString())
             ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, 2)
             ->get();
+    }
+
+    /**
+     * @param $orderId
+     * @param mixed $totalPrice
+     * @return mixed
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function updateFinalOrder($orderId, $totalPrice)
+    {
+        return $this->update([
+            OrderConstant::TOTAL_PRICE_FIELD => $totalPrice,
+            OrderConstant::IS_PAID_FIELD => true,
+        ], $orderId);
     }
 }

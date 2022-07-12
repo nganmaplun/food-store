@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\BaseConstant;
 use App\Constants\FoodDayConstant;
+use App\Constants\FoodOrderConstant;
 use App\Constants\UserConstant;
 use App\Http\Requests\ChangePasswodRequest;
 use App\Repositories\FoodDayRepository;
@@ -163,7 +164,11 @@ class CommonController extends Controller
     {
         $today = Carbon::now()->toDateString();
         $result = $this->foodDayRepository->checkFoodRemain($request['foodId'], $today);
+        $oldFood = $this->foodOrderRepository->getOldFoodOrder($request['orderId'], $request['foodId']);
         if ($result && $request['orderNum'] > $result[FoodDayConstant::NUMBER_FIELD]) {
+            return false;
+        }
+        if ($result && $oldFood && $request['orderNum'] + $oldFood[FoodOrderConstant::ORDER_NUM_FIELD] > $result[FoodDayConstant::NUMBER_FIELD]) {
             return false;
         }
         return true;
@@ -195,33 +200,50 @@ class CommonController extends Controller
      */
     public function removeOrderFood(Request $request)
     {
-            $request = $request->all();
-            $id = $request['tId'];
-            $tableId = $request['tableId'];
-            $orderId = $request['orderId'];
-            $messageType = $request['messageType'];
-            $tableData = $this->tableRepository->getTableName($tableId);
-            $listFoodInOrder = $this->orderRepository->getListFoodsInOrder($orderId);
-            try {
-                $this->messageService->sendNotify($tableData, $orderId, $listFoodInOrder, $messageType);
-            } catch (\Exception $e) {
-                Log::channel('customError')->error($e->getMessage());
-                return response()->json([
-                    'code' => '333',
-                    'message' => 'Hãy thử lại'
-                ]);
-            } catch (GuzzleException $e) {
-                Log::channel('customError')->error($e->getMessage());
-                return response()->json([
-                    'code' => '333',
-                    'message' => 'Hãy thử lại'
-                ]);
-            }
-            $this->foodOrderRepository->removeOrderFood($id);
+        $request = $request->all();
+        $id = $request['tId'];
+        $tableId = $request['tableId'];
+        $orderId = $request['orderId'];
+        $messageType = $request['messageType'];
+        $tableData = $this->tableRepository->getTableName($tableId);
+        $listFoodInOrder = $this->orderRepository->getListFoodsInOrder($orderId);
+        try {
+            $this->messageService->sendNotify($tableData, $orderId, $listFoodInOrder, $messageType);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return response()->json([
+                'code' => '333',
+                'message' => 'Hãy thử lại'
+            ]);
+        } catch (GuzzleException $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return response()->json([
+                'code' => '333',
+                'message' => 'Hãy thử lại'
+            ]);
+        }
+        $this->foodOrderRepository->removeOrderFood($id);
 
+        return response()->json([
+            'code' => '222',
+            'message' => 'Đã xóa'
+        ]);
+    }
+
+    public function changeToTableStatus(Request $request)
+    {
+        $request = $request->all();
+        $result = $this->foodOrderRepository->changeToTableStatus($request['index']);
+        if ($result) {
             return response()->json([
                 'code' => '222',
-                'message' => 'Đã xóa'
+                'message' => 'Đã đưa món lên cho khách',
             ]);
+        }
+
+        return response()->json([
+            'code' => '333',
+            'message' => 'Lỗi hệ thông, vui lòng thử lại'
+        ]);
     }
 }

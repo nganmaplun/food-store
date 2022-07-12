@@ -22,7 +22,7 @@ interface OrderRepository extends RepositoryInterface
      * @param $orderId
      * @return mixed
      */
-    public function getListFoodsInOrder($orderId);
+    public function getListFoodsInOrder($orderId, $foodId = null);
 
     /**
      * @param $category
@@ -46,4 +46,11 @@ interface OrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function getDetailOrder($orderId);
+
+    /**
+     * @param $orderId
+     * @param mixed $totalPrice
+     * @return mixed
+     */
+    public function updateFinalOrder($orderId, $totalPrice);
 }

@@ -31,6 +31,14 @@ $(function () {
         }
         sendRequest(data, sendMessageDelete);
     })
+
+    $(document).on('click', '.to-table', function () {
+        let index = $(this).attr('index');
+        let data = {
+            index: index
+        }
+        sendRequest(data, urlFoodToTable);
+    });
 })
 function sendRequest(data, url = '')
 {
@@ -39,8 +47,10 @@ function sendRequest(data, url = '')
         type: 'POST',
         data: data,
         success: function (response) {
-            alert(response.message);
-            location.reload();
+            showMessage(2000, response.message);
+            setTimeout(function () {
+                location.reload();
+            }, 2000)
         }
     })
 }
@@ -51,13 +61,15 @@ function validateRows(tblRows, type)
         return 'false';
     }
     let arrayFoods = [];
+    console.log($(tblRows[0]).hasClass('bg-orange'))
     for (let i = 0;i < tblRows.length; i++) {
         if (!$(tblRows[i]).hasClass('bg-orange')) {
             arrayFoods.push(i);
         }
     }
-    if (arrayFoods.length === 0) {
-        if (type === 'chef') {
+    console.log(arrayFoods)
+    if (type === 'chef') {
+        if (arrayFoods.length === 0) {
             alert('Hãy chọn món mới trước khi gửi');
         } else {
             alert('Các món chưa lên hết, hủy món nếu vẫn muốn thanh toán');

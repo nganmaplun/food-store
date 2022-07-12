@@ -32,6 +32,7 @@ class FoodOrder extends Model implements Transformable
         FoodOrderConstant::NOTE_FIELD,
         FoodOrderConstant::IS_DELIVERED_FIELD,
         FoodOrderConstant::IS_COMPLETED_FIELD,
+        FoodOrderConstant::IS_NEW_FIELD,
     ];
 
 }

@@ -10,10 +10,15 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class NofityWaiter extends Notify
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    private string $orderId;
+
+    private string $tableId;
 
     /**
      * Create a new event instance.
@@ -22,6 +27,9 @@ class NofityWaiter extends Notify
      */
     public function __construct($data)
     {
+        Log::info('check' , $data);
+        $this->orderId = $data['orderId'];
+        $this->tableId = $data['tableId'];
         parent::__construct($data);
     }
 

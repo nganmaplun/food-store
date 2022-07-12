@@ -9,7 +9,9 @@
             </div>
             <div class="col-sm-6">
                 <a href="{{ route('food-list', ['tableId' => $tableId, 'orderId' => $orderId]) }}"
-                    class="btn btn-info float-right">Trở lại chọn món</a>
+                    class="btn btn-info float-right">Thêm món</a>
+                <a href="{{ route('food-list', ['tableId' => $tableId, 'orderId' => $orderId]) }}"
+                   class="btn btn-info float-right">Sửa note</a>
             </div>
         </div>
     </div><!-- /.container-fluid -->
@@ -25,9 +27,10 @@
                     <thead>
                         <tr>
                             <th style="width: 10px">#</th>
-                            <th style="width: 40%">Món</th>
+                            <th style="width: 30%">Món</th>
                             <th style="width: 20%">Số lượng</th>
-                            <th style="width: 30%">Trạng thái</th>
+                            <th style="width: 20%">Trạng thái</th>
+                            <th></th>
                             <th></th>
                         </tr>
                     </thead>
@@ -39,8 +42,9 @@
                             <td>{{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}</td>
                             <td>{{ $food[\App\Constants\FoodOrderConstant::ORDER_NUM_FIELD] }}</td>
                             <td>{{ $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'Đã lên' :
-                                'Chưa lên' }}</td>
-                            <td><button class="btn btn-warning btn-delete" index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Xóa</button></td>
+                                ($food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? 'Bếp xong' : 'Đang nấu') }}</td>
+                            <td><button class="btn btn-warning to-table" {{ $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? ( $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'hidden' : '') : 'hidden' }} index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Lên món</button></td>
+                            <td><button class="btn btn-warning btn-delete" {{ $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? 'hidden' : '' }} index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Xóa</button></td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -61,14 +65,17 @@
         </div>
     </div><!-- /.container-fluid -->
 </section>
+@include('waiter.modal-create-order')
 @endsection
 
 @section('script')
     <script>
         var sendMessage = "{{ route('send-message') }}";
         var sendMessageDelete = "{{ route('remove-order-food') }}";
+        var urlFoodToTable = "{{ route('to-table-status') }}";
         var orderId = {{ $orderId }};
         var tableId = {{ $tableId }};
     </script>
     <script src="{{ asset('js/table-order.js' )}}"></script>
+    <script src="{{ asset('js/custom-waiter-only.js' )}}"></script>
 @endsection

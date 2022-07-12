@@ -32,12 +32,18 @@ class ChefController extends Controller
             BaseConstant::FOOD_DRYING => 'NotifyChefDrying',
             default => 'NotifyChefDrink',
         };
-
+        $channel = match ($category) {
+            BaseConstant::FOOD_SALAD => BaseConstant::CHEF_SALAD_CHANNEL,
+            BaseConstant::FOOD_STEAM => BaseConstant::CHEF_STEAM_CHANNEL,
+            BaseConstant::FOOD_GRILL => BaseConstant::CHEF_GRILL_CHANNEL,
+            BaseConstant::FOOD_DRYING => BaseConstant::CHEF_DRYING_CHANNEL,
+            default => BaseConstant::CHEF_DRINK_CHANNEL,
+        };
         $listFoods = $this->orderRepository->getFoodsByCategory($category);
 
         return view('chef.dashboard', [
             'category' => $category,
-            'channel' => BaseConstant::CHEF_SALAD_CHANNEL,
+            'channel' => $channel,
             'event' => $event,
             'listFoods' => $listFoods
         ]);

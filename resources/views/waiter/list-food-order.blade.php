@@ -102,4 +102,5 @@
         var orderId = "{{ $orderId }}";
     </script>
     <script src="{{ asset('js/list-food-order.js') }}"></script>
+    <script src="{{ asset('js/custom-waiter-only.js') }}"></script>
 @endsection

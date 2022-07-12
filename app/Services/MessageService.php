@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Constants\BaseConstant;
 use App\Constants\FoodConstant;
+use App\Repositories\FoodOrderRepository;
 use App\Repositories\OrderRepository;
 use Illuminate\Support\Facades\Log;
 use Pusher\Pusher;
@@ -21,12 +22,19 @@ class MessageService
     private OrderRepository $orderRepository;
 
     /**
+     * @var FoodOrderRepository
+     */
+    private FoodOrderRepository $foodOrderRepository;
+
+    /**
      *
      */
     public function __construct(
-        OrderRepository $orderRepository
+        OrderRepository $orderRepository,
+        FoodOrderRepository $foodOrderRepository
     ) {
         $this->orderRepository = $orderRepository;
+        $this->foodOrderRepository = $foodOrderRepository;
         $this->options = [
             'cluster' => 'ap1',
             'encrypted' => true
@@ -43,7 +51,7 @@ class MessageService
      * @throws \Pusher\ApiErrorException
      * @throws \Pusher\PusherException
      */
-    public function sendNotify($tableName, $orderId, $data, $type)
+    public function sendNotify($tableName, $orderId, $data, $type, $tableId = null, $foodId = null)
     {
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
@@ -76,11 +84,16 @@ class MessageService
                     }
                 }
                 $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_CHEF);
+                $this->foodOrderRepository->updateToOldOrder($orderId, $foodId);
                 break;
 
             case BaseConstant::SEND_WAITER:
-                $pusher->trigger('NotifyWaiter', BaseConstant::WAITER_CHANNEL, $tableName);
-                $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_WAITER);
+                $info = [
+                    'tableId' => $tableId ?? null,
+                    'orderId' => $orderId
+                ];
+                $pusher->trigger('NotifyWaiter', BaseConstant::WAITER_CHANNEL, $info);
+                $this->foodOrderRepository->updateToCompletedFood($orderId, $foodId);
                 break;
 
             case BaseConstant::SEND_CASHIER:

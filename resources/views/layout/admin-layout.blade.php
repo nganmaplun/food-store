@@ -29,7 +29,7 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-red">
             @include('layout.nav-bar')
         </nav>
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -43,6 +43,10 @@
 <footer class="main-footer" style="text-align: center">
     <strong>Copyright &copy; 2022 Food Store</strong>
 </footer>
+<script>
+    var app_key = "{{ env('PUSHER_APP_KEY') }}";
+    var domain = "{{ $domain }}";
+</script>
 <!-- jQuery -->
 <script src="{{asset('js/jquery.min.js')}}"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -62,6 +66,8 @@
 <script src="{{asset('js/jquery.overlayScrollbars.min.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{asset('js/adminlte.js')}}"></script>
+<!-- Pusher -->
+<script src="{{ asset('js/pusher.min.js' )}}"></script>
 <!-- Custom script -->
 <script src="{{asset('js/custom.js')}}"></script>
 @yield('script')

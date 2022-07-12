@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\BaseConstant;
+use App\Constants\FoodOrderConstant;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
 use App\Services\MessageService;
@@ -54,10 +56,26 @@ class SendMessageController extends Controller
             $request = $request->all();
             $tableId = $request['tableId'];
             $orderId = $request['orderId'];
+            $foodId = $request['foodId'] ?? '';
             $messageType = $request['messageType'];
             $tableData = $this->tableRepository->getTableName($tableId);
-            $listFoodInOrder = $this->orderRepository->getListFoodsInOrder($orderId);
-            $this->messageService->sendNotify($tableData, $orderId, $listFoodInOrder, $messageType);
+            $listFoodInOrder = $this->orderRepository->getListFoodsInOrder($orderId, $foodId);
+            $hasNew = false;
+            if ($messageType == BaseConstant::SEND_CHEF) {
+                foreach ($listFoodInOrder as $food) {
+                    if ($food[FoodOrderConstant::IS_NEW_FIELD]) {
+                        $hasNew = true;
+                        break;
+                    }
+                }
+            }
+            if (!$hasNew && $messageType == BaseConstant::SEND_CHEF) {
+                return response()->json([
+                    'code' => '444',
+                    'message' => 'Không có món mới gửi bếp'
+                ]);
+            }
+            $this->messageService->sendNotify($tableData, $orderId, $listFoodInOrder, $messageType, $tableId, $foodId);
 
             return response()->json([
                 'code' => '222',

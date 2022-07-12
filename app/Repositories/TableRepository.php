@@ -44,4 +44,10 @@ interface TableRepository extends RepositoryInterface
      * @return mixed
      */
     public function getListTable();
+
+    /**
+     * @param $tableId
+     * @return mixed
+     */
+    public function updateTableStatus($tableId);
 }

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Constants\BaseConstant;
+use App\Constants\UserConstant;
 use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodDayRepositoryEloquent;
 use App\Repositories\FoodOrderRepository;
@@ -55,7 +57,15 @@ class AppServiceProvider extends ServiceProvider
             }
             if (Route::current()->getName()) {
                 $view->with('route', Route::current()->getName());
+                $view->with('domain', request()->root());
             }
+            $dashboard = match (Auth::user()[UserConstant::ROLE_FIELD]) {
+                BaseConstant::ADMIN_ROLE => 'admin-dashboard',
+                BaseConstant::WAITER_ROLE => 'waiter-dashboard',
+                BaseConstant::CASHIER_ROLE => 'cashier-dashboard',
+                BaseConstant::CHEF_DRINK_ROLE, BaseConstant::CHEF_DRYING_ROLE, BaseConstant::CHEF_GRILL_ROLE, BaseConstant::CHEF_SALAD_ROLE, BaseConstant::CHEF_STEAM_ROLE => 'chef-dashboard',
+            };
+            $view->with('dashboard', $dashboard);
         });
     }
 }

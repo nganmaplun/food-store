@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/create-new-sub-order', [CommonController::class, 'createSubOrder'])->name('create-sub-order');
     Route::post('/send-message', [SendMessageController::class, 'sendMessage'])->name('send-message');
     Route::post('/remove-order-food', [CommonController::class, 'removeOrderFood'])->name('remove-order-food');
+    Route::post('/change-food-to-table-status', [CommonController::class, 'changeToTableStatus'])->name('to-table-status');
+    Route::post('/paid-order', [CommonController::class, 'paidOrder'])->name('paid-order');
     Route::middleware('admin')->group(function () {
         Route::prefix('admin')->group(function () {
             Route::get('/admin-dashboard', [AdminController::class, 'dashboard'])->name('admin-dashboard');
@@ -63,7 +65,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['cashier'])->group(function () {
         Route::prefix('cashier')->group(function () {
             Route::get('/dashboard', [CashierController::class, 'dashboard'])->name('cashier-dashboard');
-            Route::get('/detail/{orderId}', [CashierController::class, 'detailOrder'])->name('detail-order');
+            Route::get('/detail/{orderId}', [CashierController::class, 'detailOrder'])->name('cashier.detail-order');
+            Route::post('/checkout/{orderId}', [CashierController::class, 'checkout'])->name('checkout');
         });
     });
 });

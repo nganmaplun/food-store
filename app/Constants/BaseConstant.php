@@ -58,4 +58,11 @@ class BaseConstant
     const SEND_CHEF = 'send-chef';
     const SEND_CASHIER = 'send-cashier';
     const SEND_WAITER = 'send-waiter';
+
+    const ARRAY_KITCHEN = [
+        self::FOOD_SALAD => "Bếp đồ sống (SASHI)",
+        self::FOOD_GRILL => "Bếp chiên (AGE)",
+        self::FOOD_STEAM => "Bếp ga(KON)",
+        self::FOOD_DRYING => "Bếp nướng (YAKI)",
+    ];
 }

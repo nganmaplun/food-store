@@ -36,7 +36,7 @@ $(function () {
                 note: note
             },
             success:function (response) {
-                alert(response.message);
+                showMessage(2000, response.message);
             }
         });
     })

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Waiter;
 use App\Constants\BaseConstant;
 use App\Constants\TableConstant;
 use App\Http\Controllers\Controller;
+use App\Repositories\FoodOrderRepository;
 use App\Repositories\FoodRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
@@ -35,18 +36,29 @@ class WaiterController extends Controller
     private OrderRepository $orderRepository;
 
     /**
+     * @var FoodOrderRepository
+     */
+    private FoodOrderRepository $foodOrderRepository;
+
+    /**
      * @param TableRepository $tableRepository
+     * @param FoodRepository $foodRepository
+     * @param TableService $tableService
+     * @param OrderRepository $orderRepository
+     * @param FoodOrderRepository $foodOrderRepository
      */
     public function __construct(
         TableRepository $tableRepository,
         FoodRepository $foodRepository,
         TableService $tableService,
-        OrderRepository $orderRepository
+        OrderRepository $orderRepository,
+        FoodOrderRepository $foodOrderRepository
     ){
         $this->tableRepository = $tableRepository;
         $this->foodRepository = $foodRepository;
         $this->tableService = $tableService;
         $this->orderRepository = $orderRepository;
+        $this->foodOrderRepository = $foodOrderRepository;
     }
 
     /**
@@ -57,10 +69,20 @@ class WaiterController extends Controller
         $request = $request->all();
         $floor = $request[TableConstant::FLOOR_FIELD] ?? null;
         $page = $request[BaseConstant::PAGE_TEXT] ?? 1;
+        $today = Carbon::now()->toDateString();
         $listFloors = $this->tableRepository->getListFloors();
         $listTables = $this->tableService->listTables($floor);
+        $lstId = [];
+        foreach ($listTables as $tbl) {
+            $lstId[] = $tbl[BaseConstant::ID_FIELD];
+        }
+        $lstCount = $this->foodOrderRepository->getListCountOrder($lstId, $today);
 
-        return view('waiter.dashboard', ['listFloors' => $listFloors, 'listTables' => $listTables, 'page' => $page
+        return view('waiter.dashboard', [
+            'listFloors' => $listFloors,
+            'listTables' => $listTables,
+            'page' => $page,
+            'lstCount' => $lstCount
         ]);
     }
 
