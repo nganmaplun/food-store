@@ -10,7 +10,7 @@ use App\Constants\UserConstant;
 </ul>
 @else
     @if(in_array($role, [BaseConstant::CHEF_DRYING_ROLE, BaseConstant::CHEF_GRILL_ROLE, BaseConstant::CHEF_SALAD_ROLE, BaseConstant::CHEF_STEAM_ROLE, BaseConstant::CHEF_DRINK_ROLE]))
-        <a href="{{route($dashboard, ['category' => $category])}}" class="brand-link">
+        <a href="{{route($dashboard, ['category' => $categoryId])}}" class="brand-link">
             <img src="{{asset('image/logo.png')}}" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light">Food Store</span>
         </a>

@@ -69,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
                     BaseConstant::ADMIN_ROLE, BaseConstant::WAITER_ROLE, BaseConstant::CASHIER_ROLE => null
                 };
                 $view->with('dashboard', $dashboard);
-                $view->with('category', $category);
+                $view->with('categoryId', $category);
                 $view->with('role', Auth::user()[UserConstant::ROLE_FIELD]);
             }
             if (Route::current()->getName()) {
