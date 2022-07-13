@@ -54,18 +54,28 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function($view) {
             if (Auth::check()) {
                 $view->with('user', Auth::user());
+                $dashboard = match (Auth::user()[UserConstant::ROLE_FIELD]) {
+                    BaseConstant::ADMIN_ROLE => 'admin-dashboard',
+                    BaseConstant::WAITER_ROLE => 'waiter-dashboard',
+                    BaseConstant::CASHIER_ROLE => 'cashier-dashboard',
+                    BaseConstant::CHEF_DRINK_ROLE, BaseConstant::CHEF_DRYING_ROLE, BaseConstant::CHEF_GRILL_ROLE, BaseConstant::CHEF_SALAD_ROLE, BaseConstant::CHEF_STEAM_ROLE => 'chef-dashboard',
+                };
+                $category = match (Auth::user()[UserConstant::ROLE_FIELD]) {
+                    BaseConstant::CHEF_DRYING_ROLE => 4,
+                    BaseConstant::CHEF_GRILL_ROLE => 2,
+                    BaseConstant::CHEF_SALAD_ROLE => 1,
+                    BaseConstant::CHEF_STEAM_ROLE => 3,
+                    BaseConstant::CHEF_DRINK_ROLE => 5,
+                    BaseConstant::ADMIN_ROLE, BaseConstant::WAITER_ROLE, BaseConstant::CASHIER_ROLE => null
+                };
+                $view->with('dashboard', $dashboard);
+                $view->with('category', $category);
+                $view->with('role', Auth::user()[UserConstant::ROLE_FIELD]);
             }
             if (Route::current()->getName()) {
                 $view->with('route', Route::current()->getName());
                 $view->with('domain', request()->root());
             }
-            $dashboard = match (Auth::user()[UserConstant::ROLE_FIELD]) {
-                BaseConstant::ADMIN_ROLE => 'admin-dashboard',
-                BaseConstant::WAITER_ROLE => 'waiter-dashboard',
-                BaseConstant::CASHIER_ROLE => 'cashier-dashboard',
-                BaseConstant::CHEF_DRINK_ROLE, BaseConstant::CHEF_DRYING_ROLE, BaseConstant::CHEF_GRILL_ROLE, BaseConstant::CHEF_SALAD_ROLE, BaseConstant::CHEF_STEAM_ROLE => 'chef-dashboard',
-            };
-            $view->with('dashboard', $dashboard);
         });
     }
 }
