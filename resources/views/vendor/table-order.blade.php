@@ -10,7 +10,7 @@
             <div class="col-sm-6">
                 <a href="{{ route('food-list', ['tableId' => $tableId, 'orderId' => $orderId]) }}"
                     class="btn btn-info float-right">Thêm món</a>
-                <a href="{{ route('food-list', ['tableId' => $tableId, 'orderId' => $orderId]) }}"
+                <a href="javascript:void(0)" onclick="openModal(this)"
                    class="btn btn-info float-right">Sửa note</a>
             </div>
         </div>
@@ -52,18 +52,18 @@
             </div>
         </div>
     </div>
-</section>
-<section class="custom-footer">
-    <div class="container-fluid">
-        <div class="mb-2 custom-control-inline" style="width: 100%">
-            <div class="col-5">
-                <button class="btn btn-info bg-yellow" id="send-chef">Gửi bếp</button>
+    <div class="pt-3">
+        <div class="container-fluid">
+            <div class="mb-2 custom-control-inline" style="width: 100%">
+                <div class="col-5">
+                    <button class="btn btn-info bg-yellow" id="send-chef">Gửi bếp</button>
+                </div>
+                <div class="offset-2 col-5">
+                    <button class="btn btn-info float-right bg-red" id="send-cashier">Thanh toán</button>
+                </div>
             </div>
-            <div class="offset-2 col-5">
-                <button class="btn btn-info float-right bg-red" id="send-cashier">Thanh toán</button>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
+        </div><!-- /.container-fluid -->
+    </div>
 </section>
 @include('waiter.modal-create-order')
 @endsection
@@ -75,6 +75,7 @@
         var urlFoodToTable = "{{ route('to-table-status') }}";
         var orderId = {{ $orderId }};
         var tableId = {{ $tableId }};
+        var orderInfo = "{{ json_encode($orderInfo->toArray()) }}";
     </script>
     <script src="{{ asset('js/table-order.js' )}}"></script>
     <script src="{{ asset('js/custom-waiter-only.js' )}}"></script>

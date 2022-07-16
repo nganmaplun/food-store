@@ -77,8 +77,9 @@ class CashierController extends Controller
     public function detailOrder($orderId)
     {
         $detail = $this->orderRepository->getDetailOrder($orderId);
+        $orderInfo = $this->orderRepository->detailOrder($orderId);
 
-        return view('cashier.detail-order', ['detail' => $detail, 'orderId' => $orderId]);
+        return view('cashier.detail-order', ['detail' => $detail, 'orderId' => $orderId, 'orderInfo' => $orderInfo]);
     }
 
     public function checkout(Request $request, $orderId)
@@ -92,7 +93,9 @@ class CashierController extends Controller
             foreach ($arrNote as $sNote) {
                 if (empty($sNote)) continue;
                 $money = trim(explode(':', $sNote)[1]);
-                $otherPaid = $otherPaid + $money;
+                if (is_numeric($money)) {
+                    $otherPaid = $otherPaid + $money;
+                }
             }
         }
         $detail = $this->orderRepository->getDetailOrder($orderId);

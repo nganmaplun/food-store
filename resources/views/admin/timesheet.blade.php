@@ -1,25 +1,25 @@
 @extends('layout.admin-layout')
 
 @section('content')
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Duyệt checkin</h1>
-                </div>
-                <div class="col-sm-6">
-                    <h6 class="float-right">Ngày: {{$today}}</h6>
-                </div>
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Duyệt checkin</h1>
             </div>
-        </div><!-- /.container-fluid -->
-    </section>
+            <div class="col-sm-6">
+                <h6 class="float-right">Ngày: {{$today}}</h6>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
 
-    <section class="content">
-        <!-- Default box -->
-        <div class="card">
-            <div class="card-body p-0">
-                <table class="table table-striped projects">
-                    <thead>
+<section class="content">
+    <!-- Default box -->
+    <div class="card">
+        <div class="card-body p-0">
+            <table class="table table-striped projects">
+                <thead>
                     <tr>
                         <th style="width: 20%">
                             Nhân viên
@@ -27,26 +27,21 @@
                         <th style="width: 30%">
                             Giờ checkin
                         </th>
-                        <th>
-                            Giờ checkout
-                        </th>
                         <th style="width: 20%">
                         </th>
                     </tr>
-                    </thead>
-                    <tbody>
+                </thead>
+                <tbody>
                     @foreach($listTimesheet as $timesheet)
                     <tr index="{{$timesheet[\App\Constants\BaseConstant::ID_FIELD]}}">
                         <td>
                             {{$timesheet[\App\Constants\UserConstant::FULLNAME_FIELD]}}
                         </td>
-                        <td >
+                        <td>
                             {{$timesheet[\App\Constants\TimesheetConstant::CHECKIN_TIME_FIELD] ?? ''}}
                         </td>
-                        <td>
-                            {{$timesheet[\App\Constants\TimesheetConstant::CHECKOUT_TIME_FIELD] ?? ''}}
-                        </td>
-                        @if(!$timesheet[\App\Constants\TimesheetConstant::IS_APPROVED_FIELD])
+                        @if(!$timesheet[\App\Constants\TimesheetConstant::IS_APPROVED_FIELD] &&
+                        $timesheet[\App\Constants\BaseConstant::STATUS_FIELD])
                         <td class="project-actions text-right">
                             <a class="btn btn-primary btn-sm approved" href="javascript:void(0)">
                                 <i class="fas fa-folder">
@@ -59,22 +54,25 @@
                                 Hủy
                             </a>
                         </td>
+                        @elseif (!$timesheet[\App\Constants\TimesheetConstant::IS_APPROVED_FIELD] &&
+                        !$timesheet[\App\Constants\BaseConstant::STATUS_FIELD])
+                        <td class="project-actions text-center">Đã hủy</td>
                         @else
                         <td class="project-actions text-center">Đã duyệt</td>
                         @endif
                     </tr>
                     @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <!-- /.card-body -->
+                </tbody>
+            </table>
         </div>
-        <!-- /.card -->
-        <div class="card-footer">
-            {{ $listTimesheet->links('vendor.pagination.bootstrap-4', ['page' => $page]) }}
-        </div>
-        <!-- /.card-footer -->
-    </section>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    <div class="card-footer">
+        {{ $listTimesheet->links('vendor.pagination.bootstrap-4', ['page' => $page]) }}
+    </div>
+    <!-- /.card-footer -->
+</section>
 @endsection
 @section('script')
 <script>

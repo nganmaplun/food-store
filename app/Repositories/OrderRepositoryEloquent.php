@@ -191,6 +191,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             FoodConstant::VIETNAMESE_NAME_FIELD,
             FoodConstant::PRICE_FIELD,
             FoodOrderConstant::ORDER_NUM_FIELD,
+            OrderConstant::TABLE_NAME . '.' . OrderConstant::DESCRIPTION_FIELD
         ];
         return $this->select($select)
             ->leftJoin(
@@ -224,5 +225,14 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             OrderConstant::TOTAL_PRICE_FIELD => $totalPrice,
             OrderConstant::IS_PAID_FIELD => true,
         ], $orderId);
+    }
+
+    /**
+     * @param $orderId
+     * @return mixed
+     */
+    public function detailOrder($orderId)
+    {
+        return $this->where(BaseConstant::ID_FIELD, $orderId)->first();
     }
 }

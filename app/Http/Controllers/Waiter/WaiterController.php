@@ -94,14 +94,16 @@ class WaiterController extends Controller
      */
     public function listFoodsForOrder(Request $request, $tableId, $orderId)
     {
+        $foodName = $request->food_name ?? '';
         $tableName = $this->tableRepository->getTableName($tableId);
-        $listFoods = $this->foodRepository->getListFoodsMenu();
+        $listFoods = $this->foodRepository->getListFoodsMenu($foodName);
 
         return view('waiter.list-food-order', [
             'tableName' => $tableName,
             'tableId' => $tableId,
             'orderId' => $orderId,
-            'listFoods' => $listFoods
+            'listFoods' => $listFoods,
+            'foodName' => $foodName
         ]);
     }
 
@@ -114,28 +116,37 @@ class WaiterController extends Controller
      */
     public function listFoodsByMenu(Request $request, $tableId, $orderId, $menuId)
     {
+        $foodName = $request->food_name ?? '';
         $tableName = $this->tableRepository->getTableName($tableId);
-        $listFoods = $this->foodRepository->getListFoods($menuId);
+        $listFoods = $this->foodRepository->getListFoods($menuId, $foodName);
 
         return view('waiter.list-food-order', [
             'tableName' => $tableName,
             'tableId' => $tableId,
             'orderId' => $orderId,
             'menuId' => $menuId,
-            'listFoods' => $listFoods
+            'listFoods' => $listFoods,
+            'foodName' => $foodName
         ]);
     }
 
+    /**
+     * @param $tableId
+     * @param $orderId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function orderTable($tableId, $orderId)
     {
         $tableName = $this->tableRepository->getTableName($tableId);
         $listFoodsInOrder = $this->orderRepository->getListFoodsInOrder($orderId);
+        $orderInfo = $this->orderRepository->detailOrder($orderId);
 
         return view('vendor.table-order', [
             'tableName' => $tableName,
             'tableId' => $tableId,
             'orderId' => $orderId,
-            'listFoods' => $listFoodsInOrder
+            'listFoods' => $listFoodsInOrder,
+            'orderInfo' => $orderInfo
         ]);
     }
 }

@@ -69,6 +69,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/checkout/{orderId}', [CashierController::class, 'checkout'])->name('checkout');
         });
     });
+
+    Route::get('/wait-for-approve-to-work', [AuthController::class, 'waitForApproval'])->name('wait-for-approve');
 });
 
 Route::get('/send', [SendMessageController::class, 'index'])->name('send');

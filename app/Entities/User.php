@@ -3,7 +3,9 @@
 namespace App\Entities;
 
 use App\Constants\BaseConstant;
+use App\Constants\TimesheetConstant;
 use App\Constants\UserConstant;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Prettus\Repository\Contracts\Transformable;
@@ -33,7 +35,19 @@ class User extends Authenticatable implements Transformable
         BaseConstant::STATUS_FIELD,
     ];
 
+    /**
+     * @var array
+     */
     protected $hidden = [
         UserConstant::PASSWORD_FIELD
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function timesheet()
+    {
+        return $this->hasOne(Timesheet::class, TimesheetConstant::EMPLOYEE_ID_FIELD, BaseConstant::ID_FIELD)
+                ->ofMany(BaseConstant::ID_FIELD, 'max');
+    }
 }

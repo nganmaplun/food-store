@@ -85,7 +85,8 @@ class AdminController  extends Controller
     public function approveTimesheet(Request $request): JsonResponse
     {
         $index = $request->get('index');
-        $result = $this->timesheetRepository->approveTimesheet($index);
+        $type = $request->get('type');
+        $result = $this->timesheetRepository->approveTimesheet($index, $type);
         if ($result) {
 
             return response()->json(['status' => true]);

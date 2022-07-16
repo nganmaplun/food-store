@@ -51,6 +51,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             TimesheetConstant::CHECKIN_TIME_FIELD,
             TimesheetConstant::CHECKOUT_TIME_FIELD,
             TimesheetConstant::IS_APPROVED_FIELD,
+            TimesheetConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD,
             UserConstant::ROLE_FIELD
         ];
         return $this->select($select)

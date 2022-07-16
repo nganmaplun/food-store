@@ -32,7 +32,7 @@
     <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-red {{ $route !== 'waiter-dashboard' ? '' : 'custom-header' }}">
         @include('layout.nav-bar')
     </nav>
-    @if ($route !== 'waiter-dashboard')
+    @if ($route === 'food-list' || $route === 'food-list-by-menu')
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         @include('layout.food-menu')
     </aside>

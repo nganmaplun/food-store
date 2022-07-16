@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\BaseConstant;
+use App\Constants\TimesheetConstant;
 use App\Constants\UserConstant;
 use App\Entities\User;
 use App\Http\Requests\UserLoginRequest;
@@ -32,23 +33,7 @@ class AuthController extends Controller
     public function login()
     {
         if (Auth::check()) {
-            switch (Auth::user()[UserConstant::ROLE_FIELD]) {
-                case BaseConstant::ADMIN_ROLE:
-                    return redirect()->route('admin-dashboard');
-                    break;
-
-                case BaseConstant::WAITER_ROLE:
-                    return redirect()->route('waiter-dashboard');
-                    break;
-
-                case BaseConstant::CHEF_ROLE:
-                    return redirect()->route('chef-dashboard');
-                    break;
-
-                default:
-                    return redirect()->route('cashier-dashboard');
-                    break;
-            }
+            $this->waitForApproval();
         }
 
         return view('user.login');
@@ -73,40 +58,12 @@ class AuthController extends Controller
         }
         // after login successfully, create check-in in timesheet
         $this->createCheckin(Auth::user());
+
         // different roles will be redirected to their dashboard
-        switch (Auth::user()[UserConstant::ROLE_FIELD]) {
-            case BaseConstant::ADMIN_ROLE:
-                return redirect()->route('admin-dashboard');
-                break;
-
-            case BaseConstant::WAITER_ROLE:
-                return redirect()->route('waiter-dashboard');
-                break;
-
-            case BaseConstant::CHEF_SALAD_ROLE:
-                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_SALAD]);
-                break;
-
-            case BaseConstant::CHEF_STEAM_ROLE:
-                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_STEAM]);
-                break;
-
-            case BaseConstant::CHEF_GRILL_ROLE:
-                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_GRILL]);
-                break;
-
-            case BaseConstant::CHEF_DRYING_ROLE:
-                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_DRYING]);
-                break;
-
-            case BaseConstant::CHEF_DRINK_ROLE:
-                return redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_DRINK]);
-                break;
-
-            default:
-                return redirect()->route('cashier-dashboard');
-                break;
-        }
+        return match (Auth::user()[UserConstant::ROLE_FIELD]) {
+            BaseConstant::ADMIN_ROLE => redirect()->route('admin-dashboard'),
+            default => redirect()->route('wait-for-approve'),
+        };
     }
 
     /**
@@ -142,5 +99,29 @@ class AuthController extends Controller
     public function createCheckout($user): void
     {
         $this->timesheetRepository->createCheckout($user);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|RedirectResponse
+     */
+    public function waitForApproval()
+    {
+        $user = Auth::user()->load(['timesheet']);
+        $timeSheet = $user->timesheet;
+        $isApproved = $timeSheet[TimesheetConstant::IS_APPROVED_FIELD] ?? false;
+        if ($isApproved) {
+            return match (Auth::user()[UserConstant::ROLE_FIELD]) {
+                BaseConstant::ADMIN_ROLE => redirect()->route('admin-dashboard'),
+                BaseConstant::WAITER_ROLE => redirect()->route('waiter-dashboard'),
+                BaseConstant::CHEF_SALAD_ROLE => redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_SALAD]),
+                BaseConstant::CHEF_STEAM_ROLE => redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_STEAM]),
+                BaseConstant::CHEF_GRILL_ROLE => redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_GRILL]),
+                BaseConstant::CHEF_DRYING_ROLE => redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_DRYING]),
+                BaseConstant::CHEF_DRINK_ROLE => redirect()->route('chef-dashboard', ['category' => BaseConstant::FOOD_DRINK]),
+                default => redirect()->route('cashier-dashboard'),
+            };
+        }
+
+        return view('wait-for-approval', ['isApproved' => $isApproved]);
     }
 }

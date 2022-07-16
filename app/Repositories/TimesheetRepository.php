@@ -34,5 +34,5 @@ interface TimesheetRepository extends RepositoryInterface
      * @param $index
      * @return mixed
      */
-    public function approveTimesheet($index): mixed;
+    public function approveTimesheet($index, $type): mixed;
 }

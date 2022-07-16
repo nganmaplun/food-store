@@ -45,12 +45,20 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
     public function createCheckin($user)
     {
         try {
-            $this->create([
+
+            $userTimesheet = $this->findWhere([
                 TimesheetConstant::EMPLOYEE_ID_FIELD => $user[BaseConstant::ID_FIELD],
-                TimesheetConstant::CHECKIN_TIME_FIELD => date('H:i'),
                 TimesheetConstant::WORKING_DATE_FIELD => Carbon::now()->toDateString(),
-                BaseConstant::STATUS_FIELD => false
-            ]);
+                BaseConstant::STATUS_FIELD => true
+            ])->first();
+            if (!$userTimesheet) {
+                $this->create([
+                    TimesheetConstant::EMPLOYEE_ID_FIELD => $user[BaseConstant::ID_FIELD],
+                    TimesheetConstant::CHECKIN_TIME_FIELD => date('H:i'),
+                    TimesheetConstant::WORKING_DATE_FIELD => Carbon::now()->toDateString(),
+                    BaseConstant::STATUS_FIELD => true
+                ]);
+            }
         } catch (\Exception $e) {
             Log::channel('customError')->error($e->getMessage());
             return false;
@@ -68,11 +76,10 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
             $userTimesheet = $this->findWhere([
                 TimesheetConstant::EMPLOYEE_ID_FIELD => $user[BaseConstant::ID_FIELD],
                 TimesheetConstant::WORKING_DATE_FIELD => Carbon::now()->toDateString(),
-                BaseConstant::STATUS_FIELD => false
+                BaseConstant::STATUS_FIELD => true
             ])->first();
             $this->update([
-                TimesheetConstant::CHECKOUT_TIME_FIELD => date('H:i'),
-                BaseConstant::STATUS_FIELD => true
+                TimesheetConstant::CHECKOUT_TIME_FIELD => date('H:i')
             ], $userTimesheet[BaseConstant::ID_FIELD]);
         } catch (\Exception $e) {
             Log::channel('customError')->error($e->getMessage());
@@ -99,15 +106,14 @@ class TimesheetRepositoryEloquent extends BaseRepository implements TimesheetRep
      * @param $index
      * @return mixed
      */
-    public function approveTimesheet($index): mixed
+    public function approveTimesheet($index, $type): mixed
     {
         try {
             $timesheet = $this->findWhere([BaseConstant::ID_FIELD => $index])->first();
-            if (!$timesheet[TimesheetConstant::CHECKOUT_TIME_FIELD]) {
-                return false;
-            }
             return $this->update([
-                TimesheetConstant::IS_APPROVED_FIELD => true
+                TimesheetConstant::CHECKOUT_TIME_FIELD => $type !== 'approved' ? $timesheet[TimesheetConstant::CHECKIN_TIME_FIELD] : null,
+                TimesheetConstant::IS_APPROVED_FIELD => $type == 'approved' ? true : false,
+                BaseConstant::STATUS_FIELD =>  $type == 'approved' ? true : false,
             ], $timesheet[BaseConstant::ID_FIELD]);
         } catch (\Exception $e) {
             Log::channel('customError')->error($e->getMessage());

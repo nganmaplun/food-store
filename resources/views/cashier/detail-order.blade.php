@@ -68,7 +68,7 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Ghi chú khác</span>
                     </div>
-                    <textarea class="form-control" aria-label="Ghi chú khác" name="other_note"></textarea>
+                    <textarea class="form-control" aria-label="Ghi chú khác" name="other_note">{{ $orderInfo[\App\Constants\OrderConstant::DESCRIPTION_FIELD] }}</textarea>
                 </div>
             </div>
             <div class="col-12 custom-control-inline pt-3" style="width: 100%">

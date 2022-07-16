@@ -65,4 +65,11 @@ class BaseConstant
         self::FOOD_STEAM => "Bếp ga(KON)",
         self::FOOD_DRYING => "Bếp nướng (YAKI)",
     ];
+
+    const ARRAY_KITCHEN_SHORT = [
+        self::FOOD_SALAD => "SASHI",
+        self::FOOD_GRILL => "AGE",
+        self::FOOD_STEAM => "KON",
+        self::FOOD_DRYING => "YAKI",
+    ];
 }

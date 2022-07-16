@@ -40,10 +40,11 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
     }
 
     /**
-     * @param null $today
+     * @param null $condition
+     * @param null $foodName
      * @return mixed
      */
-    public function getListFoods($condition = null): mixed
+    public function getListFoods($condition = null, $foodName = null): mixed
     {
         $result = $this->select([
                 FoodConstant::TABLE_NAME . '.' . '*',
@@ -74,16 +75,30 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
         if ($condition && $this->checkValidDate($condition)) {
             $result->whereNotNull(FoodDayConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD);
         }
+        if ($foodName) {
+            $result->where(function ($model) use($foodName) {
+                $model->where(FoodConstant::VIETNAMESE_NAME_FIELD, 'LIKE', '%' . $foodName . '%');
+                $model->orWhere(FoodConstant::JAPANESE_NAME_FIELD, 'LIKE', '%' . $foodName . '%');
+                $model->orWhere(FoodConstant::ENGLISH_NAME_FIELD, 'LIKE', '%' . $foodName . '%');
+            });
+        }
 
         return $result->get();
     }
 
     /**
-     * @param null $today
+     * @param null $foodName
      * @return mixed
      */
-    public function getListFoodsMenu(): mixed
+    public function getListFoodsMenu($foodName = null): mixed
     {
+        if ($foodName) {
+            return $this->where(function ($model) use($foodName) {
+                $model->where(FoodConstant::VIETNAMESE_NAME_FIELD, 'LIKE', '%' . $foodName . '%');
+                $model->orWhere(FoodConstant::JAPANESE_NAME_FIELD, 'LIKE', '%' . $foodName . '%');
+                $model->orWhere(FoodConstant::ENGLISH_NAME_FIELD, 'LIKE', '%' . $foodName . '%');
+            })->get();
+        }
         return $this->get();
     }
 

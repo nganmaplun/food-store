@@ -15,12 +15,12 @@ interface FoodRepository extends RepositoryInterface
      * @param null $today
      * @return mixed
      */
-    public function getListFoods($today = null): mixed;
+    public function getListFoods($today = null, $foodName = null): mixed;
 
     /**
      * @return mixed
      */
-    public function getListFoodsMenu();
+    public function getListFoodsMenu($foodName = null);
 
     /**
      * @return mixed

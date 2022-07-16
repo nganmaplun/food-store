@@ -61,19 +61,27 @@ function validateRows(tblRows, type)
         return 'false';
     }
     let arrayFoods = [];
-    console.log($(tblRows[0]).hasClass('bg-orange'))
     for (let i = 0;i < tblRows.length; i++) {
         if (!$(tblRows[i]).hasClass('bg-orange')) {
             arrayFoods.push(i);
         }
     }
-    console.log(arrayFoods)
-    if (type === 'chef') {
-        if (arrayFoods.length === 0) {
-            alert('Hãy chọn món mới trước khi gửi');
-        } else {
-            alert('Các món chưa lên hết, hủy món nếu vẫn muốn thanh toán');
-        }
+    if (arrayFoods.length === 0 && type === 'chef') {
+        alert('Hãy chọn món mới trước khi gửi');
         return 'false';
     }
+    if (arrayFoods.length > 0 && type === 'cash') {
+        alert('Các món chưa lên hết, hủy món nếu vẫn muốn thanh toán');
+        return 'false';
+    }
+}
+
+function openModal(that) {
+    let order = JSON.parse(orderInfo.replace(/&quot;/g, '"'));
+    console.log(order);
+    $("#modal-order").modal("show");
+    $("#modal-order").find(".guest-type").prop('disabled', true).val(order.customer_type);
+    $("#modal-order").find(".guest-num").prop('disabled', true).val(order.number_of_customers);
+    $("#modal-order").find(".other-note").val(order.description);
+    $("#modal-order").find(".add-order").text('Sửa');
 }
