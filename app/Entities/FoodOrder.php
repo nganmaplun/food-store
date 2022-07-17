@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use App\Constants\FoodOrderConstant;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -33,6 +34,20 @@ class FoodOrder extends Model implements Transformable
         FoodOrderConstant::IS_DELIVERED_FIELD,
         FoodOrderConstant::IS_COMPLETED_FIELD,
         FoodOrderConstant::IS_NEW_FIELD,
+        FoodOrderConstant::IS_SENT_FIELD,
+        FoodOrderConstant::ORDER_TIME_FIELD,
     ];
+
+    /**
+     * @return void
+     */
+    protected static function booted(): void
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            $model[FoodOrderConstant::ORDER_TIME_FIELD] = Carbon::now()->toTimeString();
+        });
+    }
 
 }

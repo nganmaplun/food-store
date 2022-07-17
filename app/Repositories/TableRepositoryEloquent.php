@@ -55,7 +55,7 @@ class TableRepositoryEloquent extends BaseRepository implements TableRepository
     public function getListFloors(): mixed
     {
         return $this->select(TableConstant::FLOOR_FIELD)
-            ->distinct()->get();
+            ->distinct()->orderBy(TableConstant::FLOOR_FIELD, 'asc')->get();
     }
 
     /**

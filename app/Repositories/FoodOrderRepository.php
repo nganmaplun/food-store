@@ -48,4 +48,6 @@ interface FoodOrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function getListCountOrder(array $lstId, string $today);
+
+    public function getAllFinishFood($today);
 }

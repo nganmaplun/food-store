@@ -82,7 +82,8 @@ class WaiterController extends Controller
             'listFloors' => $listFloors,
             'listTables' => $listTables,
             'page' => $page,
-            'lstCount' => $lstCount
+            'lstCount' => $lstCount,
+            'currentFloor' => $floor
         ]);
     }
 
@@ -148,5 +149,13 @@ class WaiterController extends Controller
             'listFoods' => $listFoodsInOrder,
             'orderInfo' => $orderInfo
         ]);
+    }
+
+    public function foodStand()
+    {
+        $today = Carbon::now()->toDateString();
+        $listFoods = $this->foodOrderRepository->getAllFinishFood($today);
+
+        return view('waiter.finished_food', ['listFoods' => $listFoods]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Constants\BaseConstant;
+use App\Constants\FoodConstant;
 use App\Constants\FoodOrderConstant;
 use App\Constants\OrderConstant;
 use App\Constants\TableConstant;
@@ -49,7 +50,8 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
             $foodOrder = $this->getOldFoodOrder($request['orderId'], $request['foodId']);
             if (!empty($foodOrder)) {
                 return $this->update([
-                    FoodOrderConstant::ORDER_NUM_FIELD => $foodOrder[FoodOrderConstant::ORDER_NUM_FIELD] + $request['orderNum']
+                    FoodOrderConstant::ORDER_NUM_FIELD => $foodOrder[FoodOrderConstant::ORDER_NUM_FIELD] + $request['orderNum'],
+                    FoodOrderConstant::NOTE_FIELD => $request['note']
                 ], $foodOrder[BaseConstant::ID_FIELD]);
             }
 
@@ -73,6 +75,7 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
         return $this->where(FoodOrderConstant::ORDER_ID_FIELD, $orderId)
             ->where(FoodOrderConstant::FOOD_ID_FIELD, $foodId)
             ->where(FoodOrderConstant::IS_DELIVERED_FIELD, false)
+            ->where(FoodOrderConstant::IS_SENT_FIELD, false)
             ->first();
     }
 
@@ -99,7 +102,8 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
     {
         return $this->where(FoodOrderConstant::ORDER_ID_FIELD, $orderId)
             ->update([
-                FoodOrderConstant::IS_NEW_FIELD => false
+                FoodOrderConstant::IS_NEW_FIELD => false,
+                FoodOrderConstant::IS_SENT_FIELD => true
             ]);
     }
 
@@ -206,5 +210,40 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
             'total_inorder' => $totalInOrder,
             'table_order' => $tableOrder
         ];
+    }
+
+    public function getAllFinishFood($today)
+    {
+        $select = [
+            TableConstant::TABLE_NAME . '.' . TableConstant::NAME_FIELD,
+            FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+            FoodOrderConstant::ORDER_NUM_FIELD,
+            FoodConstant::TABLE_NAME . '.' . FoodConstant::VIETNAMESE_NAME_FIELD
+        ];
+
+        return $this->select($select)
+            ->leftJoin(
+                FoodConstant::TABLE_NAME,
+                FoodConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                FoodOrderConstant::FOOD_ID_FIELD
+            )
+            ->leftJoin(
+                OrderConstant::TABLE_NAME,
+                OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                FoodOrderConstant::ORDER_ID_FIELD
+            )
+            ->leftJoin(
+                TableConstant::TABLE_NAME,
+                TableConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                OrderConstant::TABLE_ID_FIELD
+            )
+            ->where(FoodOrderConstant::IS_COMPLETED_FIELD, true)
+            ->where(FoodOrderConstant::IS_DELIVERED_FIELD, false)
+            ->where(OrderConstant::ORDER_DATE_FIELD, $today)
+            ->where(TableConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, 1)
+            ->get();
     }
 }

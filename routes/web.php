@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/{tableId}/{orderId}/food-list', [WaiterController::class, 'listFoodsForOrder'])->name('food-list');
             Route::get('/{tableId}/{orderId}/food-list/{menuId}', [WaiterController::class, 'listFoodsByMenu'])->name('food-list-by-menu');
             Route::get('/{tableId}/{orderId}', [WaiterController::class, 'orderTable'])->name('view.order');
+            Route::get('/food-stand', [WaiterController::class, 'foodStand'])->name('food-stand');
         });
     });
 

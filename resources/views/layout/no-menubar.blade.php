@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +8,8 @@
     <title>Food Store</title>
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{asset('css/font-awesome.min.css')}}">
     <!-- Ionicons -->
@@ -27,17 +29,30 @@
     <!-- other CSS -->
     @yield('other-css')
 </head>
+
 <body class="hold-transition sidebar-mini layout-fixed">
-<div class="wrapper">
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-header bg-red">
-        @include('layout.nav-bar')
-    </nav>
-    <div class="content-wrapper custom-content">
-        @yield('content')
+    <div class="wrapper">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-header bg-red">
+            @include('layout.nav-bar')
+        </nav>
+        <div class="content-wrapper custom-content">
+            @yield('content')
+        </div>
     </div>
-</div>
 </body>
-<footer class="main-footer" style="text-align: center;margin-left: 0">
+<footer class="main-footer custom-footer" style="text-align: center;margin-left: 0">
+    @if ($route === 'view.order')
+    <div class="container-fluid">
+        <div class="mb-2 custom-control-inline" style="width: 100%">
+            <div class="col-5">
+                <button class="btn btn-info bg-yellow" id="send-chef">Gửi bếp</button>
+            </div>
+            <div class="offset-2 col-5">
+                <button class="btn btn-info float-right bg-red" id="send-cashier">Thanh toán</button>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+    @endif
     <strong>Copyright &copy; 2022 Food Store</strong>
 </footer>
 <script>
