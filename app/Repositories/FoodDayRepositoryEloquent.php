@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Constants\BaseConstant;
+use App\Constants\FoodConstant;
 use App\Constants\FoodDayConstant;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -69,7 +70,15 @@ class FoodDayRepositoryEloquent extends BaseRepository implements FoodDayReposit
      */
     public function checkFoodRemain($id,$today)
     {
-        return $this->where(FoodDayConstant::FOOD_ID_FIELD, $id)
+        return $this->select([
+                FoodConstant::VIETNAMESE_NAME_FIELD,
+                FoodDayConstant::NUMBER_FIELD
+            ])->leftJoin(
+                FoodConstant::TABLE_NAME,
+                FoodConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                FoodDayConstant::FOOD_ID_FIELD
+            )->where(FoodDayConstant::FOOD_ID_FIELD, $id)
             ->where(FoodDayConstant::DATE_FIELD, $today)
             ->first();
     }

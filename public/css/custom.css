@@ -27,3 +27,15 @@ table.dataTable tbody td {
 .custom-small {
     font-size: 65% !important;
 }
+.bg-light-pink {
+    background-color: #FFB6C1;
+    color: white;
+}
+.bg-light-blue {
+    background-color: #4fc3f7;
+    color: white;
+}
+.bg-dark-orange {
+    background-color: #8B4000;
+    color: white;
+}

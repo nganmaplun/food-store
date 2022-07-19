@@ -20,17 +20,17 @@
 
 <ul class="nav justify-content-center pt-3">
     <li class="nav-item">
-        <a class="nav-link btn btn-default d-none d-sm-block {{ $currentFloor == 'all' || !$currentFloor ? 'active' : ''}}"
+        <a class="nav-link btn btn-default d-none d-sm-block {{ $currentFloor == 'all' || !$currentFloor ? 'bg-dark-orange' : ''}}"
             href="{{URL::route('waiter-dashboard', ['floor' => 'all'])}}">All</a>
-        <a class="nav-link btn btn-default d-block d-sm-none custom-small {{ $currentFloor == 'all' || !$currentFloor ? 'active' : ''}}"
+        <a class="nav-link btn btn-default d-block d-sm-none custom-small {{ $currentFloor == 'all' || !$currentFloor ? 'bg-dark-orange' : ''}}"
             href="{{URL::route('waiter-dashboard', ['floor' => 'all'])}}">All</a>
     </li>
     @foreach($listFloors as $floor)
     <li class="nav-item">
-        <a class="nav-link btn btn-default d-none d-sm-block {{ $floor[\App\Constants\TableConstant::FLOOR_FIELD] == $currentFloor ? 'active' : ''}}"
+        <a class="nav-link btn btn-default d-none d-sm-block {{ $floor[\App\Constants\TableConstant::FLOOR_FIELD] == $currentFloor ? 'bg-dark-orange' : ''}}"
             href="{{URL::route('waiter-dashboard', ['floor' => $floor[\App\Constants\TableConstant::FLOOR_FIELD]])}}">Tầng
             {{ $floor[\App\Constants\TableConstant::FLOOR_FIELD] }}</a>
-        <a class="nav-link btn btn-default d-block d-sm-none custom-small {{ $floor[\App\Constants\TableConstant::FLOOR_FIELD] == $currentFloor ? 'active' : ''}}"
+        <a class="nav-link btn btn-default d-block d-sm-none custom-small {{ $floor[\App\Constants\TableConstant::FLOOR_FIELD] == $currentFloor ? 'bg-dark-orange' : ''}}"
             href="{{URL::route('waiter-dashboard', ['floor' => $floor[\App\Constants\TableConstant::FLOOR_FIELD]])}}">Tầng
             {{ $floor[\App\Constants\TableConstant::FLOOR_FIELD] }}</a>
     </li>

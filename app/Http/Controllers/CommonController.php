@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\BaseConstant;
+use App\Constants\FoodConstant;
 use App\Constants\FoodDayConstant;
 use App\Constants\FoodOrderConstant;
 use App\Constants\UserConstant;
@@ -135,14 +136,18 @@ class CommonController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function addFoodToOrder(Request $request)
     {
         $request = $request->all();
         $result = $this->checkFoodRemain($request);
-        if (!$result) {
+        if ($result != 'true') {
             return response()->json([
                 'code' => '333',
-                'message' => 'Đã hết món. vui lòng chọn món khác'
+                'message' => 'Không đủ suất. Món ' . $result['food_name'] . ' còn ' . $result['remain'] . ' suất. Vui lòng chọn lại'
             ]);
         }
         $result = $this->foodOrderRepository->addFoodToOrder($request);
@@ -160,20 +165,35 @@ class CommonController extends Controller
         ]);
     }
 
+    /**
+     * @param $request
+     * @return bool
+     */
     public function checkFoodRemain($request)
     {
         $today = Carbon::now()->toDateString();
         $result = $this->foodDayRepository->checkFoodRemain($request['foodId'], $today);
         $oldFood = $this->foodOrderRepository->getOldFoodOrder($request['orderId'], $request['foodId']);
         if ($result && $request['orderNum'] > $result[FoodDayConstant::NUMBER_FIELD]) {
-            return false;
+            return [
+                'remain' => $result[FoodDayConstant::NUMBER_FIELD],
+                'food_name' => $result[FoodConstant::VIETNAMESE_NAME_FIELD]
+            ];
         }
         if ($result && $oldFood && $request['orderNum'] + $oldFood[FoodOrderConstant::ORDER_NUM_FIELD] > $result[FoodDayConstant::NUMBER_FIELD]) {
-            return false;
+            return [
+                'remain' => $result[FoodDayConstant::NUMBER_FIELD],
+                'food_name' => $result[FoodConstant::VIETNAMESE_NAME_FIELD]
+            ];
         }
-        return true;
+
+        return 'true';
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function createOrder(Request $request)
     {
         $user = Auth::user();
@@ -230,6 +250,10 @@ class CommonController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function changeToTableStatus(Request $request)
     {
         $request = $request->all();
