@@ -51,7 +51,9 @@
                         </td>
                         <td width="40%" class="custom-td">
                             <a>
-                                {{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}
+                                {{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}<br/>
+                                {{ $food[\App\Constants\FoodConstant::JAPANESE_NAME_FIELD] }}<br/>
+                                {{ $food[\App\Constants\FoodConstant::SHORT_NAME_FIELD] }}
                             </a>
                             <br/>
                             <small>

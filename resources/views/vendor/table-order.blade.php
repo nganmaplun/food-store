@@ -44,7 +44,11 @@
                         <tr
                             class="{{ $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'bg-orange' : ($food[\App\Constants\FoodOrderConstant::IS_NEW_FIELD] == true ? 'bg-light-pink' : 'bg-white') }}">
                             <td class="">{{ $key + 1 }}</td>
-                            <td>{{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}</td>
+                            <td>{{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}<br/>
+                                {{ $food[\App\Constants\FoodConstant::JAPANESE_NAME_FIELD] }}<br/>
+                                {{ $food[\App\Constants\FoodConstant::SHORT_NAME_FIELD] }}<br/>
+                                <small class="text-info">{{ $food[\App\Constants\FoodOrderConstant::NOTE_FIELD] }}</small>
+                            </td>
                             <td>{{ $food[\App\Constants\FoodOrderConstant::ORDER_NUM_FIELD] }}</td>
                             <td>{{ $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'Đã lên' :
                                 ($food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? 'Bếp xong' :
@@ -52,7 +56,7 @@
                             <td>{{ $food[\App\Constants\FoodOrderConstant::ORDER_TIME_FIELD] }}</td>
                             <td><button class="btn btn-warning to-table" {{ $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? ( $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'hidden' : '') : 'hidden' }} index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Lên món</button></td>
                             <td><button class="btn btn-warning btn-delete" {{
-                                    $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD]==true ? 'hidden' : '' }}
+                                    $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD]==true ? 'hidden' : ($food[\App\Constants\FoodOrderConstant::IS_SENT_FIELD]==true ? 'hidden' : '') }}
                                     index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Xóa</button></td>
                         </tr>
                         @endforeach

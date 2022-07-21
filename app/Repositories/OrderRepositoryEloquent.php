@@ -76,12 +76,17 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     {
         $select = [
             FoodConstant::VIETNAMESE_NAME_FIELD,
+            FoodConstant::JAPANESE_NAME_FIELD,
+            FoodConstant::ENGLISH_NAME_FIELD,
+            FoodConstant::SHORT_NAME_FIELD,
             FoodConstant::CATEGORY_FIELD,
             FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
             FoodOrderConstant::ORDER_NUM_FIELD,
+            FoodOrderConstant::NOTE_FIELD,
             FoodOrderConstant::IS_DELIVERED_FIELD,
             FoodOrderConstant::IS_COMPLETED_FIELD,
             FoodOrderConstant::IS_NEW_FIELD,
+            FoodOrderConstant::IS_SENT_FIELD,
             FoodOrderConstant::ORDER_TIME_FIELD
         ];
         $result = $this->select($select)

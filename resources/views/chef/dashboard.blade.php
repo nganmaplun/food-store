@@ -83,7 +83,7 @@ use Carbon\Carbon;
                             </a>
                             @if ($food[\App\Constants\FoodOrderConstant::NOTE_FIELD])
                             <br />
-                            <small>
+                            <small class="text-info">
                                 {{ $food[\App\Constants\FoodOrderConstant::NOTE_FIELD] }}
                             </small>
                             @endif
