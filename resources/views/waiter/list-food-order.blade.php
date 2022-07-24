@@ -46,12 +46,14 @@
                     <tr class="search-for-index-{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">
                         <td width="20%" class="custom-td">
                             <div class="col-12">
-                                <img src="{{ asset('image/logo.png') }}" class="product-image custom-img" alt="Product Image">
+                                <img src="{{ asset('storage/' . $food[\App\Constants\FoodConstant::IMAGE_FIELD]) }}" class="product-image custom-img" alt="Product Image">
                             </div>
                         </td>
                         <td width="40%" class="custom-td">
                             <a>
-                                {{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}
+                                {{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}<br/>
+                                {{ $food[\App\Constants\FoodConstant::JAPANESE_NAME_FIELD] }}<br/>
+                                {{ $food[\App\Constants\FoodConstant::SHORT_NAME_FIELD] }}
                             </a>
                             <br/>
                             <small>

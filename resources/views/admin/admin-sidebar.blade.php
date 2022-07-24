@@ -1,6 +1,6 @@
 <!-- Brand Logo -->
 <a href="{{route('admin-dashboard')}}" class="brand-link">
-    <img src="{{asset('image/logo.png')}}" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <img src="{{asset('storage/logo.png')}}" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
     <span class="brand-text font-weight-light">Food Store</span>
 </a>
 
@@ -26,31 +26,31 @@
                 </a>
             </li>
             <li class="nav-item admin-sidebar">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.aggOrder') }}" class="nav-link">
                     <i class="nav-icon fa fa-chevron-right"></i>
                     <p>Xem thống kê</p>
                 </a>
             </li>
             <li class="nav-item admin-sidebar">
-                <a href="#" class="nav-link">
+                <a href="{{ route('view-create-employee') }}" class="nav-link">
                     <i class="nav-icon fa fa-chevron-right"></i>
                     <p>Thêm nhân viên</p>
                 </a>
             </li>
             <li class="nav-item admin-sidebar">
-                <a href="#" class="nav-link">
+                <a href="{{ route('list-employee') }}" class="nav-link">
                     <i class="nav-icon fa fa-chevron-right"></i>
                     <p>Danh sách nhân viên</p>
                 </a>
             </li>
             <li class="nav-item admin-sidebar">
-                <a href="#" class="nav-link">
+                <a href="{{ route('view-create-food') }}" class="nav-link">
                     <i class="nav-icon fa fa-chevron-right"></i>
                     <p>Thêm món ăn</p>
                 </a>
             </li>
             <li class="nav-item admin-sidebar">
-                <a href="#" class="nav-link">
+                <a href="{{ route('list-food') }}" class="nav-link">
                     <i class="nav-icon fa fa-chevron-right"></i>
                     <p>Danh sách món ăn</p>
                 </a>

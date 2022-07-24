@@ -6,6 +6,8 @@ use App\Constants\BaseConstant;
 use App\Constants\FoodConstant;
 use App\Constants\FoodDayConstant;
 use App\Traits\CustomValidateTrait;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\FoodRepository;
@@ -126,5 +128,109 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
         return $this->select(BaseConstant::ID_FIELD)
             ->where(FoodConstant::VIETNAMESE_NAME_FIELD, $request['fid'])
             ->first();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function listAllFoods()
+    {
+        $select = [
+            BaseConstant::ID_FIELD,
+            FoodConstant::VIETNAMESE_NAME_FIELD,
+            FoodConstant::JAPANESE_NAME_FIELD,
+            FoodConstant::ENGLISH_NAME_FIELD,
+            FoodConstant::PRICE_FIELD,
+            FoodConstant::CATEGORY_FIELD,
+        ];
+        return $this->select($select)->get();
+    }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function createFood(array $request)
+    {
+        try {
+            $dataCreate = [
+                FoodConstant::VIETNAMESE_NAME_FIELD => $request[FoodConstant::VIETNAMESE_NAME_FIELD],
+                FoodConstant::JAPANESE_NAME_FIELD => $request[FoodConstant::JAPANESE_NAME_FIELD],
+                FoodConstant::ENGLISH_NAME_FIELD => $request[FoodConstant::ENGLISH_NAME_FIELD],
+                FoodConstant::SHORT_NAME_FIELD => $request[FoodConstant::SHORT_NAME_FIELD],
+                FoodConstant::PRICE_FIELD => $request[FoodConstant::PRICE_FIELD],
+                FoodConstant::CATEGORY_FIELD => $request[FoodConstant::CATEGORY_FIELD],
+                FoodConstant::RECIPE_FIELD => $request[FoodConstant::RECIPE_FIELD] ?? '',
+                FoodConstant::DESCRIPTION_FIELD => $request[FoodConstant::DESCRIPTION_FIELD] ?? '',
+                FoodConstant::IMAGE_FIELD => $request[FoodConstant::IMAGE_FIELD] ?? 'logo.png',
+            ];
+            if (isset($request[FoodConstant::IMAGE_FIELD]) && !empty($request[FoodConstant::IMAGE_FIELD])) {
+                $result = Storage::disk('public')->put('', $request[FoodConstant::IMAGE_FIELD]);
+                if ($result) {
+                    $dataCreate[FoodConstant::IMAGE_FIELD] = $result;
+                }
+            }
+            return $this->create($dataCreate);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getDetailFood($id)
+    {
+        return $this->where(BaseConstant::ID_FIELD, $id)->first();
+    }
+
+    /**
+     * @param array $request
+     * @param $id
+     * @return mixed
+     */
+    public function updateFood(array $request, $id)
+    {
+        try {
+            $food = $this->where(BaseConstant::ID_FIELD, $id)->first();
+            $oldImageName = $food[FoodConstant::IMAGE_FIELD];
+            $dataUpdate = [
+                FoodConstant::VIETNAMESE_NAME_FIELD => $request[FoodConstant::VIETNAMESE_NAME_FIELD],
+                FoodConstant::JAPANESE_NAME_FIELD => $request[FoodConstant::JAPANESE_NAME_FIELD],
+                FoodConstant::ENGLISH_NAME_FIELD => $request[FoodConstant::ENGLISH_NAME_FIELD],
+                FoodConstant::SHORT_NAME_FIELD => $request[FoodConstant::SHORT_NAME_FIELD],
+                FoodConstant::PRICE_FIELD => $request[FoodConstant::PRICE_FIELD],
+                FoodConstant::CATEGORY_FIELD => $request[FoodConstant::CATEGORY_FIELD],
+                FoodConstant::RECIPE_FIELD => $request[FoodConstant::RECIPE_FIELD] ?? '',
+                FoodConstant::DESCRIPTION_FIELD => $request[FoodConstant::DESCRIPTION_FIELD] ?? '',
+                FoodConstant::IMAGE_FIELD => $request[FoodConstant::IMAGE_FIELD] ?? $oldImageName,
+            ];
+            if (isset($request[FoodConstant::IMAGE_FIELD]) && !empty($request[FoodConstant::IMAGE_FIELD])) {
+                $result = Storage::disk('public')->put('', $request[FoodConstant::IMAGE_FIELD]);
+                if ($result) {
+                    $dataUpdate[FoodConstant::IMAGE_FIELD] = $result;
+                }
+            }
+            return $this->update($dataUpdate, $id);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function deleteFood($id)
+    {
+        try {
+            return $this->delete($id);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
     }
 }

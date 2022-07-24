@@ -83,7 +83,7 @@ use Carbon\Carbon;
                             </a>
                             @if ($food[\App\Constants\FoodOrderConstant::NOTE_FIELD])
                             <br />
-                            <small>
+                            <small class="text-info">
                                 {{ $food[\App\Constants\FoodOrderConstant::NOTE_FIELD] }}
                             </small>
                             @endif
@@ -117,23 +117,23 @@ use Carbon\Carbon;
     var urlSendFoodToWaiter = "{{ route('send-message') }}";
 </script>
 <script>
-    let link = "{{ route('chef-dashboard', ['category' => $category]) }}"
-        let bodyText = "<span>Hãy bấm vào <a style='color: red' href='" + link + "'>đây</a> để kiểm tra lại danh sách món</span>";
+    let link = "{{ route('chef-dashboard', ['category' => $category]) }}";
+    let bodyText = "<span>Hãy bấm vào <a style='color: red' href='" + link + "'>đây</a> để kiểm tra lại danh sách món</span>";
 
-        var pusher = new Pusher(app_key, {
-            cluster: 'ap1',
-            encrypted: true
-        });
+    var pusher = new Pusher(app_key, {
+        cluster: 'ap1',
+        encrypted: true
+    });
 
-        var channel = pusher.subscribe('{{ $event }}');
+    var channel = pusher.subscribe('{{ $event }}');
 
-        channel.bind('{{ $channel }}', function(data) {
-            $(document).Toasts('create', {
-                class: 'bg-info',
-                title: 'Có thay đổi order',
-                body: bodyText
-            })
-        });
+    channel.bind('{{ $channel }}', function(data) {
+        $(document).Toasts('create', {
+            class: 'bg-info',
+            title: 'Có thay đổi order',
+            body: bodyText
+        })
+    });
 </script>
 <script src="{{ asset('js/chef-dashboard.js' )}}"></script>
 @endsection

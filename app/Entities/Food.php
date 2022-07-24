@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Constants\BaseConstant;
 use App\Constants\FoodConstant;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,6 +35,23 @@ class Food extends Model implements Transformable
         FoodConstant::IMAGE_FIELD,
         FoodConstant::RECIPE_FIELD,
         FoodConstant::DESCRIPTION_FIELD,
+        BaseConstant::STATUS_FIELD
     ];
 
+    /**
+     * @return void
+     */
+    protected static function booted(): void
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            $model[BaseConstant::STATUS_FIELD] = true;
+        });
+
+        self::deleted(function ($model) {
+            $model[BaseConstant::STATUS_FIELD] = false;
+            $model->save();
+        });
+    }
 }

@@ -32,4 +32,34 @@ interface FoodRepository extends RepositoryInterface
      * @return mixed
      */
     public function getFoodIdByName(array $request);
+
+    /**
+     * @return mixed
+     */
+    public function listAllFoods();
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function createFood(array $request);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getDetailFood($id);
+
+    /**
+     * @param array $request
+     * @param $id
+     * @return mixed
+     */
+    public function updateFood(array $request, $id);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function deleteFood($id);
 }

@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AggregationController;
+use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Cashier\CashierController;
 use App\Http\Controllers\Chef\ChefController;
@@ -43,7 +46,21 @@ Route::middleware('auth')->group(function () {
             Route::get('/timesheet', [AdminController::class, 'timesheet'])->name('timesheet');
             Route::post('/approval-timesheet', [AdminController::class, 'approveTimesheet'])->name('post.timesheet');
             Route::get('/setting-foods', [AdminController::class, 'settingFood'])->name('admin.food');
-            Route::post('set-food', [AdminController::class, 'setFood'])->name('admin.post.set-food');
+            Route::post('/set-food', [AdminController::class, 'setFood'])->name('admin.post.set-food');
+            Route::get('/thong-ke-doanh-so', [AggregationController::class, 'aggregateOrder'])->name('admin.aggOrder');
+            Route::post('/thong-ke-doanh-so-custom', [AggregationController::class, 'aggregateOrderCustom'])->name('aggOrder-custom');
+            Route::get('/list-employee', [EmployeeController::class, 'list'])->name('list-employee');
+            Route::get('/employee', [EmployeeController::class, 'create'])->name('view-create-employee');
+            Route::post('/employee', [EmployeeController::class, 'postCreate'])->name('create-employee');
+            Route::get('/employee/{id}', [EmployeeController::class, 'edit'])->name('view-edit-employee');
+            Route::post('/employee/{id}', [EmployeeController::class, 'postEdit'])->name('edit-employee');
+            Route::get('/employee/delete/{id}', [EmployeeController::class, 'deleteEmployee'])->name('delete-employee');
+            Route::get('/list-food', [FoodController::class, 'list'])->name('list-food');
+            Route::get('/food', [FoodController::class, 'create'])->name('view-create-food');
+            Route::post('/food', [FoodController::class, 'postCreate'])->name('create-food');
+            Route::get('/food/{id}', [FoodController::class, 'edit'])->name('view-edit-food');
+            Route::post('/food/{id}', [FoodController::class, 'postEdit'])->name('edit-food');
+            Route::get('/food/delete/{id}', [FoodController::class, 'deleteEmployee'])->name('delete-food');
         });
     });
 

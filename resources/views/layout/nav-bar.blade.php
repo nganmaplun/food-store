@@ -12,12 +12,12 @@ use App\Constants\UserConstant;
 @if(in_array($role, [BaseConstant::CHEF_DRYING_ROLE, BaseConstant::CHEF_GRILL_ROLE, BaseConstant::CHEF_SALAD_ROLE,
 BaseConstant::CHEF_STEAM_ROLE, BaseConstant::CHEF_DRINK_ROLE]))
 <a href="{{route($dashboard, ['category' => $categoryId])}}" class="brand-link">
-    <img src="{{asset('image/logo.png')}}" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <img src="{{asset('storage/logo.png')}}" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
     <span class="brand-text font-weight-light d-none d-sm-block">Food Store</span>
 </a>
 @elseif ($role !== BaseConstant::ADMIN_ROLE)
 <a href="{{route($dashboard)}}" class="brand-link">
-    <img src="{{asset('image/logo.png')}}" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <img src="{{asset('storage/logo.png')}}" alt="" class="brand-image img-circle elevation-3" style="opacity: .8">
     <span class="brand-text font-weight-light d-none d-sm-block">Food Store</span>
 </a>
 @endif

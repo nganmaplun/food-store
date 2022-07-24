@@ -7,6 +7,7 @@ use App\Constants\TimesheetConstant;
 use App\Constants\UserConstant;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -18,7 +19,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class User extends Authenticatable implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -41,6 +42,23 @@ class User extends Authenticatable implements Transformable
     protected $hidden = [
         UserConstant::PASSWORD_FIELD
     ];
+
+    /**
+     * @return void
+     */
+    protected static function booted(): void
+    {
+        parent::boot();
+
+        self::creating(function ($model) {
+            $model[BaseConstant::STATUS_FIELD] = true;
+        });
+
+        self::deleted(function ($model) {
+            $model[BaseConstant::STATUS_FIELD] = false;
+            $model->save();
+        });
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

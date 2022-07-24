@@ -59,4 +59,10 @@ interface OrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function detailOrder($orderId);
+
+    /**
+     * @param $condition
+     * @return mixed
+     */
+    public function aggOrder($condition);
 }

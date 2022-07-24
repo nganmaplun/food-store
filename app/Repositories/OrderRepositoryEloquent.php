@@ -8,6 +8,7 @@ use App\Constants\FoodOrderConstant;
 use App\Constants\OrderConstant;
 use App\Constants\TableConstant;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -76,12 +77,17 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     {
         $select = [
             FoodConstant::VIETNAMESE_NAME_FIELD,
+            FoodConstant::JAPANESE_NAME_FIELD,
+            FoodConstant::ENGLISH_NAME_FIELD,
+            FoodConstant::SHORT_NAME_FIELD,
             FoodConstant::CATEGORY_FIELD,
             FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
             FoodOrderConstant::ORDER_NUM_FIELD,
+            FoodOrderConstant::NOTE_FIELD,
             FoodOrderConstant::IS_DELIVERED_FIELD,
             FoodOrderConstant::IS_COMPLETED_FIELD,
             FoodOrderConstant::IS_NEW_FIELD,
+            FoodOrderConstant::IS_SENT_FIELD,
             FoodOrderConstant::ORDER_TIME_FIELD
         ];
         $result = $this->select($select)
@@ -236,5 +242,68 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     public function detailOrder($orderId)
     {
         return $this->where(BaseConstant::ID_FIELD, $orderId)->first();
+    }
+
+    /**
+     * @param $condition
+     * @return mixed
+     */
+    public function aggOrder($condition)
+    {
+        $orderDate = match ($condition['type']) {
+            'day' => 'DATE_FORMAT(order_date, "%Y-%m-%d")',
+            'month' => 'DATE_FORMAT(order_date, "%Y-%m")',
+            'year' => 'DATE_FORMAT(order_date, "%Y")',
+        };
+        $select2 = [
+            OrderConstant::CUSTOMER_TYPE_FIELD,
+            DB::raw('sum(number_of_customers) as cus_num'),
+        ];
+        $select = [
+            DB::raw('sum(order_num) AS total_food'),
+            DB::raw('sum(total_price) as total_price'),
+            DB::raw($orderDate . ' AS order_date_s'),
+        ];
+        $others = $this->select($select)
+            ->leftJoin(
+                FoodOrderConstant::TABLE_NAME,
+                OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                FoodOrderConstant::ORDER_ID_FIELD
+            )
+            ->where(OrderConstant::IS_PAID_FIELD, true)
+            ->groupBy([DB::raw('order_date_s')]);
+        if (isset($condition['from']) && !empty($condition['from'])) {
+            $others->where(OrderConstant::ORDER_DATE_FIELD, BaseConstant::GREATER_AND_EQUAL_THAN, $condition['from']);
+        }
+        if (isset($condition['to']) && !empty($condition['to'])) {
+            $others->where(OrderConstant::ORDER_DATE_FIELD, BaseConstant::LESS_AND_EQUAL_THAN, $condition['to']);
+        }
+        $others = $others->get();
+        $arrFinal = [];
+        $i = 0;
+        foreach ($others as $oth) {
+            $customers = $this->select($select2)
+                ->where(OrderConstant::IS_PAID_FIELD, true)
+                ->where(DB::raw($orderDate), $oth['order_date_s'])
+                ->groupBy([DB::raw('customer_type')])
+                ->get();
+            $arrFinal[$i]['total_food'] = $oth['total_food'];
+            $arrFinal[$i]['total_price'] = $oth['total_price'];
+            $arrFinal[$i]['order_date'] = $oth['order_date_s'];
+            foreach ($customers as $cus) {
+                if ($cus[OrderConstant::CUSTOMER_TYPE_FIELD] == 'V') {
+                    $arrFinal[$i]['vietnamese_guest'] = $cus['cus_num'];
+                }
+                if ($cus[OrderConstant::CUSTOMER_TYPE_FIELD] == 'J') {
+                    $arrFinal[$i]['japanese_guest'] = $cus['cus_num'];
+                }
+                if ($cus[OrderConstant::CUSTOMER_TYPE_FIELD] == 'E') {
+                    $arrFinal[$i]['other_guest'] = $cus['cus_num'];
+                }
+            }
+            $i++;
+        }
+        return $arrFinal;
     }
 }

@@ -28,3 +28,6 @@ Docker
 - Run php artisan db:seed for data test
 - access localhost/login to website login
 - access localhost:8081 to phpmyadmin login
+- for missing default logo.png, please create one and do the following
+  - Run : php artisan storage:link
+  - Copy new logo.png to storage/app/public

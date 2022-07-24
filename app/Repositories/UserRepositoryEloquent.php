@@ -39,6 +39,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     }
 
     /**
+     * list employee for timesheet
      * @param string $today
      * @param array $request
      * @return mixed
@@ -78,6 +79,100 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             return $this->update([
                 UserConstant::PASSWORD_FIELD => Hash::make($request['password'])
             ], $id);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function listAllEmployee()
+    {
+        $select = [
+            BaseConstant::ID_FIELD,
+            UserConstant::FULLNAME_FIELD,
+            UserConstant::PHONE_FIELD,
+            UserConstant::ROLE_FIELD,
+            BaseConstant::STATUS_FIELD,
+        ];
+        return $this->select($select)->get();
+    }
+
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getDetailEmployee($id)
+    {
+        $select = [
+            BaseConstant::ID_FIELD,
+            UserConstant::FULLNAME_FIELD,
+            UserConstant::PHONE_FIELD,
+            UserConstant::ROLE_FIELD,
+        ];
+        return $this->select($select)
+            ->where(BaseConstant::ID_FIELD, $id)
+            ->first();
+    }
+
+    /**
+     * @param array $request
+     * @param $id
+     * @return mixed
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function updateEmployee(array $request, $id)
+    {
+        try {
+            $dataUpdate = [
+                UserConstant::FULLNAME_FIELD => $request[UserConstant::FULLNAME_FIELD],
+                UserConstant::PHONE_FIELD => $request[UserConstant::PHONE_FIELD],
+                UserConstant::ROLE_FIELD => $request[UserConstant::ROLE_FIELD],
+            ];
+            if (isset($request[UserConstant::PASSWORD_FIELD]) &&
+                !empty($request[UserConstant::PASSWORD_FIELD])
+            ) {
+                $dataUpdate[UserConstant::PASSWORD_FIELD] = Hash::make($request[UserConstant::PASSWORD_FIELD]);
+            }
+            return $this->update($dataUpdate, $id);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function createEmployee(array $request)
+    {
+        try {
+            $dataCreate = [
+                UserConstant::USERNAME_FIELD => $request[UserConstant::USERNAME_FIELD],
+                UserConstant::FULLNAME_FIELD => $request[UserConstant::FULLNAME_FIELD],
+                UserConstant::PASSWORD_FIELD => Hash::make($request[UserConstant::PASSWORD_FIELD]),
+                UserConstant::PHONE_FIELD => $request[UserConstant::PHONE_FIELD],
+                UserConstant::ROLE_FIELD => $request[UserConstant::ROLE_FIELD],
+            ];
+            return $this->create($dataCreate);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function deleteEmployee($id)
+    {
+        try {
+            return $this->delete($id);
         } catch (\Exception $e) {
             Log::channel('customError')->error($e->getMessage());
             return false;

@@ -29,6 +29,8 @@ class BaseConstant
     // expression
     const EQUAL = '=';
     const DIFFERENCE = '!=';
+    const GREATER_AND_EQUAL_THAN = '>=';
+    const LESS_AND_EQUAL_THAN = '<=';
 
     // all tables
     const ALL_TABLE = 'all';
@@ -72,4 +74,14 @@ class BaseConstant
         self::FOOD_STEAM => "KON",
         self::FOOD_DRYING => "YAKI",
     ];
+
+    const ARRAY_KITCHEN_ALL = [
+        self::FOOD_SALAD => "SASHI",
+        self::FOOD_GRILL => "AGE",
+        self::FOOD_STEAM => "KON",
+        self::FOOD_DRYING => "YAKI",
+        self::FOOD_DRINK => "NOMIMOMO",
+    ];
+
+    const FAKE_PASSWORD = '********';
 }
