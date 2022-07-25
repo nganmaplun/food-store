@@ -1,4 +1,4 @@
-@extends('layout.admin-layout')
+@extends($route === 'admin.food' ? 'layout.admin-layout' : 'layout.no-menubar')
 @section('other-css')
     <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/responsive.bootstrap4.min.css')}}">
@@ -67,7 +67,7 @@
 
 @section('script')
     <script>
-        var setFoodUrl = "{{ route('admin.post.set-food') }}";
+        var setFoodUrl = "{{ $route === 'admin.food' ? route('admin.post.set-food') : route('post.set-food') }}";
         var listAllFoodName = "{{ $listAllFoodName }}";
         var listAllName = JSON.parse(listAllFoodName.replace(/&quot;/g, '"'));
     </script>

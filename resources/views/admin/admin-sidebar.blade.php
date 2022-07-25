@@ -20,12 +20,6 @@
                 </a>
             </li>
             <li class="nav-item admin-sidebar">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fa fa-chevron-right"></i>
-                    <p>Tình trạng bàn</p>
-                </a>
-            </li>
-            <li class="nav-item admin-sidebar">
                 <a href="{{ route('admin.aggOrder') }}" class="nav-link">
                     <i class="nav-icon fa fa-chevron-right"></i>
                     <p>Xem thống kê</p>
@@ -55,22 +49,10 @@
                     <p>Danh sách món ăn</p>
                 </a>
             </li>
-            <li class="nav-item admin-sidebar">
-                <a href="#" class="nav-link">
+            <li class="nav-item admin-sidebar" id="reset-table">
+                <a href="javascript:void(0)" class="nav-link">
                     <i class="nav-icon fa fa-chevron-right"></i>
-                    <p>Danh sách order hiện tại</p>
-                </a>
-            </li>
-            <li class="nav-item admin-sidebar">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fa fa-chevron-right"></i>
-                    <p>Thêm bàn</p>
-                </a>
-            </li>
-            <li class="nav-item admin-sidebar">
-                <a href="#" class="nav-link">
-                    <i class="nav-icon fa fa-chevron-right"></i>
-                    <p>Danh sách bàn</p>
+                    <p>Reset bàn</p>
                 </a>
             </li>
         </ul>

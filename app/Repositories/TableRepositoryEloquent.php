@@ -136,4 +136,19 @@ class TableRepositoryEloquent extends BaseRepository implements TableRepository
             BaseConstant::STATUS_FIELD => 2
         ], $tableId);
     }
+
+    /**
+     * @return mixed
+     */
+    public function resetTable()
+    {
+        try {
+            return Table::query()->update([
+                BaseConstant::STATUS_FIELD => 0
+            ]);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
 }

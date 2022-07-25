@@ -29,7 +29,7 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-red">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-red-o">
             @include('layout.nav-bar')
         </nav>
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -70,4 +70,11 @@
 <script src="{{ asset('js/pusher.min.js' )}}"></script>
 <!-- Custom script -->
 <script src="{{asset('js/custom.js')}}"></script>
+<script>
+    $(document).on('click', '#reset-table', function () {
+        if (confirm('Bạn muốn đặt lại trạng thái các bàn?' + "\r\n" + 'Các bàn có thể còn chưa dùng xong bữa.')) {
+            location.href = "{{ route('reset-table') }}";
+        }
+    })
+</script>
 @yield('script')

@@ -50,4 +50,9 @@ interface TableRepository extends RepositoryInterface
      * @return mixed
      */
     public function updateTableStatus($tableId);
+
+    /**
+     * @return mixed
+     */
+    public function resetTable();
 }

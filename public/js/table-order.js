@@ -1,4 +1,33 @@
 $(function () {
+    $('.eng, .jap').prop('hidden', true);
+    $(document).on('change', '#lang-change', function() {
+        if ($(this).val() == 'vie') {
+            $('.eng, .jap').prop('hidden', true);
+            $('.vie').prop('hidden', false);
+        }
+        if ($(this).val() == 'jap') {
+            $('.eng, .vie').prop('hidden', true);
+            $('.jap').prop('hidden', false);
+        }
+        if ($(this).val() == 'eng') {
+            $('.vie, .jap').prop('hidden', true);
+            $('.eng').prop('hidden', false);
+        }
+    });
+    $('#list-order').DataTable({
+        paging: true,
+        lengthChange: true,
+        searching: false,
+        ordering: false,
+        info: false,
+        autoWidth: false,
+        responsive: true,
+        columnDefs: [
+            { orderable: false, targets: "no-sort"},
+        ],
+        lengthMenu: [10, 20, 50, 100],
+    });
+
     $(document).on('click', '#send-chef', function () {
         let tblRows = $('#list-order > tbody > tr');
         let check = validateRows(tblRows, 'chef');

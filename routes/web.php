@@ -61,6 +61,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/food/{id}', [FoodController::class, 'edit'])->name('view-edit-food');
             Route::post('/food/{id}', [FoodController::class, 'postEdit'])->name('edit-food');
             Route::get('/food/delete/{id}', [FoodController::class, 'deleteEmployee'])->name('delete-food');
+            Route::get('/reset-table', [AdminController::class, 'resetTable'])->name('reset-table');
+            // as waiter
+            Route::get('/{tableId}/{orderId}', [WaiterController::class, 'orderTable'])->name('admin.view.order');
         });
     });
 
@@ -77,6 +80,8 @@ Route::middleware('auth')->group(function () {
     Route::middleware(['chef'])->group(function () {
         Route::prefix('chef')->group(function () {
             Route::get('/chef-dashboard/{category}', [ChefController::class, 'dashboard'])->name('chef-dashboard');
+            Route::get('/setting-foods', [AdminController::class, 'settingFood'])->name('food');
+            Route::post('/set-food', [AdminController::class, 'setFood'])->name('post.set-food');
         });
     });
 
@@ -90,6 +95,3 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/wait-for-approve-to-work', [AuthController::class, 'waitForApproval'])->name('wait-for-approve');
 });
-
-Route::get('/send', [SendMessageController::class, 'index'])->name('send');
-Route::post('/postMessage', [SendMessageController::class, 'sendMessage'])->name('postMessage');

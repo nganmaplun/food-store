@@ -39,3 +39,6 @@ table.dataTable tbody td {
     background-color: #8B4000;
     color: white;
 }
+.bg-red-o {
+    background-color: #dc3545!important;
+}

@@ -1,4 +1,18 @@
 $(function () {
+    $('.projects').DataTable({
+        paging: true,
+        lengthChange: true,
+        searching: false,
+        ordering: false,
+        info: false,
+        autoWidth: false,
+        responsive: true,
+        columnDefs: [
+            { orderable: false, targets: "no-sort"},
+        ],
+        lengthMenu: [10, 20, 50, 100],
+    });
+
     $(document).on("click", ".check-food", function () {
         let index = $(this).attr("index");
         let tblId = $(this).attr("rel");

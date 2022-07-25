@@ -32,7 +32,7 @@
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-header bg-red">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-header bg-red-o">
             @include('layout.nav-bar')
         </nav>
         <div class="content-wrapper custom-content">

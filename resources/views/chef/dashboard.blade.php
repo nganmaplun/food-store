@@ -2,8 +2,21 @@
 use Carbon\Carbon;
 ?>
 @extends('layout.no-menubar')
-
+@section('other-css')
+    <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{asset('css/responsive.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{asset('css/jquery-ui.min.css')}}">
+@endsection
 @section('content')
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <a class="btn btn-primary" href="{{ route('food') }}">Setting món</a>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
 <ul class="nav justify-content-center pt-3">
     <li class="nav-item d-none d-sm-block">
         <a class="nav-link btn btn-default {{ $category == 1 ? 'bg-dark-red' : '' }}"
@@ -58,15 +71,15 @@ use Carbon\Carbon;
 </section>
 <section class="content pt-3">
     <div class="card">
-        <div class="card-body p-0">
-            <table class="table table-sm projects">
+        <div class="card-body p-1">
+            <table class="table table-bordered projects">
                 <thead>
                     <tr>
-                        <th style="width: 10%">Bàn</th>
-                        <th style="width: 40%">Món</th>
-                        <th style="width: 20%">Số lượng</th>
-                        <th style="width: 20%">Giờ order</th>
-                        <th style="width: 30%"></th>
+                        <th class="all">Bàn</th>
+                        <th class="all">Món</th>
+                        <th class="all">Số lượng</th>
+                        <th class="none">Giờ order</th>
+                        <th class="none"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,6 +92,7 @@ use Carbon\Carbon;
                         </td>
                         <td width="40%" class="custom-td">
                             <a onclick="openModal(this)" href="javascript:void(0)" key="{{ $key }}">
+                                <span style="font-size: larger; font-weight: bolder">{{ $food[\App\Constants\FoodConstant::SHORT_NAME_FIELD] }}<br/></span>
                                 {{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}
                             </a>
                             @if ($food[\App\Constants\FoodOrderConstant::NOTE_FIELD])
@@ -95,7 +109,7 @@ use Carbon\Carbon;
                         </td>
                         <td class="custom-td">{{ $food[\App\Constants\FoodOrderConstant::ORDER_TIME_FIELD] }}</td>
                         <td class="text-right custom-td" width="40%">
-                            <button class="btn btn-outline-primary check-food"
+                            <button class="btn btn-warning check-food"
                                 index="{{ $food[\App\Constants\FoodOrderConstant::ORDER_ID_FIELD] }}"
                                 rel="{{ $food['tblId'] }}" food="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Trả
                                 món</button>
@@ -135,5 +149,9 @@ use Carbon\Carbon;
         })
     });
 </script>
+<script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
+<script src="{{asset('js/dataTables.bootstrap4.min.js')}}"></script>
+<script src="{{asset('js/dataTables.responsive.min.js')}}"></script>
+<script src="{{asset('js/responsive.bootstrap4.min.js')}}"></script>
 <script src="{{ asset('js/chef-dashboard.js' )}}"></script>
 @endsection

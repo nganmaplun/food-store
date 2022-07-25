@@ -36,7 +36,18 @@
             </div>
         </div>
     </section>
-
+    <section class="content">
+        <div class="container-fluid">
+            <div class="col-8 offset-2">
+                <select class="form-control" id="lang-change">
+                    <option selected disabled>Hiển thị</option>
+                    <option value="vie">Tiếng Việt</option>
+                    <option value="jap">Tiếng Nhật</option>
+                    <option value="eng">Tiếng Anh</option>
+                </select>
+            </div>
+        </div>
+    </section>
     <section class="content pt-3">
         <div class="card">
             <div class="card-body p-0">
@@ -50,13 +61,13 @@
                             </div>
                         </td>
                         <td width="40%" class="custom-td">
-                            <a>
-                                {{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}<br/>
-                                {{ $food[\App\Constants\FoodConstant::JAPANESE_NAME_FIELD] }}<br/>
-                                {{ $food[\App\Constants\FoodConstant::SHORT_NAME_FIELD] }}
+                            <a><span style="font-size: larger; font-weight: bolder">{{ $food[\App\Constants\FoodConstant::SHORT_NAME_FIELD] }}<br/></span>
+                                <span class="vie">{{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}<br/></span>
+                                <span class="jap">{{ $food[\App\Constants\FoodConstant::JAPANESE_NAME_FIELD] }}<br/></span>
+                                <span class="eng">{{ $food[\App\Constants\FoodConstant::ENGLISH_NAME_FIELD] }}<br/></span>
                             </a>
                             <br/>
-                            <small>
+                            <small style="word-break: break-all;">
                                 {{ $food[\App\Constants\FoodConstant::DESCRIPTION_FIELD] }}
                             </small>
                             <br/>

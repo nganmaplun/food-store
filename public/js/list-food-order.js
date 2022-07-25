@@ -1,4 +1,19 @@
 $(function () {
+    $('.eng, .jap').prop('hidden', true);
+    $(document).on('change', '#lang-change', function() {
+        if ($(this).val() == 'vie') {
+            $('.eng, .jap').prop('hidden', true);
+            $('.vie').prop('hidden', false);
+        }
+        if ($(this).val() == 'jap') {
+            $('.eng, .vie').prop('hidden', true);
+            $('.jap').prop('hidden', false);
+        }
+        if ($(this).val() == 'eng') {
+            $('.vie, .jap').prop('hidden', true);
+            $('.eng').prop('hidden', false);
+        }
+    });
     $(document).on('click', '.minus-less', function () {
         let orderNum = parseInt($(this).parent().find('.order-value').text());
         let minusNum = orderNum - 1;

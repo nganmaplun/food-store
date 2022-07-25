@@ -125,6 +125,9 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             TableConstant::TABLE_NAME .  '.' . BaseConstant::ID_FIELD . ' AS tblId',
             TableConstant::NAME_FIELD,
             FoodConstant::VIETNAMESE_NAME_FIELD,
+            FoodConstant::JAPANESE_NAME_FIELD,
+            FoodConstant::ENGLISH_NAME_FIELD,
+            FoodConstant::SHORT_NAME_FIELD,
             FoodConstant::CATEGORY_FIELD,
             FoodConstant::RECIPE_FIELD,
             FoodOrderConstant::ORDER_ID_FIELD,
@@ -197,6 +200,9 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     {
         $select = [
             FoodConstant::VIETNAMESE_NAME_FIELD,
+            FoodConstant::JAPANESE_NAME_FIELD,
+            FoodConstant::ENGLISH_NAME_FIELD,
+            FoodConstant::SHORT_NAME_FIELD,
             FoodConstant::PRICE_FIELD,
             FoodOrderConstant::ORDER_NUM_FIELD,
             OrderConstant::TABLE_NAME . '.' . OrderConstant::DESCRIPTION_FIELD
