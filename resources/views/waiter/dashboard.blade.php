@@ -37,7 +37,11 @@
     @endforeach
     </li>
 </ul>
-
+@if (\Session::has('status'))
+    <div class="alert alert-success">
+        <span>{!! \Session::get('status') !!}</span>
+    </div>
+@endif
 <section class="content pt-3">
     <div class="container-fluid">
         <div class="row">
@@ -146,16 +150,11 @@
                     }
                 }
                 if ($(this).hasClass('bg-yellow')) {
-                    if (confirm(msgYellow)) {
-                        let code = sendRequestChangeStatus(index).then(function(r) {
-                            alert(r.message)
-                            return r.code;
-                        })
-                        code.then(() => {
-                            $(this).removeClass('bg-yellow').addClass('bg-green');
-                            $(this).find('.ribbon-text').text('Bàn trống');
-                        });
-                    }
+                    let rel = $(this).parent().attr('rel');
+                    let url = "{{ route('waiter.detail-order', [ ":orderId"]) }}";
+                    url = url.replace(':orderId', rel);
+                    location.href = url;
+                    return
                 }
                 if ($(this).hasClass('bg-red')) {
                     let rel = $(this).parent().attr('rel');

@@ -162,8 +162,11 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
                 )
                 ->select(OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD)
                 ->where(TableConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $id)
+                ->whereIn(TableConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, [1, 2])
                 ->where(OrderConstant::ORDER_DATE_FIELD, $today)
-                ->whereIn(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, [0, 1, 2]);
+                ->whereIn(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, [0, 1, 2])
+                ->orderBy(OrderConstant::TABLE_NAME . '.' . BaseConstant::CREATEDAT_FIELD, 'DESC')
+                ->limit(1);
             $result = $this->select($select)
                 ->leftJoinSub($lstOrderId, 'odr', function($join) {
                     $join->on(

@@ -51,7 +51,7 @@ class MessageService
      * @throws \Pusher\ApiErrorException
      * @throws \Pusher\PusherException
      */
-    public function sendNotify($tableName, $orderId, $data, $type, $tableId = null, $foodId = null)
+    public function sendNotify($tableName, $orderId, $data, $type, $tableId = null, $foodId = null, $createTable = false)
     {
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),
@@ -90,7 +90,8 @@ class MessageService
             case BaseConstant::SEND_WAITER:
                 $info = [
                     'tableId' => $tableId ?? null,
-                    'orderId' => $orderId
+                    'orderId' => $orderId,
+                    'createTable' => $createTable
                 ];
                 $pusher->trigger('NotifyWaiter', BaseConstant::WAITER_CHANNEL, $info);
                 $this->foodOrderRepository->updateToCompletedFood($orderId, $foodId);
@@ -99,6 +100,15 @@ class MessageService
             case BaseConstant::SEND_CASHIER:
                 $pusher->trigger('NotifyCashier', BaseConstant::CASHIER_CHANNEL, $tableName);
                 $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_CASHIER);
+                break;
+
+            case BaseConstant::SEND_WAITER_BACK:
+                $info = [
+                    'tableId' => $tableId ?? null,
+                    'orderId' => $orderId,
+                    'paid' => true
+                ];
+                $pusher->trigger('NotifyWaiter', BaseConstant::WAITER_CHANNEL, $info);
                 break;
         }
 

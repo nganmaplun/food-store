@@ -7,6 +7,7 @@ use App\Constants\FoodConstant;
 use App\Constants\FoodOrderConstant;
 use App\Constants\OrderConstant;
 use App\Constants\TableConstant;
+use App\Constants\UserConstant;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -106,7 +107,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $orderId)
                 ->whereNotNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD)
                 ->where(OrderConstant::ORDER_DATE_FIELD, Carbon::now()->toDateString())
-                ->whereIn(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, [0, 1, 2]);
+                ->whereIn(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, [0, 1]);
         if ($foodId) {
             $result->where(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $foodId);
         }
@@ -233,11 +234,14 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @return mixed
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function updateFinalOrder($orderId, $totalPrice)
+    public function updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount)
     {
         return $this->update([
             OrderConstant::TOTAL_PRICE_FIELD => $totalPrice,
+            OrderConstant::DESCRIPTION_FIELD => $note,
             OrderConstant::IS_PAID_FIELD => true,
+            OrderConstant::PAID_TYPE_FIELD => $paidType,
+            OrderConstant::DISCOUNT_FIELD => $discount
         ], $orderId);
     }
 
@@ -247,7 +251,117 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      */
     public function detailOrder($orderId)
     {
-        return $this->where(BaseConstant::ID_FIELD, $orderId)->first();
+        $select = [
+            TableConstant::TABLE_NAME . '.' . TableConstant::NAME_FIELD,
+            UserConstant::FULLNAME_FIELD,
+            OrderConstant::TABLE_NAME . '.*',
+        ];
+        return $this->select($select)
+            ->leftJoin(
+                TableConstant::TABLE_NAME,
+                TableConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                OrderConstant::TABLE_ID_FIELD
+            )
+            ->leftJoin(
+                UserConstant::TABLE_NAME,
+                UserConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                OrderConstant::EMPLOYEE_ID_FIELD
+            )
+            ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $orderId)->first();
+    }
+
+    /**
+     * @param $condition
+     * @return mixed
+     */
+    public function aggOrder($condition)
+    {
+        $orderDate = match ($condition['type']) {
+            'day' => 'DATE_FORMAT(order_date, "%Y-%m-%d")',
+            'month' => 'DATE_FORMAT(order_date, "%Y-%m")',
+            'year' => 'DATE_FORMAT(order_date, "%Y")',
+        };
+        $select2 = [
+            OrderConstant::CUSTOMER_TYPE_FIELD,
+            DB::raw('sum(number_of_customers) as cus_num'),
+        ];
+        $select = [
+            DB::raw('sum(order_num) AS total_food'),
+            DB::raw('sum(total_price) as total_price'),
+            DB::raw($orderDate . ' AS order_date_s'),
+        ];
+        $others = $this->select($select)
+            ->leftJoin(
+                FoodOrderConstant::TABLE_NAME,
+                OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
+                BaseConstant::EQUAL,
+                FoodOrderConstant::ORDER_ID_FIELD
+            )
+            ->where(OrderConstant::IS_PAID_FIELD, true)
+            ->groupBy([DB::raw('order_date_s')]);
+        if (isset($condition['from']) && !empty($condition['from'])) {
+            $others->where(OrderConstant::ORDER_DATE_FIELD, BaseConstant::GREATER_AND_EQUAL_THAN, $condition['from']);
+        }
+        if (isset($condition['to']) && !empty($condition['to'])) {
+            $others->where(OrderConstant::ORDER_DATE_FIELD, BaseConstant::LESS_AND_EQUAL_THAN, $condition['to']);
+        }
+        $others = $others->get();
+        $arrFinal = [];
+        $i = 0;
+        foreach ($others as $oth) {
+            $customers = $this->select($select2)
+                ->where(OrderConstant::IS_PAID_FIELD, true)
+                ->where(DB::raw($orderDate), $oth['order_date_s'])
+                ->groupBy([DB::raw('customer_type')])
+                ->get();
+            $arrFinal[$i]['total_food'] = $oth['total_food'];
+            $arrFinal[$i]['total_price'] = $oth['total_price'];
+            $arrFinal[$i]['order_date'] = $oth['order_date_s'];
+            foreach ($customers as $cus) {
+                if ($cus[OrderConstant::CUSTOMER_TYPE_FIELD] == 'V') {
+                    $arrFinal[$i]['vietnamese_guest'] = $cus['cus_num'];
+                }
+                if ($cus[OrderConstant::CUSTOMER_TYPE_FIELD] == 'J') {
+                    $arrFinal[$i]['japanese_guest'] = $cus['cus_num'];
+                }
+                if ($cus[OrderConstant::CUSTOMER_TYPE_FIELD] == 'E') {
+                    $arrFinal[$i]['other_guest'] = $cus['cus_num'];
+                }
+            }
+            $i++;
+        }
+        return $arrFinal;
+    }
+
+    /**
+     * @param mixed $orderId
+     * @return mixed
+     */
+    public function checkOrderStatus(mixed $orderId)
+    {
+        $orderStatus = $this->select(BaseConstant::STATUS_FIELD)
+            ->where(BaseConstant::ID_FIELD, $orderId)
+            ->first();
+
+        return $orderStatus[BaseConstant::STATUS_FIELD];
+    }
+
+    /**
+     * @param $orderId
+     * @return mixed
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function updateFinal($orderId)
+    {
+        try {
+            return $this->update([
+                OrderConstant::DRAFT_FIELD => false
+            ], $orderId);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**

@@ -20,6 +20,10 @@ class NofityWaiter extends Notify
 
     private string $tableId;
 
+    private mixed $createTable;
+
+    private mixed $paid;
+
     /**
      * Create a new event instance.
      *
@@ -27,9 +31,10 @@ class NofityWaiter extends Notify
      */
     public function __construct($data)
     {
-        Log::info('check' , $data);
         $this->orderId = $data['orderId'];
         $this->tableId = $data['tableId'];
+        $this->createTable = $data['createTable'];
+        $this->paid = $data['paid'];
         parent::__construct($data);
     }
 

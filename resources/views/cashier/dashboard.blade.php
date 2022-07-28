@@ -71,8 +71,6 @@
 @endsection
 @section('script')
     <script>
-        var changeStatusUrl = "{{ route('change-table-status') }}";
-        var createOrder = "{{ route('create-order') }}";
         setTimeout(function () {
             $('.alert-success').css('display', 'none');
         }, 2000);
@@ -102,6 +100,5 @@
             })
         })
     </script>
-    <script src="{{ asset('js/waiter-dashboard.js' )}}"></script>
-    <script src="{{ asset('js/custom-waiter-only.js' )}}"></script>
+    <script src="{{ asset('js/cashier-only.js' )}}"></script>
 @endsection

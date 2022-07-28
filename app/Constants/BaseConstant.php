@@ -60,6 +60,7 @@ class BaseConstant
     const SEND_CHEF = 'send-chef';
     const SEND_CASHIER = 'send-cashier';
     const SEND_WAITER = 'send-waiter';
+    const SEND_WAITER_BACK = 'send-waiter-back';
 
     const ARRAY_KITCHEN = [
         self::FOOD_SALAD => "Bếp đồ sống (SASHI)",

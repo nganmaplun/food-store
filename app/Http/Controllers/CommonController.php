@@ -128,7 +128,7 @@ class CommonController extends Controller
     private function checkTableStatus($id)
     {
         $result = $this->tableRepository->checkTableStatus($id);
-        if ($result === BaseConstant::TABLE_ORDERED) {
+        if ($result == BaseConstant::TABLE_ORDERED) {
             return response()->json([
                 'code' => '111',
                 'message' => 'Bàn đã được order'
@@ -143,6 +143,13 @@ class CommonController extends Controller
     public function addFoodToOrder(Request $request)
     {
         $request = $request->all();
+        $result = $this->checkOrderStatus($request['orderId']);
+        if ($result === 'true') {
+            return response()->json([
+                'code' => '111',
+                'message' => 'Không thêm món vì bàn đã được yêu cầu thanh toán'
+            ]);
+        }
         $result = $this->checkFoodRemain($request);
         if ($result != 'true') {
             return response()->json([
@@ -201,11 +208,22 @@ class CommonController extends Controller
         $result = $this->orderRepository->createOrder($request, $user[BaseConstant::ID_FIELD]);
 
         if ($result) {
-            return response()->json([
-                'code' => '222',
-                'message' => 'Đã tạo order',
-                'order_id' => $result[BaseConstant::ID_FIELD]
-            ]);
+            try {
+                $tableData = $this->tableRepository->getTableName($request['id']);
+                $listFoodInOrder = $this->orderRepository->getListFoodsInOrder($result[BaseConstant::ID_FIELD]);
+                $this->messageService->sendNotify($tableData, $result[BaseConstant::ID_FIELD], $listFoodInOrder, BaseConstant::SEND_WAITER, $request['id'], null, true);
+                return response()->json([
+                    'code' => '222',
+                    'message' => 'Đã tạo order',
+                    'order_id' => $result[BaseConstant::ID_FIELD]
+                ]);
+            } catch (\Exception $e) {
+                Log::channel('customError')->error($e->getMessage());
+                return response()->json([
+                    'code' => '333',
+                    'message' => 'Hãy thử lại'
+                ]);
+            }
         }
 
         return response()->json([
@@ -269,5 +287,18 @@ class CommonController extends Controller
             'code' => '333',
             'message' => 'Lỗi hệ thông, vui lòng thử lại'
         ]);
+    }
+
+    /**
+     * @param mixed $orderId
+     * @return void
+     */
+    private function checkOrderStatus(mixed $orderId)
+    {
+        $result = $this->orderRepository->checkOrderStatus($orderId);
+        if ($result == BaseConstant::TABLE_PAID) {
+            return 'true';
+        }
+        return 'false';
     }
 }

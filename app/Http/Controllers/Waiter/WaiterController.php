@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Waiter;
 
 use App\Constants\BaseConstant;
+use App\Constants\OrderConstant;
 use App\Constants\TableConstant;
 use App\Http\Controllers\Controller;
 use App\Repositories\FoodOrderRepository;
@@ -157,5 +158,19 @@ class WaiterController extends Controller
         $listFoods = $this->foodOrderRepository->getAllFinishFood($today);
 
         return view('waiter.finished_food', ['listFoods' => $listFoods]);
+    }
+
+    public function updateFinal($orderId)
+    {
+        $result = $this->orderRepository->updateFinal($orderId);
+
+        if ($result) {
+            $result = $this->tableRepository->changeTableStatus($result[OrderConstant::TABLE_ID_FIELD]);
+            if ($result) {
+                return redirect()->route('waiter-dashboard')->with(['status' => 'Xác nhận thành công']);
+            }
+            return redirect()->back()->with(['status' => 'Xác nhận thất bại, hãy thử lại']);
+        }
+        return redirect()->back()->with(['status' => 'Xác nhận thất bại, hãy thử lại']);
     }
 }

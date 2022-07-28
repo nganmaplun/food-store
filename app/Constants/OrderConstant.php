@@ -14,4 +14,7 @@ class OrderConstant
     const IS_PAID_FIELD = 'is_paid';
     const DESCRIPTION_FIELD = 'description';
     const ORDER_DATE_FIELD = 'order_date';
+    const PAID_TYPE_FIELD = 'paid_type';
+    const DRAFT_FIELD = 'is_draft';
+    const DISCOUNT_FIELD = 'discount';
 }

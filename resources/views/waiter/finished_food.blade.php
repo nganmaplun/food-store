@@ -1,5 +1,9 @@
 @extends('layout.no-menubar')
-
+@section('other-css')
+    <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{asset('css/responsive.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{asset('css/jquery-ui.min.css')}}">
+@endsection
 @section('content')
 <section class="content-header">
     <div class="container-fluid">
@@ -16,7 +20,7 @@
 <section class="content">
     <div class="container-fluid">
         <div class="card">
-            <div class="card-body p-0">
+            <div class="card-body p-2">
                 <table class="table table-sm" id="list-order">
                     <thead>
                         <tr>
@@ -49,6 +53,10 @@
 <script>
     var urlFoodToTable = "{{ route('to-table-status') }}";
 </script>
+<script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
+<script src="{{asset('js/dataTables.bootstrap4.min.js')}}"></script>
+<script src="{{asset('js/dataTables.responsive.min.js')}}"></script>
+<script src="{{asset('js/responsive.bootstrap4.min.js')}}"></script>
 <script src="{{ asset('js/table-order.js' )}}"></script>
 <script src="{{ asset('js/custom-waiter-only.js' )}}"></script>
 @endsection

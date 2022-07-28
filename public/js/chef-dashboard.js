@@ -27,8 +27,10 @@ $(function () {
                 messageType: "send-waiter",
             },
             success: function (response) {
-                alert(response.message);
-                location.reload();
+                showMessage(2000, response.message);
+                setTimeout(function () {
+                    location.reload();
+                }, 2000)
             },
         });
     });

@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
+use App\Services\MessageService;
 use App\Services\TableService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -36,17 +37,23 @@ class CashierController extends Controller
      * @var TableService
      */
     private TableService $tableService;
+    /**
+     * @var
+     */
+    private $messageService;
 
     public function __construct(
         OrderRepository $orderRepository,
         TableRepository $tableRepository,
         FoodOrderRepository $foodOrderRepository,
-        TableService $tableService
+        TableService $tableService,
+        MessageService $messageService
     ) {
         $this->orderRepository = $orderRepository;
         $this->tableRepository = $tableRepository;
         $this->foodOrderRepository = $foodOrderRepository;
         $this->tableService = $tableService;
+        $this->messageService = $messageService;
     }
 
     /**
@@ -85,30 +92,23 @@ class CashierController extends Controller
     public function checkout(Request $request, $orderId)
     {
         $request = $request->all();
-        $discount = $request['voucher'];
-        $note = $request['other_note'];
-        $arrNote = explode("\r\n", $note);
-        $otherPaid = 0;
-        if (!empty($arrNote)) {
-            foreach ($arrNote as $sNote) {
-                if (empty($sNote)) continue;
-                $money = trim(explode(':', $sNote)[1]);
-                if (is_numeric($money)) {
-                    $otherPaid = $otherPaid + $money;
-                }
-            }
-        }
+        $discount = $request['voucher'] ?? 0;
+        $note = $request['other_note'] ?? '';
+        $otherMoney = $request['other_money'] ?? 0;
+        $paidType = $request['paid_type'] ?? 0;
         $detail = $this->orderRepository->getDetailOrder($orderId);
         $price = 0;
         foreach ($detail as $dtl) {
             $price = $price + $dtl[FoodOrderConstant::ORDER_NUM_FIELD] * $dtl[FoodConstant::PRICE_FIELD];
         }
-        $totalPrice = $price - $price * $discount + $otherPaid;
-        $result = $this->orderRepository->updateFinalOrder($orderId, $totalPrice);
+        $totalPrice = $price + $otherMoney - ($price + $otherMoney) * $discount / 100;
+        $result = $this->orderRepository->updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount);
 
         if ($result) {
             $result = $this->tableRepository->updateTableStatus($result[OrderConstant::TABLE_ID_FIELD]);
             if ($result) {
+                $tableData = $this->tableRepository->getTableName($result[OrderConstant::TABLE_ID_FIELD]);
+                $this->messageService->sendNotify($tableData, $orderId, [], BaseConstant::SEND_WAITER_BACK);
                 return redirect()->route('cashier-dashboard')->with(['status' => 'Thanh toán thành công']);
             }
             return redirect()->back()->with(['status' => 'Thanh toán thất bại, hãy thử lại']);

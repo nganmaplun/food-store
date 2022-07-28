@@ -77,9 +77,9 @@ use Carbon\Carbon;
                     <tr>
                         <th class="all">Bàn</th>
                         <th class="all">Món</th>
-                        <th class="all">Số lượng</th>
+                        <th class="none">Số lượng</th>
                         <th class="none">Giờ order</th>
-                        <th class="none"></th>
+                        <th class="all"></th>
                     </tr>
                 </thead>
                 <tbody>

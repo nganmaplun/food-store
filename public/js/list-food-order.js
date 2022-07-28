@@ -46,6 +46,7 @@ $(function () {
             type: "POST",
             data: {
                 orderId: orderId,
+                tableId: tableId,
                 foodId: foodId,
                 orderNum: orderNum,
                 note: note
