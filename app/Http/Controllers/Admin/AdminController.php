@@ -175,6 +175,9 @@ class AdminController  extends Controller
         return response()->json(['status' => false]);
     }
 
+    /**
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function resetTable()
     {
         $result = $this->tableRepository->resetTable();
@@ -183,5 +186,21 @@ class AdminController  extends Controller
             return redirect()->route('admin-dashboard')->with(['status' => 'Reset bàn thành công']);
         }
         return redirect()->route('admin-dashboard')->with(['status' => 'Reset bàn thất bại. Hãy thử lại']);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function deleteFood(Request $request)
+    {
+        $request = $request->all();
+        $result = $this->foodDayRepository->deleteSetFoodToday($request);
+        if ($result) {
+
+            return response()->json(['status' => true]);
+        }
+
+        return response()->json(['status' => false]);
     }
 }

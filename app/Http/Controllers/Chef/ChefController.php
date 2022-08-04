@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Chef;
 
 use App\Constants\BaseConstant;
 use App\Http\Controllers\Controller;
+use App\Repositories\FoodOrderRepository;
 use App\Repositories\OrderRepository;
+use Illuminate\Http\Request;
 
 class ChefController extends Controller
 {
@@ -13,10 +15,21 @@ class ChefController extends Controller
      */
     private OrderRepository $orderRepository;
 
+    /**
+     * @var FoodOrderRepository
+     */
+    private FoodOrderRepository $foodOrderRepository;
+
+    /**
+     * @param OrderRepository $orderRepository
+     * @param FoodOrderRepository $foodOrderRepository
+     */
     public function __construct(
-        OrderRepository $orderRepository
+        OrderRepository $orderRepository,
+        FoodOrderRepository $foodOrderRepository
     ) {
         $this->orderRepository = $orderRepository;
+        $this->foodOrderRepository = $foodOrderRepository;
     }
 
     /**
@@ -46,6 +59,23 @@ class ChefController extends Controller
             'channel' => $channel,
             'event' => $event,
             'listFoods' => $listFoods
+        ]);
+    }
+
+    public function cancelCooking(Request $request)
+    {
+        $request = $request->all();
+        $result = $this->foodOrderRepository->cancelCooking($request);
+        if ($result) {
+            return response()->json([
+                'code' => '222',
+                'message' => 'Đã hủy món',
+            ]);
+        }
+
+        return response()->json([
+            'code' => '333',
+            'message' => 'Lỗi hệ thông, vui lòng thử lại'
         ]);
     }
 }

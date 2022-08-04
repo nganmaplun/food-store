@@ -42,3 +42,13 @@ table.dataTable tbody td {
 .bg-red-o {
     background-color: #dc3545!important;
 }
+
+.bg-light-yellow {
+    background-color: #F4EA56!important;
+}
+.bg-light-green {
+    background-color: #26D07C!important;
+}
+.custom-font-color {
+    color: black !important;
+}

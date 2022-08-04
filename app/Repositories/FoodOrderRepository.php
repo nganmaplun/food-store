@@ -49,5 +49,15 @@ interface FoodOrderRepository extends RepositoryInterface
      */
     public function getListCountOrder(array $lstId, string $today);
 
+    /**
+     * @param $today
+     * @return mixed
+     */
     public function getAllFinishFood($today);
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function cancelCooking(array $request);
 }

@@ -90,7 +90,7 @@ use Carbon\Carbon;
                     <div class="input-group-prepend">
                         <span class="input-group-text">Nhập số tiền phụ thu</span>
                     </div>
-                    <input type="number" class="form-control" name="other_money" id="other-money">
+                    <input type="number" class="form-control" name="other_money" id="other-money" value="{{ $orderInfo[\App\Constants\OrderConstant::OTHER_MONEY_FIELD] ?? '' }}">
                 </div>
             </div>
             <div class="col-12 custom-control-inline" style="width: 100%">
@@ -102,7 +102,7 @@ use Carbon\Carbon;
                 <div class="col-10 form-group row">
                     <label for="voucher" class="col-form-label p-1">Giảm giá : </label>
                     <select class="form-select offset-sm-1" id="voucher" name="voucher" {{ $route === 'waiter.detail-order' ? 'disabled' : '' }}>
-                        <option {{ $orderInfo[\App\Constants\OrderConstant::DISCOUNT_FIELD] == 0 ? 'selected' : '' }} selected value="0">Chọn giảm giá</option>
+                        <option {{ $orderInfo[\App\Constants\OrderConstant::DISCOUNT_FIELD] == 0 ? 'selected' : '' }} value="0">Chọn giảm giá</option>
                         <option {{ $orderInfo[\App\Constants\OrderConstant::DISCOUNT_FIELD] == 5 ? 'selected' : '' }} value="5">5%</option>
                         <option {{ $orderInfo[\App\Constants\OrderConstant::DISCOUNT_FIELD] == 10 ? 'selected' : '' }} value="10">10%</option>
                         <option {{ $orderInfo[\App\Constants\OrderConstant::DISCOUNT_FIELD] == 15 ? 'selected' : '' }} value="15">15%</option>
@@ -117,14 +117,14 @@ use Carbon\Carbon;
                     <select class="form-select offset-sm-1" id="paid-type" name="paid_type"  {{ $route === 'waiter.detail-order' ? 'disabled' : '' }}>
                         <option selected disabled value="0">Chọn</option>
                         <option {{ $orderInfo[\App\Constants\OrderConstant::PAID_TYPE_FIELD] == 'money' ? 'selected' : '' }} value="money">Tiền mặt</option>
-                        <option {{ $orderInfo[\App\Constants\OrderConstant::PAID_TYPE_FIELD] == 'money' ? 'card' : '' }} value="card">Thẻ visa</option>
+                        <option {{ $orderInfo[\App\Constants\OrderConstant::PAID_TYPE_FIELD] == 'card' ? 'selected' : '' }} value="card">Thẻ visa</option>
                     </select>
                 </div>
             </div>
             <div class="col-12">
                 <div class="col-10 form-group row">
                     <label class="col-form-label" for="draf_money">Tổng tiền tạm tính: </label>
-                    <span class="col-form-label pl-1" id="draf_money">{{ $route === 'waiter.detail-order' ? $orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] : '' }}</span>
+                    <span class="col-form-label pl-1" id="draf_money">{{ $orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] ?? '' }}</span>
                 </div>
             </div>
             <div class="col-12">
@@ -138,6 +138,7 @@ use Carbon\Carbon;
 <script>
     var urlPaid = "{{ route('paid-order') }}";
     var orderId = "{{ $orderId }}";
+    var currentPrice = {{ $orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] ?? 0 }}
     setTimeout(function () {
         $('.alert-success').css('display', 'none');
     }, 2000);

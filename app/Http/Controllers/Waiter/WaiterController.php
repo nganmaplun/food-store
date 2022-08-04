@@ -10,6 +10,7 @@ use App\Repositories\FoodOrderRepository;
 use App\Repositories\FoodRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
+use App\Services\MessageService;
 use App\Services\TableService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -40,6 +41,10 @@ class WaiterController extends Controller
      * @var FoodOrderRepository
      */
     private FoodOrderRepository $foodOrderRepository;
+    /**
+     * @var
+     */
+    private MessageService $messageService;
 
     /**
      * @param TableRepository $tableRepository
@@ -47,19 +52,22 @@ class WaiterController extends Controller
      * @param TableService $tableService
      * @param OrderRepository $orderRepository
      * @param FoodOrderRepository $foodOrderRepository
+     * @param MessageService $messageService
      */
     public function __construct(
         TableRepository $tableRepository,
         FoodRepository $foodRepository,
         TableService $tableService,
         OrderRepository $orderRepository,
-        FoodOrderRepository $foodOrderRepository
+        FoodOrderRepository $foodOrderRepository,
+        MessageService $messageService
     ){
         $this->tableRepository = $tableRepository;
         $this->foodRepository = $foodRepository;
         $this->tableService = $tableService;
         $this->orderRepository = $orderRepository;
         $this->foodOrderRepository = $foodOrderRepository;
+        $this->messageService = $messageService;
     }
 
     /**
@@ -152,6 +160,9 @@ class WaiterController extends Controller
         ]);
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
     public function foodStand()
     {
         $today = Carbon::now()->toDateString();
@@ -160,17 +171,62 @@ class WaiterController extends Controller
         return view('waiter.finished_food', ['listFoods' => $listFoods]);
     }
 
+    /**
+     * @param $orderId
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function updateFinal($orderId)
     {
         $result = $this->orderRepository->updateFinal($orderId);
 
         if ($result) {
-            $result = $this->tableRepository->changeTableStatus($result[OrderConstant::TABLE_ID_FIELD]);
-            if ($result) {
-                return redirect()->route('waiter-dashboard')->with(['status' => 'Xác nhận thành công']);
-            }
-            return redirect()->back()->with(['status' => 'Xác nhận thất bại, hãy thử lại']);
+            $this->tableRepository->changeTableStatus($result[OrderConstant::TABLE_ID_FIELD]);
+            $tableData = $this->tableRepository->getTableName($result[OrderConstant::TABLE_ID_FIELD]);
+            $this->messageService->sendNotify($tableData, $orderId, [], BaseConstant::SEND_CASHIER);
+            return response()->json([
+                'code' => '222',
+                'message' => 'Xác nhận thành công',
+            ]);
         }
-        return redirect()->back()->with(['status' => 'Xác nhận thất bại, hãy thử lại']);
+
+        return response()->json([
+            'code' => '333',
+            'message' => 'Lỗi hệ thông, vui lòng thử lại'
+        ]);
+    }
+
+    /**
+     * @param $orderId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function detailOrder($orderId)
+    {
+        $detail = $this->orderRepository->getDetailOrder($orderId);
+        $orderInfo = $this->orderRepository->detailOrder($orderId);
+
+        return view('waiter.detail-order', ['detail' => $detail, 'orderId' => $orderId, 'orderInfo' => $orderInfo]);
+    }
+
+    /**
+     * @param $orderId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reEditOrder($orderId)
+    {
+        $result = $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_CASHIER);
+        if ($result) {
+            $this->tableRepository->updateReEditTableStatus($result[OrderConstant::TABLE_ID_FIELD]);
+            $tableData = $this->tableRepository->getTableName($result[OrderConstant::TABLE_ID_FIELD]);
+            $this->messageService->sendNotify($tableData, $orderId, [], BaseConstant::SEND_CASHIER);
+            return response()->json([
+                'code' => '222',
+                'message' => 'Đã yêu cầu sửa lại hóa đơn',
+            ]);
+        }
+
+        return response()->json([
+            'code' => '333',
+            'message' => 'Lỗi hệ thông, vui lòng thử lại'
+        ]);
     }
 }

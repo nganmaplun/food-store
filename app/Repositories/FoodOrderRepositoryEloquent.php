@@ -249,4 +249,20 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
             ->where(TableConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, 1)
             ->get();
     }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function cancelCooking(array $request)
+    {
+        try {
+            return $this->update([
+                FoodOrderConstant::IS_CANCEL_FIELD => true
+            ], $request['foodOrderId']);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
 }

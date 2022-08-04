@@ -39,11 +39,19 @@
                                 <tbody>
                                 @foreach($listFoods as $food)
                                 <tr index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}" fid="{{ $food['fid'] ?? '' }}">
-                                    <td style="word-wrap: break-word">{{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}</td>
+                                    <td style="word-wrap: break-word">{{ $food[\App\Constants\FoodConstant::SHORT_NAME_FIELD] }}<br/>
+                                        <small>{{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}<br/></small>
+                                        <small>{{ $food[\App\Constants\FoodConstant::JAPANESE_NAME_FIELD] }}<br/></small>
+                                        <small>{{ $food[\App\Constants\FoodConstant::ENGLISH_NAME_FIELD] }}</small>
+                                    </td>
                                     <td>
                                         <input type="number" class="food-count" value="{{ $food[\App\Constants\FoodDayConstant::NUMBER_FIELD] ?? '' }}">
                                     </td>
-                                    <td><button class="setting">Đặt</button></td>
+                                    <td class="row">
+                                        <button class="btn btn-default setting">Đặt</button>
+                                        <div class="pl-1"></div>
+                                        <button class="btn btn-danger delete">Xóa</button>
+                                    </td>
                                 </tr>
                                 @endforeach
                                 </tbody>
@@ -68,6 +76,7 @@
 @section('script')
     <script>
         var setFoodUrl = "{{ $route === 'admin.food' ? route('admin.post.set-food') : route('post.set-food') }}";
+        var deleteFoodUrl = "{{ $route === 'admin.food' ? route('admin.post.delete-food') : route('post.delete-food') }}";
         var listAllFoodName = "{{ $listAllFoodName }}";
         var listAllName = JSON.parse(listAllFoodName.replace(/&quot;/g, '"'));
     </script>

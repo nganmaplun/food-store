@@ -10,6 +10,7 @@ use App\Constants\UserConstant;
 use App\Http\Requests\ChangePasswodRequest;
 use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodOrderRepository;
+use App\Repositories\FoodRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
 use App\Repositories\UserRepository;
@@ -56,6 +57,11 @@ class CommonController extends Controller
     private FoodDayRepository $foodDayRepository;
 
     /**
+     * @var FoodRepository
+     */
+    private FoodRepository $foodRepository;
+
+    /**
      * @param TableRepository $tableRepository
      * @param OrderRepository $orderRepository
      * @param FoodOrderRepository $foodOrderRepository
@@ -69,6 +75,7 @@ class CommonController extends Controller
         UserRepository $userRepository,
         MessageService $messageService,
         FoodDayRepository $foodDayRepository,
+        FoodRepository $foodRepository,
     ) {
         $this->tableRepository = $tableRepository;
         $this->orderRepository = $orderRepository;
@@ -76,6 +83,7 @@ class CommonController extends Controller
         $this->userRepository = $userRepository;
         $this->messageService = $messageService;
         $this->foodDayRepository = $foodDayRepository;
+        $this->foodRepository = $foodRepository;
     }
 
     /**
@@ -160,6 +168,7 @@ class CommonController extends Controller
         $result = $this->foodOrderRepository->addFoodToOrder($request);
 
         if ($result) {
+            $this->foodRepository->updateOrderCount($request['foodId']);
             return response()->json([
                 'code' => '222',
                 'message' => 'Đã thêm món vào order',
@@ -212,6 +221,7 @@ class CommonController extends Controller
                 $tableData = $this->tableRepository->getTableName($request['id']);
                 $listFoodInOrder = $this->orderRepository->getListFoodsInOrder($result[BaseConstant::ID_FIELD]);
                 $this->messageService->sendNotify($tableData, $result[BaseConstant::ID_FIELD], $listFoodInOrder, BaseConstant::SEND_WAITER, $request['id'], null, true);
+                $this->messageService->sendNotify($tableData, $result[BaseConstant::ID_FIELD], $listFoodInOrder, BaseConstant::SEND_CASHIER, null, null, true);
                 return response()->json([
                     'code' => '222',
                     'message' => 'Đã tạo order',

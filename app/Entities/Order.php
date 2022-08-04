@@ -41,6 +41,7 @@ class Order extends Model implements Transformable
         OrderConstant::PAID_TYPE_FIELD,
         OrderConstant::DRAFT_FIELD,
         OrderConstant::DISCOUNT_FIELD,
+        OrderConstant::OTHER_MONEY_FIELD,
         BaseConstant::STATUS_FIELD
     ];
 

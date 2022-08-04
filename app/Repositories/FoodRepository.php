@@ -62,4 +62,10 @@ interface FoodRepository extends RepositoryInterface
      * @return mixed
      */
     public function deleteFood($id);
+
+    /**
+     * @param mixed $foodId
+     * @return mixed
+     */
+    public function updateOrderCount(mixed $foodId);
 }

@@ -37,7 +37,7 @@
         @include('layout.food-menu')
     </aside>
     @endif
-    <div class="content-wrapper {{ $route !== 'waiter-dashboard' ? '' : 'custom-content' }}">
+    <div class="content-wrapper {{ $route !== 'waiter-dashboard' ? '' : 'custom-content' }}  {{ $role == 'admin' ? 'bg-grey' : ($role == 'waiter/waitress' ? 'bg-red-o custom-font-color' : ($role == 'cashier' ? 'bg-light-yellow' : 'bg-light-green')) }}">
         @yield('content')
     </div>
 </div>

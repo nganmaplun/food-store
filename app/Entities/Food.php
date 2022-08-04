@@ -35,7 +35,8 @@ class Food extends Model implements Transformable
         FoodConstant::IMAGE_FIELD,
         FoodConstant::RECIPE_FIELD,
         FoodConstant::DESCRIPTION_FIELD,
-        BaseConstant::STATUS_FIELD
+        BaseConstant::STATUS_FIELD,
+        FoodConstant::ORDER_COUNT_FIELD
     ];
 
     /**

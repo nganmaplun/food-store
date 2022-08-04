@@ -99,7 +99,9 @@ class MessageService
 
             case BaseConstant::SEND_CASHIER:
                 $pusher->trigger('NotifyCashier', BaseConstant::CASHIER_CHANNEL, $tableName);
-                $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_CASHIER);
+                if (!$createTable) {
+                    $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_CASHIER);
+                }
                 break;
 
             case BaseConstant::SEND_WAITER_BACK:

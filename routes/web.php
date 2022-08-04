@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/approval-timesheet', [AdminController::class, 'approveTimesheet'])->name('post.timesheet');
             Route::get('/setting-foods', [AdminController::class, 'settingFood'])->name('admin.food');
             Route::post('/set-food', [AdminController::class, 'setFood'])->name('admin.post.set-food');
+            Route::post('/delete-food', [AdminController::class, 'deleteFood'])->name('admin.post.delete-food');
             Route::get('/thong-ke-doanh-so', [AggregationController::class, 'aggregateOrder'])->name('admin.aggOrder');
             Route::post('/thong-ke-doanh-so-custom', [AggregationController::class, 'aggregateOrderCustom'])->name('aggOrder-custom');
             Route::get('/list-employee', [EmployeeController::class, 'list'])->name('list-employee');
@@ -74,8 +75,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/{tableId}/{orderId}/food-list/{menuId}', [WaiterController::class, 'listFoodsByMenu'])->name('food-list-by-menu');
             Route::get('/{tableId}/{orderId}', [WaiterController::class, 'orderTable'])->name('view.order');
             Route::get('/food-stand', [WaiterController::class, 'foodStand'])->name('food-stand');
-            Route::get('/detail/order/{orderId}', [CashierController::class, 'detailOrder'])->name('waiter.detail-order');
+            Route::get('/detail/order/{orderId}', [WaiterController::class, 'detailOrder'])->name('waiter.detail-order');
             Route::post('/update-final/{orderId}', [WaiterController::class, 'updateFinal'])->name('update-final');
+            Route::post('/re-edit-order/{orderId}', [WaiterController::class, 'reEditOrder'])->name('re-edit-order');
         });
     });
 
@@ -84,6 +86,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/chef-dashboard/{category}', [ChefController::class, 'dashboard'])->name('chef-dashboard');
             Route::get('/setting-foods', [AdminController::class, 'settingFood'])->name('food');
             Route::post('/set-food', [AdminController::class, 'setFood'])->name('post.set-food');
+            Route::post('/delete-food', [AdminController::class, 'deleteFood'])->name('post.delete-food');
+            Route::post('/cancel-cooking', [ChefController::class, 'cancelCooking'])->name('cancel-cooking');
         });
     });
 

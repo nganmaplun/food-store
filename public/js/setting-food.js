@@ -49,11 +49,44 @@ $(function () {
             },
             success: function (response) {
                 if (!response.status) {
-                    alert('Lỗi hệ thống, vui lòng đặt lại!');
+                    showMessage(1500, 'Lỗi hệ thống, vui lòng đặt lại!')
                     return;
                 }
-                alert('Đặt số suất sẽ bán trong ngày thành công!');
-                location.reload();
+                showMessage(1500, 'Đặt số suất sẽ bán trong ngày thành công!')
+                setTimeout(function () {
+                    location.reload();
+                }, 2000)
+            }
+        })
+    })
+
+    $(document).on('click', '.delete', function() {
+        let fid, index;
+        let thisTr = $(this).closest('tr');
+        let otherTr = $(this).closest('tr').prev();
+        if (otherTr.hasClass('dt-hasChild')) {
+            index = otherTr.attr('index');
+            fid = otherTr.attr('fid');
+        } else {
+            index = thisTr.attr('index');
+            fid = thisTr.attr('fid');
+        }
+        $.ajax({
+            url: deleteFoodUrl,
+            type: 'POST',
+            data: {
+                index: index,
+                fid: fid,
+            },
+            success: function (response) {
+                if (!response.status) {
+                    showMessage(1500, 'Lỗi hệ thống, vui lòng đặt lại!')
+                    return;
+                }
+                showMessage(1500, 'Đã xóa')
+                setTimeout(function () {
+                    location.reload();
+                }, 2000)
             }
         })
     })

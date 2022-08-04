@@ -14,4 +14,6 @@ class FoodOrderConstant
     const IS_NEW_FIELD = 'is_new';
     const IS_SENT_FIELD = 'is_sent';
     const ORDER_TIME_FIELD = 'order_time';
+    const IS_CANCEL_FIELD = 'is_cancel';
+    const IS_ORDER_FIELD = 'is_order';
 }

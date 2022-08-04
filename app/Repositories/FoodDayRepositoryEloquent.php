@@ -82,4 +82,18 @@ class FoodDayRepositoryEloquent extends BaseRepository implements FoodDayReposit
             ->where(FoodDayConstant::DATE_FIELD, $today)
             ->first();
     }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function deleteSetFoodToday(array $request)
+    {
+        try {
+            return $this->delete($request['fid']);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
 }

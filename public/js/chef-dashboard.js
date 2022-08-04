@@ -34,6 +34,23 @@ $(function () {
             },
         });
     });
+
+    $(document).on("click", ".cancel-food", function () {
+        let index = $(this).attr("index");
+        $.ajax({
+            url: urlCancelFood,
+            type: "POST",
+            data: {
+                foodOrderId: index,
+            },
+            success: function (response) {
+                showMessage(2000, response.message);
+                setTimeout(function () {
+                    location.href = domain + '/chef/setting-foods';
+                }, 1000)
+            },
+        });
+    });
 });
 function openModal(that) {
     let key = $(that).attr("key");

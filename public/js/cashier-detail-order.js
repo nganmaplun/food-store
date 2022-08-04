@@ -7,6 +7,9 @@ $(function() {
         total_price += parseInt(price);
     })
     $('#draf_money').text(total_price + total_price * 8 / 100);
+    if (currentPrice != 0) {
+        $('#draf_money').text(currentPrice);
+    }
     $(document).on('keyup', '#other-money', function() {
         let other = $(this).val();
         total_price_after_other = total_price + parseInt(other);
@@ -14,10 +17,12 @@ $(function() {
             total_price_after_other = total_price_after_voucher + parseInt(other);
         }
         $('#draf_money').text(total_price_after_other + total_price_after_other * 8 / 100)
-        if (other === '' && total_price_after_voucher === 0) {
+        if ((other === '' || other === 0) && $('#voucher').val() === 0) {
+            console.log(1)
             $('#draf_money').text(total_price + total_price * 8 / 100)
         }
-        if (other === '' && total_price_after_voucher !== 0) {
+        if ((other === '' || other === 0)  && $('#voucher').val() !== 0) {
+            console.log(2)
             $('#draf_money').text((total_price - total_price * parseInt($('#voucher').val()) / 100) + (total_price - total_price * parseInt($('#voucher').val()) / 100) * 8 / 100)
         }
         let total_price_s = $('#draf_money').text();

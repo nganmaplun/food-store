@@ -22,4 +22,10 @@ interface FoodDayRepository extends RepositoryInterface
      * @return mixed
      */
     public function checkFoodRemain($id, $today);
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function deleteSetFoodToday(array $request);
 }

@@ -89,7 +89,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             FoodOrderConstant::IS_COMPLETED_FIELD,
             FoodOrderConstant::IS_NEW_FIELD,
             FoodOrderConstant::IS_SENT_FIELD,
-            FoodOrderConstant::ORDER_TIME_FIELD
+            FoodOrderConstant::ORDER_TIME_FIELD,
+            FoodOrderConstant::IS_CANCEL_FIELD,
         ];
         $result = $this->select($select)
                 ->leftJoin(
@@ -107,6 +108,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $orderId)
                 ->whereNotNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD)
                 ->where(OrderConstant::ORDER_DATE_FIELD, Carbon::now()->toDateString())
+                ->whereNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::DELETEDAT_FIELD)
                 ->whereIn(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, [0, 1]);
         if ($foodId) {
             $result->where(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD, $foodId);
@@ -163,6 +165,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             ->where(FoodOrderConstant::IS_DELIVERED_FIELD, false)
             ->where(OrderConstant::ORDER_DATE_FIELD, Carbon::now()->toDateString())
             ->where(OrderConstant::TABLE_NAME . '.' . BaseConstant::STATUS_FIELD, 1)
+            ->where(FoodOrderConstant::IS_CANCEL_FIELD, BaseConstant::DIFFERENCE, 1)
+            ->whereNull(FoodOrderConstant::TABLE_NAME . '.' . BaseConstant::DELETEDAT_FIELD)
             ->get();
     }
 
@@ -174,13 +178,17 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      */
     public function updateOrderStatus($orderId, string $type)
     {
-        $status = match ($type) {
-            BaseConstant::SEND_CHEF => 1,
-            BaseConstant::SEND_CASHIER => 2
-        };
-        $this->update([
-            BaseConstant::STATUS_FIELD => $status
-        ], $orderId);
+        try {
+            $status = match ($type) {
+                BaseConstant::SEND_CHEF => 1,
+                BaseConstant::SEND_CASHIER => 2
+            };
+            return $this->update([
+                BaseConstant::STATUS_FIELD => $status
+            ], $orderId);
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -234,14 +242,15 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @return mixed
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount)
+    public function updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount, $otherMoney)
     {
         return $this->update([
             OrderConstant::TOTAL_PRICE_FIELD => $totalPrice,
             OrderConstant::DESCRIPTION_FIELD => $note,
             OrderConstant::IS_PAID_FIELD => true,
             OrderConstant::PAID_TYPE_FIELD => $paidType,
-            OrderConstant::DISCOUNT_FIELD => $discount
+            OrderConstant::DISCOUNT_FIELD => $discount,
+            OrderConstant::OTHER_MONEY_FIELD => $otherMoney,
         ], $orderId);
     }
 
@@ -365,65 +374,22 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     }
 
     /**
-     * @param $condition
+     * @param array $lstId
+     * @param string $today
      * @return mixed
      */
-    public function aggOrder($condition)
+    public function getListCheckoutOrder(array $lstId, string $today)
     {
-        $orderDate = match ($condition['type']) {
-            'day' => 'DATE_FORMAT(order_date, "%Y-%m-%d")',
-            'month' => 'DATE_FORMAT(order_date, "%Y-%m")',
-            'year' => 'DATE_FORMAT(order_date, "%Y")',
-        };
-        $select2 = [
-            OrderConstant::CUSTOMER_TYPE_FIELD,
-            DB::raw('sum(number_of_customers) as cus_num'),
-        ];
-        $select = [
-            DB::raw('sum(order_num) AS total_food'),
-            DB::raw('sum(total_price) as total_price'),
-            DB::raw($orderDate . ' AS order_date_s'),
-        ];
-        $others = $this->select($select)
-            ->leftJoin(
-                FoodOrderConstant::TABLE_NAME,
-                OrderConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD,
-                BaseConstant::EQUAL,
-                FoodOrderConstant::ORDER_ID_FIELD
-            )
-            ->where(OrderConstant::IS_PAID_FIELD, true)
-            ->groupBy([DB::raw('order_date_s')]);
-        if (isset($condition['from']) && !empty($condition['from'])) {
-            $others->where(OrderConstant::ORDER_DATE_FIELD, BaseConstant::GREATER_AND_EQUAL_THAN, $condition['from']);
+        $tableOrder = [];
+        foreach ($lstId as $id) {
+            $result = $this->select(BaseConstant::ID_FIELD, BaseConstant::STATUS_FIELD)
+                ->where(OrderConstant::ORDER_DATE_FIELD, $today)
+                ->where(OrderConstant::TABLE_ID_FIELD, $id)
+                ->orderBy(OrderConstant::TABLE_NAME . '.' . BaseConstant::CREATEDAT_FIELD, 'DESC')
+                ->first();
+            $tableOrder[$id]['order_id'] = $result[BaseConstant::ID_FIELD] ?? '';
+            $tableOrder[$id]['order_status'] = $result[BaseConstant::STATUS_FIELD] ?? '';
         }
-        if (isset($condition['to']) && !empty($condition['to'])) {
-            $others->where(OrderConstant::ORDER_DATE_FIELD, BaseConstant::LESS_AND_EQUAL_THAN, $condition['to']);
-        }
-        $others = $others->get();
-        $arrFinal = [];
-        $i = 0;
-        foreach ($others as $oth) {
-            $customers = $this->select($select2)
-                ->where(OrderConstant::IS_PAID_FIELD, true)
-                ->where(DB::raw($orderDate), $oth['order_date_s'])
-                ->groupBy([DB::raw('customer_type')])
-                ->get();
-            $arrFinal[$i]['total_food'] = $oth['total_food'];
-            $arrFinal[$i]['total_price'] = $oth['total_price'];
-            $arrFinal[$i]['order_date'] = $oth['order_date_s'];
-            foreach ($customers as $cus) {
-                if ($cus[OrderConstant::CUSTOMER_TYPE_FIELD] == 'V') {
-                    $arrFinal[$i]['vietnamese_guest'] = $cus['cus_num'];
-                }
-                if ($cus[OrderConstant::CUSTOMER_TYPE_FIELD] == 'J') {
-                    $arrFinal[$i]['japanese_guest'] = $cus['cus_num'];
-                }
-                if ($cus[OrderConstant::CUSTOMER_TYPE_FIELD] == 'E') {
-                    $arrFinal[$i]['other_guest'] = $cus['cus_num'];
-                }
-            }
-            $i++;
-        }
-        return $arrFinal;
+        return $tableOrder;
     }
 }

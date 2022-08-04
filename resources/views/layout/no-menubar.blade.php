@@ -35,7 +35,7 @@
         <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-header bg-red-o">
             @include('layout.nav-bar')
         </nav>
-        <div class="content-wrapper custom-content">
+        <div class="content-wrapper custom-content {{ $role == 'admin' ? 'bg-grey' : ($role == 'waiter/waitress' ? 'bg-red-o custom-font-color' : ($role == 'cashier' ? 'bg-light-yellow' : 'bg-light-green')) }}">
             @yield('content')
         </div>
     </div>

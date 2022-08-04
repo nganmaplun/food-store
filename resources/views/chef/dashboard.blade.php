@@ -77,7 +77,7 @@ use Carbon\Carbon;
                     <tr>
                         <th class="all">Bàn</th>
                         <th class="all">Món</th>
-                        <th class="none">Số lượng</th>
+                        <th class="all">Số lượng</th>
                         <th class="none">Giờ order</th>
                         <th class="all"></th>
                     </tr>
@@ -108,11 +108,10 @@ use Carbon\Carbon;
                             </div>
                         </td>
                         <td class="custom-td">{{ $food[\App\Constants\FoodOrderConstant::ORDER_TIME_FIELD] }}</td>
-                        <td class="text-right custom-td" width="40%">
-                            <button class="btn btn-warning check-food"
-                                index="{{ $food[\App\Constants\FoodOrderConstant::ORDER_ID_FIELD] }}"
-                                rel="{{ $food['tblId'] }}" food="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Trả
-                                món</button>
+                        <td class="text-right row">
+                            <button class="btn btn-warning cancel-food" index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Hủy món</button>
+                            <div class="pl-1"></div>
+                            <button class="btn btn-warning check-food" index="{{ $food[\App\Constants\FoodOrderConstant::ORDER_ID_FIELD] }}" rel="{{ $food['tblId'] }}" food="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Trả món</button>
                         </td>
                     </tr>
                     @endforeach
@@ -129,6 +128,7 @@ use Carbon\Carbon;
 <script>
     var listFoods = "{{json_encode($listFoods->toArray())}}"
     var urlSendFoodToWaiter = "{{ route('send-message') }}";
+    var urlCancelFood = "{{ route('cancel-cooking') }}";
 </script>
 <script>
     let link = "{{ route('chef-dashboard', ['category' => $category]) }}";

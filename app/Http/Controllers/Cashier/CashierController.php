@@ -71,12 +71,14 @@ class CashierController extends Controller
         foreach ($listTables as $tbl) {
             $lstId[] = $tbl[BaseConstant::ID_FIELD];
         }
+        $chkCheckout = $this->orderRepository->getListCheckoutOrder($lstId, $today);
         $lstCount = $this->foodOrderRepository->getListCountOrder($lstId, $today);
 
         return view('cashier.dashboard', [
             'listFloors' => $listFloors,
             'listTables' => $listTables,
             'page' => $page,
+            'chkCheckout' => $chkCheckout,
             'lstCount' => $lstCount
         ]);
     }
@@ -101,8 +103,8 @@ class CashierController extends Controller
         foreach ($detail as $dtl) {
             $price = $price + $dtl[FoodOrderConstant::ORDER_NUM_FIELD] * $dtl[FoodConstant::PRICE_FIELD];
         }
-        $totalPrice = $price + $otherMoney - ($price + $otherMoney) * $discount / 100;
-        $result = $this->orderRepository->updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount);
+        $totalPrice = $price + $otherMoney + ($price + $otherMoney) * 0.08 - ($price + $otherMoney + ($price + $otherMoney) * 0.08) * $discount / 100;
+        $result = $this->orderRepository->updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount, $otherMoney);
 
         if ($result) {
             $result = $this->tableRepository->updateTableStatus($result[OrderConstant::TABLE_ID_FIELD]);

@@ -35,7 +35,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             @include('admin.admin-sidebar')
         </aside>
-        <div class="content-wrapper">
+        <div class="content-wrapper  {{ $role == 'admin' ? 'bg-grey' : ($role == 'waiter/waitress' ? 'bg-red-o custom-font-color' : ($role == 'cashier' ? 'bg-light-yellow' : 'bg-light-green')) }}">
             @yield('content')
         </div>
     </div>

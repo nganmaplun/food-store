@@ -76,6 +76,7 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
         }
         if ($condition && $this->checkValidDate($condition)) {
             $result->whereNotNull(FoodDayConstant::TABLE_NAME . '.' . BaseConstant::ID_FIELD);
+            $result->whereNull(FoodDayConstant::TABLE_NAME . '.' . BaseConstant::DELETEDAT_FIELD);
         }
         if ($foodName) {
             $result->where(function ($model) use($foodName) {
@@ -85,7 +86,7 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
             });
         }
 
-        return $result->get();
+        return $result->orderBy(FoodConstant::ORDER_COUNT_FIELD, "DESC")->get();
     }
 
     /**
@@ -99,9 +100,9 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
                 $model->where(FoodConstant::VIETNAMESE_NAME_FIELD, 'LIKE', '%' . $foodName . '%');
                 $model->orWhere(FoodConstant::JAPANESE_NAME_FIELD, 'LIKE', '%' . $foodName . '%');
                 $model->orWhere(FoodConstant::ENGLISH_NAME_FIELD, 'LIKE', '%' . $foodName . '%');
-            })->get();
+            })->orderBy(FoodConstant::ORDER_COUNT_FIELD, "DESC")->get();
         }
-        return $this->get();
+        return $this->orderBy(FoodConstant::ORDER_COUNT_FIELD, "DESC")->get();
     }
 
 
@@ -110,11 +111,18 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
      */
     public function listAllFoodName()
     {
-        $results = $this->select(FoodConstant::VIETNAMESE_NAME_FIELD)
-            ->get();
+        $results = $this->select(
+                FoodConstant::VIETNAMESE_NAME_FIELD,
+                FoodConstant::JAPANESE_NAME_FIELD,
+                FoodConstant::SHORT_NAME_FIELD,
+                FoodConstant::ENGLISH_NAME_FIELD,
+            )->get();
         $lstFoods = [];
         foreach ($results as $result) {
             $lstFoods[] = $result[FoodConstant::VIETNAMESE_NAME_FIELD];
+            $lstFoods[] = $result[FoodConstant::JAPANESE_NAME_FIELD];
+            $lstFoods[] = $result[FoodConstant::SHORT_NAME_FIELD];
+            $lstFoods[] = $result[FoodConstant::ENGLISH_NAME_FIELD];
         }
         return json_encode($lstFoods);
     }
@@ -127,6 +135,9 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
     {
         return $this->select(BaseConstant::ID_FIELD)
             ->where(FoodConstant::VIETNAMESE_NAME_FIELD, $request['fid'])
+            ->orWhere(FoodConstant::SHORT_NAME_FIELD, $request['fid'])
+            ->orWhere(FoodConstant::JAPANESE_NAME_FIELD, $request['fid'])
+            ->orWhere(FoodConstant::ENGLISH_NAME_FIELD, $request['fid'])
             ->first();
     }
 
@@ -228,6 +239,23 @@ class FoodRepositoryEloquent extends BaseRepository implements FoodRepository
     {
         try {
             return $this->delete($id);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @param mixed $foodId
+     * @return mixed
+     */
+    public function updateOrderCount(mixed $foodId)
+    {
+        try {
+            $food = $this->findByField(BaseConstant::ID_FIELD, $foodId)->first();
+            $this->update([
+                FoodConstant::ORDER_COUNT_FIELD => $food[FoodConstant::ORDER_COUNT_FIELD] + 1
+            ], $foodId);
         } catch (\Exception $e) {
             Log::channel('customError')->error($e->getMessage());
             return false;

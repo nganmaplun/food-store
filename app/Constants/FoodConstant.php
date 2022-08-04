@@ -14,4 +14,5 @@ class FoodConstant
     const IMAGE_FIELD = 'image';
     const RECIPE_FIELD = 'food_recipe';
     const DESCRIPTION_FIELD = 'description';
+    const ORDER_COUNT_FIELD = 'order_count';
 }

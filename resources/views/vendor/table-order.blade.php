@@ -45,9 +45,8 @@
                 <table class="table table-bordered" id="list-order">
                     <thead>
                         <tr>
-                            <th class="all">#</th>
                             <th class="all">Món</th>
-                            <th class="none">Số lượng</th>
+                            <th class="all">Số lượng</th>
                             <th class="all">Trạng thái</th>
                             <th class="none">Giờ order</th>
                             <th class="all"></th>
@@ -56,18 +55,19 @@
                     <tbody>
                         @foreach ($listFoods as $key => $food)
                         <tr
-                            class="{{ $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'bg-orange' : ($food[\App\Constants\FoodOrderConstant::IS_NEW_FIELD] == true ? 'bg-light-pink' : 'bg-white') }}">
-                            <td class="">{{ $key + 1 }}</td>
-                            <td><span style="font-size: larger; font-weight: bolder">{{ $food[\App\Constants\FoodConstant::SHORT_NAME_FIELD] }}<br/></span>
-                                <span class="vie">{{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}<br/></span>
-                                <span class="jap">{{ $food[\App\Constants\FoodConstant::JAPANESE_NAME_FIELD] }}<br/></span>
-                                <span class="eng">{{ $food[\App\Constants\FoodConstant::ENGLISH_NAME_FIELD] }}<br/></span>
-                                <small class="text-info" style="word-break: break-all">{{ $food[\App\Constants\FoodOrderConstant::NOTE_FIELD] ?? '' }}</small>
+                            class="{{ $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'bg-orange' : ($food[\App\Constants\FoodOrderConstant::IS_NEW_FIELD] == true ? 'bg-light-pink' : ($food[\App\Constants\FoodOrderConstant::IS_CANCEL_FIELD] == true ? 'bg-light-white' : 'bg-white')) }}">
+                            <td><span style="font-size: larger; font-weight: bolder; {{ $food[\App\Constants\FoodOrderConstant::IS_CANCEL_FIELD] == true ? 'text-decoration: line-through;' : '' }}">{{ $food[\App\Constants\FoodConstant::SHORT_NAME_FIELD] }}<br/></span>
+                                <span style="{{  $food[\App\Constants\FoodOrderConstant::IS_CANCEL_FIELD] == true ? 'text-decoration: line-through;' : ''  }}" class="vie">{{ $food[\App\Constants\FoodConstant::VIETNAMESE_NAME_FIELD] }}<br/></span>
+                                <span style="{{  $food[\App\Constants\FoodOrderConstant::IS_CANCEL_FIELD] == true ? 'text-decoration: line-through;' : ''  }}" class="jap">{{ $food[\App\Constants\FoodConstant::JAPANESE_NAME_FIELD] }}<br/></span>
+                                <span style="{{  $food[\App\Constants\FoodOrderConstant::IS_CANCEL_FIELD] == true ? 'text-decoration: line-through;' : ''  }}" class="eng">{{ $food[\App\Constants\FoodConstant::ENGLISH_NAME_FIELD] }}<br/></span>
+                                <small class="text-info" style="word-break: break-all;{{  $food[\App\Constants\FoodOrderConstant::IS_CANCEL_FIELD] == true ? 'text-decoration: line-through;' : ''  }}">{{ $food[\App\Constants\FoodOrderConstant::NOTE_FIELD] ?? '' }}</small>
                             </td>
                             <td>{{ $food[\App\Constants\FoodOrderConstant::ORDER_NUM_FIELD] }}</td>
-                            <td>{{ $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'Đã lên' :
+                            <td>{{ $food[\App\Constants\FoodOrderConstant::IS_NEW_FIELD] == true ? 'Đã order' :
+                                ($food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'Đã lên' :
                                 ($food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? 'Bếp xong' :
-                                'Đang nấu') }}</td>
+                                ($food[\App\Constants\FoodOrderConstant::IS_CANCEL_FIELD] == true ? 'Hết món' :
+                                'Đang nấu'))) }}</td>
                             <td>{{ $food[\App\Constants\FoodOrderConstant::ORDER_TIME_FIELD] }}</td>
                             <td>
                                 <button class="btn btn-warning to-table" {{ $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? ( $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'hidden' : '') : 'hidden' }} index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Lên món</button>

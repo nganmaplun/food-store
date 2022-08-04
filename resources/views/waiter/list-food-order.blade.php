@@ -24,7 +24,7 @@
                 <div class="col-md-8 offset-md-2">
                     <form method="GET">
                         <div class="input-group">
-                            <input type="search" class="form-control" name="food_name" placeholder="Điền tên món ở đây" value="{{ $foodName ?? '' }}">
+                            <input type="search" class="form-control" name="food_name" placeholder="Điền tên món ở đây (tiếng Việt, short name,...)" value="{{ $foodName ?? '' }}">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-default">
                                     <i class="fa fa-search"></i>

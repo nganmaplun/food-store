@@ -151,4 +151,16 @@ class TableRepositoryEloquent extends BaseRepository implements TableRepository
             return false;
         }
     }
+    /**
+     * @param $tableId
+     * @return mixed
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function updateReEditTableStatus($tableId)
+    {
+        return $this->update([
+            BaseConstant::STATUS_FIELD => 1
+        ], $tableId);
+    }
+
 }

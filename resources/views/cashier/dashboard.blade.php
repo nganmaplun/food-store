@@ -38,7 +38,7 @@
                         <div class="card-body">
                             <div class="row">
                             @foreach($listTables as $key => $table)
-                                <div class="col-4 pt-4" index="{{ $table[\App\Constants\BaseConstant::ID_FIELD] }}" rel="{{ $lstCount['table_order'][$table[\App\Constants\BaseConstant::ID_FIELD]] ?? '' }}">
+                                <div class="col-4 pt-4" index="{{ $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] }}" rel="{{ $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_id'] ?? '' }}">
                                     <div class="position-relative p-3 {{ $table[\App\Constants\BaseConstant::STATUS_FIELD] == 0 ? 'bg-green' : ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1 ?  'bg-red' : 'bg-yellow') }}" style="height: 180px">
                                         <div class="ribbon-wrapper ribbon">
                                             <div class="ribbon bg-gradient-light ribbon-text">
@@ -47,9 +47,13 @@
                                         </div>
                                         {{ $table[\App\Constants\TableConstant::NAME_FIELD] }}<br />
                                         @if ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1)
-                                        <small>Tổng số món order : {{ $lstCount['total_order'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small><br />
-                                        <small>Tổng số món đã xong : {{ $lstCount['total_completed'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small><br />
-                                        <small class="total_inorder" rel="{{ $lstCount['total_inorder'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}">Tổng số món đang order : {{ $lstCount['total_inorder'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small>
+                                            @if ($chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] == 2)
+                                                <small>Có yêu cầu thanh toán</small>
+                                            @else
+                                                <small>Tổng số món order : {{ $lstCount['total_order'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small><br />
+                                                <small>Tổng số món đã xong : {{ $lstCount['total_completed'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small><br />
+                                                <small class="total_inorder" rel="{{ $lstCount['total_inorder'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}">Tổng số món đang order : {{ $lstCount['total_inorder'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -77,6 +81,9 @@
         $(function() {
             $(document).on('click', '.bg-red', function() {
                 let index = $(this).parent().attr('index');
+                if (index != 2) {
+                    return;
+                }
                 let msgRed = 'Thanh toán cho bàn này?';
                 if ($(this).hasClass('bg-red')) {
                     if (confirm(msgRed)) {

@@ -17,4 +17,5 @@ class OrderConstant
     const PAID_TYPE_FIELD = 'paid_type';
     const DRAFT_FIELD = 'is_draft';
     const DISCOUNT_FIELD = 'discount';
+    const OTHER_MONEY_FIELD = 'other_money';
 }
