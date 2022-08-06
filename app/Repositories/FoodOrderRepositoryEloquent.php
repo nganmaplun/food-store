@@ -265,4 +265,20 @@ class FoodOrderRepositoryEloquent extends BaseRepository implements FoodOrderRep
             return false;
         }
     }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function acceptCooking(array $request)
+    {
+        try {
+            return $this->update([
+                FoodOrderConstant::IS_COOKING_FIELD => true
+            ], $request['foodOrderId']);
+        } catch (\Exception $e) {
+            Log::channel('customError')->error($e->getMessage());
+            return false;
+        }
+    }
 }

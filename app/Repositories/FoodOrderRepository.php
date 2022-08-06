@@ -60,4 +60,10 @@ interface FoodOrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function cancelCooking(array $request);
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function acceptCooking(array $request);
 }

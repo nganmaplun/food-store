@@ -62,6 +62,10 @@ class ChefController extends Controller
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function cancelCooking(Request $request)
     {
         $request = $request->all();
@@ -70,6 +74,23 @@ class ChefController extends Controller
             return response()->json([
                 'code' => '222',
                 'message' => 'Đã hủy món',
+            ]);
+        }
+
+        return response()->json([
+            'code' => '333',
+            'message' => 'Lỗi hệ thông, vui lòng thử lại'
+        ]);
+    }
+
+    public function acceptCooking(Request $request)
+    {
+        $request = $request->all();
+        $result = $this->foodOrderRepository->acceptCooking($request);
+        if ($result) {
+            return response()->json([
+                'code' => '222',
+                'message' => 'Đã nhận món',
             ]);
         }
 

@@ -39,6 +39,7 @@ class FoodOrder extends Model implements Transformable
         FoodOrderConstant::ORDER_TIME_FIELD,
         FoodOrderConstant::IS_ORDER_FIELD,
         FoodOrderConstant::IS_CANCEL_FIELD,
+        FoodOrderConstant::IS_COOKING_FIELD,
     ];
 
     /**

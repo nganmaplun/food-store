@@ -11,7 +11,7 @@ channel.bind('cashier-channel', function(data) {
     let bodyText = "<span>Hãy bấm vào <a style='color: red' href='" + link + "'>đây</a> để kiểm tra lại danh sách bàn</span>";
     $(document).Toasts('create', {
         class: 'bg-info',
-        title: 'Có bàn thanh toán',
+        title: 'Có thay đổi trạng thái bàn',
         body: bodyText
     })
 });

@@ -29,13 +29,13 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-red-o">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-red-o {{ $role == 'admin' ? 'bg-nav-admin' : ($role == 'waiter/waitress' ? 'bg-nav-waiter custom-font-color' : ($role == 'cashier' ? 'bg-nav-cashier' : 'bg-nav-chef')) }}">
             @include('layout.nav-bar')
         </nav>
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             @include('admin.admin-sidebar')
         </aside>
-        <div class="content-wrapper  {{ $role == 'admin' ? 'bg-grey' : ($role == 'waiter/waitress' ? 'bg-red-o custom-font-color' : ($role == 'cashier' ? 'bg-light-yellow' : 'bg-light-green')) }}">
+        <div class="content-wrapper {{ $role == 'admin' ? 'bg-grey' : ($role == 'waiter/waitress' ? 'bg-red-o custom-font-color' : ($role == 'cashier' ? 'bg-light-yellow' : 'bg-light-green')) }}">
             @yield('content')
         </div>
     </div>

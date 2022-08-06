@@ -67,6 +67,7 @@ class BaseConstant
         self::FOOD_GRILL => "Bếp chiên (AGE)",
         self::FOOD_STEAM => "Bếp ga(KON)",
         self::FOOD_DRYING => "Bếp nướng (YAKI)",
+        self::FOOD_DRINK => "Đồ uống (NOMIMOMO)",
     ];
 
     const ARRAY_KITCHEN_SHORT = [
@@ -74,6 +75,7 @@ class BaseConstant
         self::FOOD_GRILL => "AGE",
         self::FOOD_STEAM => "KON",
         self::FOOD_DRYING => "YAKI",
+        self::FOOD_DRINK => "NOMIMOMO",
     ];
 
     const ARRAY_KITCHEN_ALL = [

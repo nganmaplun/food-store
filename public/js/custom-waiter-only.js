@@ -17,7 +17,7 @@ channel.bind('waiter-channel', function(data) {
     let bodyText = "<span>Hãy bấm vào <a style='color: red' href='" + link + "'>đây</a> để kiểm tra lại</span>";
     $(document).Toasts('create', {
         class: 'bg-info',
-        title: data.createTable || data.paid ? 'Cập nhật thông tin bàn' : 'Có món đưa ra từ bếp',
+        title: "Có thay đổi trạng thái bàn",
         body: bodyText
     })
 });

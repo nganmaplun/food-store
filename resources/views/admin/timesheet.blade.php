@@ -21,13 +21,13 @@
             <table class="table table-striped projects">
                 <thead>
                     <tr>
-                        <th style="width: 20%">
+                        <th style="width: 40%">
                             Nhân viên
                         </th>
-                        <th style="width: 30%">
+                        <th style="width: 20%">
                             Giờ checkin
                         </th>
-                        <th style="width: 20%">
+                        <th style="width: 40%">
                         </th>
                     </tr>
                 </thead>

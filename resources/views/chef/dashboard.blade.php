@@ -38,6 +38,11 @@ use Carbon\Carbon;
             href="{{ route('chef-dashboard', ['category' => 4])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_DRYING] }}</a>
     </li>
+    <li class="nav-item d-none d-sm-block">
+        <a class="nav-link btn btn-default {{ $category == 5 ? 'bg-dark-red' : '' }}"
+           href="{{ route('chef-dashboard', ['category' => 5])}}">{{
+            \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_DRINK] }}</a>
+    </li>
     <li class="nav-item d-block d-sm-none">
         <a class="nav-link btn btn-default {{ $category == 1 ? 'bg-dark-red' : '' }}"
             href="{{ route('chef-dashboard', ['category' => 1])}}">{{
@@ -57,6 +62,11 @@ use Carbon\Carbon;
         <a class="nav-link btn btn-default {{ $category == 4 ? 'bg-dark-red' : '' }}"
             href="{{ route('chef-dashboard', ['category' => 4])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN_SHORT[\App\Constants\BaseConstant::FOOD_DRYING] }}</a>
+    </li>
+    <li class="nav-item d-block d-sm-none">
+        <a class="nav-link btn btn-default {{ $category == 5 ? 'bg-dark-red' : '' }}"
+           href="{{ route('chef-dashboard', ['category' => 5])}}">{{
+            \App\Constants\BaseConstant::ARRAY_KITCHEN_SHORT[\App\Constants\BaseConstant::FOOD_DRINK] }}</a>
     </li>
 </ul>
 
@@ -109,9 +119,13 @@ use Carbon\Carbon;
                         </td>
                         <td class="custom-td">{{ $food[\App\Constants\FoodOrderConstant::ORDER_TIME_FIELD] }}</td>
                         <td class="text-right row">
-                            <button class="btn btn-warning cancel-food" index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Hủy món</button>
-                            <div class="pl-1"></div>
-                            <button class="btn btn-warning check-food" index="{{ $food[\App\Constants\FoodOrderConstant::ORDER_ID_FIELD] }}" rel="{{ $food['tblId'] }}" food="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Trả món</button>
+                            @if($food[\App\Constants\FoodOrderConstant::IS_COOKING_FIELD] == true)
+                                <button class="btn btn-warning check-food" index="{{ $food[\App\Constants\FoodOrderConstant::ORDER_ID_FIELD] }}" rel="{{ $food['tblId'] }}" food="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Trả món</button>
+                            @else
+                                <button class="btn btn-warning cancel-food" index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Hủy món</button>
+                                <div class="pl-1"></div>
+                                <button class="btn btn-warning accept-food" index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Nhận món</button>
+                            @endif
                         </td>
                     </tr>
                     @endforeach
@@ -129,6 +143,7 @@ use Carbon\Carbon;
     var listFoods = "{{json_encode($listFoods->toArray())}}"
     var urlSendFoodToWaiter = "{{ route('send-message') }}";
     var urlCancelFood = "{{ route('cancel-cooking') }}";
+    var urlAcceptFood = "{{ route('accept-cooking') }}";
 </script>
 <script>
     let link = "{{ route('chef-dashboard', ['category' => $category]) }}";
@@ -144,7 +159,7 @@ use Carbon\Carbon;
     channel.bind('{{ $channel }}', function(data) {
         $(document).Toasts('create', {
             class: 'bg-info',
-            title: 'Có thay đổi order',
+            title: 'Có thay đổi trạng thái bàn',
             body: bodyText
         })
     });

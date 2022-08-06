@@ -10,7 +10,9 @@
                 <h1>Danh sách bàn ăn</h1>
             </div>
             <div class="col-sm-6 row justify-content-end">
-                <button class="btn btn-info btn-combine-table">Gộp bàn</button>
+                @if ($currentFloor != null && $currentFloor != 'all')
+                    <button class="btn btn-info btn-combine-table">Gộp bàn</button>
+                @endif
                 <div class="pl-2"></div>
                 <a href="{{ route('food-stand') }}" class="btn btn-info pl-2">Quầy chờ</a>
             </div>

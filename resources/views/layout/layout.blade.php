@@ -29,7 +29,7 @@
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-red-o {{ $route !== 'waiter-dashboard' ? '' : 'custom-header' }}">
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-red-o {{ $route !== 'waiter-dashboard' ? '' : 'custom-header' }}  {{ $role == 'admin' ? 'bg-nav-admin' : ($role == 'waiter/waitress' ? 'bg-nav-waiter custom-font-color' : ($role == 'cashier' ? 'bg-nav-cashier' : 'bg-nav-chef')) }}">
         @include('layout.nav-bar')
     </nav>
     @if ($route === 'food-list' || $route === 'food-list-by-menu')

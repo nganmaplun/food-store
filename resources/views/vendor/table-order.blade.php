@@ -71,7 +71,7 @@
                             <td>{{ $food[\App\Constants\FoodOrderConstant::ORDER_TIME_FIELD] }}</td>
                             <td>
                                 <button class="btn btn-warning to-table" {{ $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? ( $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'hidden' : '') : 'hidden' }} index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Lên món</button>
-                                <button class="btn btn-warning btn-delete" {{ $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD]==true ? 'hidden' : ($food[\App\Constants\FoodOrderConstant::IS_SENT_FIELD]==true ? 'hidden' : '') }} index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Xóa</button>
+                                <button class="btn btn-warning btn-delete" {{ $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD]==true ? 'hidden' : ($food[\App\Constants\FoodOrderConstant::IS_COOKING_FIELD]==true ? 'hidden' : '') }} index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Xóa</button>
                             </td>
                         </tr>
                         @endforeach

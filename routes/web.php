@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/set-food', [AdminController::class, 'setFood'])->name('post.set-food');
             Route::post('/delete-food', [AdminController::class, 'deleteFood'])->name('post.delete-food');
             Route::post('/cancel-cooking', [ChefController::class, 'cancelCooking'])->name('cancel-cooking');
+            Route::post('/accept-cooking', [ChefController::class, 'acceptCooking'])->name('accept-cooking');
         });
     });
 

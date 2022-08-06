@@ -22,7 +22,8 @@ table.dataTable tbody td {
     /*background-color: #f5f5f5;*/
 }
 .bg-dark-red {
-    background-color: #8b0000;
+    background-color: #004225;
+    color: white;
 }
 .custom-small {
     font-size: 65% !important;
@@ -42,7 +43,6 @@ table.dataTable tbody td {
 .bg-red-o {
     background-color: #dc3545!important;
 }
-
 .bg-light-yellow {
     background-color: #F4EA56!important;
 }
@@ -51,4 +51,32 @@ table.dataTable tbody td {
 }
 .custom-font-color {
     color: black !important;
+}
+.bg-nav-waiter {
+    background-color: #E32636!important;
+}
+.bg-nav-admin {
+    background-color: #EEDFCC!important;
+}
+.bg-nav-chef {
+    background-color: #EED2EE!important;
+}
+.bg-nav-cashier {
+    background-color: #E9D66B!important;
+}
+@media screen and (max-width: 820px) {
+    * {
+        font-size: 12px!important;
+    }
+    button {
+        font-size: 10px!important;
+    }
+}
+@media screen and (max-width: 280px) {
+    * {
+        font-size: 10px!important;
+    }
+    button {
+        font-size: 8px!important;
+    }
 }
