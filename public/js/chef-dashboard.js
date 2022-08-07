@@ -63,7 +63,7 @@ $(function () {
             success: function (response) {
                 showMessage(2000, response.message);
                 setTimeout(function () {
-                    location.reload;
+                    location.reload();
                 }, 1000)
             },
         });

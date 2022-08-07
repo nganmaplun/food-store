@@ -91,6 +91,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             FoodOrderConstant::IS_SENT_FIELD,
             FoodOrderConstant::ORDER_TIME_FIELD,
             FoodOrderConstant::IS_CANCEL_FIELD,
+            FoodOrderConstant::IS_COOKING_FIELD,
         ];
         $result = $this->select($select)
                 ->leftJoin(
@@ -138,6 +139,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             FoodOrderConstant::NOTE_FIELD,
             FoodOrderConstant::IS_DELIVERED_FIELD,
             FoodOrderConstant::ORDER_TIME_FIELD,
+            FoodOrderConstant::IS_COOKING_FIELD,
         ];
 
         return $this->select($select)
