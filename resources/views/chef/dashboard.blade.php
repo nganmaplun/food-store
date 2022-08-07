@@ -94,7 +94,7 @@ use Carbon\Carbon;
                 </thead>
                 <tbody>
                     @foreach($listFoods as $key => $food)
-                    <tr class="search-for-index-{{ $food[\App\Constants\BaseConstant::ID_FIELD] }} {{ (strtotime(Carbon::now()->toTimeString()) - strtotime($food[\App\Constants\FoodOrderConstant::ORDER_TIME_FIELD]))/60 <= 15 ? 'bg-light-blue' : '' }}">
+                    <tr class="search-for-index-{{ $food[\App\Constants\BaseConstant::ID_FIELD] }} {{ $food[\App\Constants\FoodOrderConstant::IS_COOKING_FIELD] == false && (strtotime(Carbon::now()->toTimeString()) - strtotime($food[\App\Constants\FoodOrderConstant::ORDER_TIME_FIELD]))/60 <= 15 ? 'bg-light-blue' : '' }}">
                         <td width="20%" class="custom-td">
                             <div class="col-12">
                                 {{ $food[\App\Constants\TableConstant::NAME_FIELD] }}
