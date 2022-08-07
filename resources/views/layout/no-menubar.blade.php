@@ -35,7 +35,7 @@
         <nav class="main-header navbar navbar-expand navbar-white navbar-light custom-header bg-red-o {{ $role == 'admin' ? 'bg-nav-admin' : ($role == 'waiter/waitress' ? 'bg-nav-waiter custom-font-color' : ($role == 'cashier' ? 'bg-nav-cashier' : 'bg-nav-chef')) }}">
             @include('layout.nav-bar')
         </nav>
-        <div class="content-wrapper custom-content {{ $role == 'admin' ? 'bg-grey' : ($role == 'waiter/waitress' ? 'bg-red-o custom-font-color' : ($role == 'cashier' ? 'bg-light-yellow' : 'bg-light-green')) }}">
+        <div class="content-wrapper custom-content">
             @yield('content')
         </div>
     </div>
