@@ -62,25 +62,38 @@ class MessageService
         Log::channel('customInfo')->info('tableName : ', [$tableName]);
         Log::channel('customInfo')->info('data : ', [$data]);
         Log::channel('customInfo')->info('type : ', [$type]);
+        $sendSalad = true;
+        $sendGrill = true;
+        $sendSteam = true;
+        $sendDrying = true;
+        $sendDrink = true;
         switch ($type) {
             case BaseConstant::SEND_CHEF:
                 foreach ($data as $food) {
-                    switch ($food[FoodConstant::CATEGORY_FIELD]) {
-                        case BaseConstant::FOOD_SALAD:
-                            $pusher->trigger('NotifyChefSalad', BaseConstant::CHEF_SALAD_CHANNEL, $tableName);
-                            break;
-                        case BaseConstant::FOOD_GRILL:
-                            $pusher->trigger('NotifyChefGrill', BaseConstant::CHEF_GRILL_CHANNEL, $tableName);
-                            break;
-                        case BaseConstant::FOOD_STEAM:
-                            $pusher->trigger('NotifyChefSteam', BaseConstant::CHEF_STEAM_CHANNEL, $tableName);
-                            break;
-                        case BaseConstant::FOOD_DRYING:
-                            $pusher->trigger('NotifyChefDrying', BaseConstant::CHEF_DRYING_CHANNEL, $tableName);
-                            break;
-                        case BaseConstant::FOOD_DRINK:
-                            $pusher->trigger('NotifyChefDrink', BaseConstant::CHEF_DRINK_CHANNEL, $tableName);
-                            break;
+                    if ($food[FoodConstant::CATEGORY_FIELD] == BaseConstant::FOOD_SALAD) {
+                        if (!$sendSalad) continue;
+                        $pusher->trigger('NotifyChefSalad', BaseConstant::CHEF_SALAD_CHANNEL, $tableName);
+                        $sendSalad = false;
+                    }
+                    if ($food[FoodConstant::CATEGORY_FIELD] == BaseConstant::FOOD_DRYING) {
+                        if (!$sendDrying) continue;
+                        $pusher->trigger('NotifyChefDrying', BaseConstant::CHEF_DRYING_CHANNEL, $tableName);
+                        $sendDrying = false;
+                    }
+                    if ($food[FoodConstant::CATEGORY_FIELD] == BaseConstant::FOOD_GRILL) {
+                        if (!$sendGrill) continue;
+                        $pusher->trigger('NotifyChefGrill', BaseConstant::CHEF_GRILL_CHANNEL, $tableName);
+                        $sendGrill = false;
+                    }
+                    if ($food[FoodConstant::CATEGORY_FIELD] == BaseConstant::FOOD_STEAM) {
+                        if (!$sendSteam) continue;
+                        $pusher->trigger('NotifyChefSteam', BaseConstant::CHEF_STEAM_CHANNEL, $tableName);
+                        $sendSteam = false;
+                    }
+                    if ($food[FoodConstant::CATEGORY_FIELD] == BaseConstant::FOOD_DRINK) {
+                        if (!$sendDrink) continue;
+                        $pusher->trigger('NotifyChefDrink', BaseConstant::CHEF_DRINK_CHANNEL, $tableName);
+                        $sendDrink = false;
                     }
                 }
                 $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_CHEF);
@@ -98,7 +111,10 @@ class MessageService
                 break;
 
             case BaseConstant::SEND_CASHIER:
-                $pusher->trigger('NotifyCashier', BaseConstant::CASHIER_CHANNEL, $tableName);
+                $info = [
+                    'createTable' => $createTable
+                ];
+                $pusher->trigger('NotifyCashier', BaseConstant::CASHIER_CHANNEL, $info);
                 if (!$createTable) {
                     $this->orderRepository->updateOrderStatus($orderId, BaseConstant::SEND_CASHIER);
                 }

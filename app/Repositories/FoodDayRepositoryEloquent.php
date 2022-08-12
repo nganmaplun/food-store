@@ -8,7 +8,7 @@ use App\Constants\FoodDayConstant;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\FoodDayRepository;
+use App\Repositories\AggDayRepository;
 use App\Entities\FoodDay;
 use App\Validators\FoodDayValidator;
 
@@ -17,7 +17,7 @@ use App\Validators\FoodDayValidator;
  *
  * @package namespace App\Repositories;
  */
-class FoodDayRepositoryEloquent extends BaseRepository implements FoodDayRepository
+class FoodDayRepositoryEloquent extends BaseRepository implements AggDayRepository
 {
     /**
      * Specify Model class name

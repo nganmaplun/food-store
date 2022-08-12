@@ -16,12 +16,18 @@ class NofityCashier extends Notify
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
+     * @var mixed
+     */
+    private mixed $createTable;
+
+    /**
      * Create a new event instance.
      *
      * @return void
      */
     public function __construct($data)
     {
+        $this->createTable = $data['createTable'];
         parent::__construct($data);
     }
 

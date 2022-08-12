@@ -159,7 +159,7 @@ use Carbon\Carbon;
     channel.bind('{{ $channel }}', function(data) {
         $(document).Toasts('create', {
             class: 'bg-info',
-            title: 'Có thay đổi trạng thái bàn',
+            title: 'Có món order mới',
             body: bodyText
         })
     });

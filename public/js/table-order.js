@@ -91,16 +91,12 @@ function validateRows(tblRows, type)
     }
     let arrayFoods = [];
     for (let i = 0;i < tblRows.length; i++) {
-        if (!$(tblRows[i]).hasClass('bg-orange') && !$(tblRows[i]).hasClass('bg-light-white')) {
+        if (!$(tblRows[i]).hasClass('bg-orange')) {
             arrayFoods.push(i);
         }
     }
     if (arrayFoods.length === 0 && type === 'chef') {
         alert('Hãy chọn món mới trước khi gửi');
-        return 'false';
-    }
-    if (arrayFoods.length === 0 && type === 'cash') {
-        alert('Chưa có món trong order');
         return 'false';
     }
     if (arrayFoods.length > 0 && type === 'cash') {

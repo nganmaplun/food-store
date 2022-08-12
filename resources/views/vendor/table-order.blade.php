@@ -68,7 +68,7 @@
                                 ($food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? 'Bếp xong' :
                                 ($food[\App\Constants\FoodOrderConstant::IS_CANCEL_FIELD] == true ? 'Hết món' :
                                 ($food[\App\Constants\FoodOrderConstant::IS_COOKING_FIELD] == true ? 'Đang nấu' :
-                                'Đã gửi'))) }}</td>
+                                'Đã gửi')))) }}</td>
                             <td>{{ $food[\App\Constants\FoodOrderConstant::ORDER_TIME_FIELD] }}</td>
                             <td>
                                 <button class="btn btn-warning to-table" {{ $food[\App\Constants\FoodOrderConstant::IS_COMPLETED_FIELD] == true ? ( $food[\App\Constants\FoodOrderConstant::IS_DELIVERED_FIELD] == true ? 'hidden' : '') : 'hidden' }} index="{{ $food[\App\Constants\BaseConstant::ID_FIELD] }}">Lên món</button>

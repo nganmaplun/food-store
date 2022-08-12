@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\AggDayRepository;
+use App\Repositories\AggMonthRepository;
+use App\Repositories\AggYearRepository;
 use App\Repositories\OrderRepository;
 use Illuminate\Http\Request;
 
@@ -14,11 +17,37 @@ class AggregationController extends Controller
     private OrderRepository $orderRepository;
 
     /**
-     * @param OrderRepository $orderRepository
+     * @var AggDayRepository
      */
-    public function __construct(OrderRepository $orderRepository)
+    private AggDayRepository $aggDayRepository;
+
+    /**
+     * @var AggMonthRepository
+     */
+    private AggMonthRepository $aggMonthRepository;
+
+    /**
+     * @var AggYearRepository
+     */
+    private AggYearRepository $aggYearRepository;
+
+    /**
+     * @param OrderRepository $orderRepository
+     * @param AggDayRepository $aggDayRepository
+     * @param AggMonthRepository $aggMonthRepository
+     * @param AggYearRepository $aggYearRepository
+     */
+    public function __construct(
+        OrderRepository $orderRepository,
+        AggDayRepository $aggDayRepository,
+        AggMonthRepository $aggMonthRepository,
+        AggYearRepository $aggYearRepository,
+    )
     {
         $this->orderRepository = $orderRepository;
+        $this->aggDayRepository = $aggDayRepository;
+        $this->aggMonthRepository = $aggMonthRepository;
+        $this->aggYearRepository = $aggYearRepository;
     }
 
     /**
@@ -29,10 +58,13 @@ class AggregationController extends Controller
     {
         $request = $request->all();
         $aggBy['type'] = $request['type'] ?? 'day';
+        $results = match ($aggBy['type']) {
+            'day' => $this->aggDayRepository->getAll(),
+            'month' => $this->aggMonthRepository->getAll(),
+            'year' => $this->aggYearRepository->getAll(),
+        };
 
-        $results = $this->orderRepository->aggOrder($aggBy);
-
-        return view('admin.aggregation', ['results' => $results, 'type' => $aggBy]);
+        return view('admin.aggregation', ['results' => $results, 'type' => $aggBy['type']]);
     }
 
     /**
