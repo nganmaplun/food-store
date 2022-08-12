@@ -6,7 +6,7 @@ use App\Constants\BaseConstant;
 use App\Constants\FoodConstant;
 use App\Constants\TableConstant;
 use App\Http\Controllers\Controller;
-use App\Repositories\AggDayRepository;
+use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\FoodRepository;
 use App\Repositories\TableRepository;
@@ -35,9 +35,9 @@ class AdminController  extends Controller
     private string $today;
 
     /**
-     * @var AggDayRepository
+     * @var FoodDayRepository
      */
-    private AggDayRepository $foodDayRepository;
+    private FoodDayRepository $foodDayRepository;
 
     /**
      * @var UserRepository
@@ -63,14 +63,16 @@ class AdminController  extends Controller
      * @param TimesheetRepository $timesheetRepository
      * @param UserRepository $userRepository
      * @param FoodRepository $foodRepository
-     * @param AggDayRepository $foodDayRepository
+     * @param FoodDayRepository $foodDayRepository
      * @param TableRepository $tableRepository
+     * @param TableService $tableService
+     * @param FoodOrderRepository $foodOrderRepository
      */
     public function __construct(
         TimesheetRepository $timesheetRepository,
         UserRepository      $userRepository,
         FoodRepository      $foodRepository,
-        AggDayRepository    $foodDayRepository,
+        FoodDayRepository    $foodDayRepository,
         TableRepository     $tableRepository,
         TableService        $tableService,
         FoodOrderRepository $foodOrderRepository

@@ -9,6 +9,7 @@ use App\Constants\FoodOrderConstant;
 use App\Constants\UserConstant;
 use App\Http\Requests\ChangePasswodRequest;
 use App\Repositories\AggDayRepository;
+use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\FoodRepository;
 use App\Repositories\OrderRepository;
@@ -52,9 +53,9 @@ class CommonController extends Controller
     private MessageService $messageService;
 
     /**
-     * @var AggDayRepository
+     * @var FoodDayRepository
      */
-    private AggDayRepository $foodDayRepository;
+    private FoodDayRepository $foodDayRepository;
 
     /**
      * @var FoodRepository
@@ -67,6 +68,8 @@ class CommonController extends Controller
      * @param FoodOrderRepository $foodOrderRepository
      * @param UserRepository $userRepository
      * @param MessageService $messageService
+     * @param FoodDayRepository $foodDayRepository
+     * @param FoodRepository $foodRepository
      */
     public function __construct(
         TableRepository     $tableRepository,
@@ -74,7 +77,7 @@ class CommonController extends Controller
         FoodOrderRepository $foodOrderRepository,
         UserRepository      $userRepository,
         MessageService      $messageService,
-        AggDayRepository    $foodDayRepository,
+        FoodDayRepository    $foodDayRepository,
         FoodRepository      $foodRepository,
     ) {
         $this->tableRepository = $tableRepository;

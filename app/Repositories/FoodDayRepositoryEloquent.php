@@ -17,7 +17,7 @@ use App\Validators\FoodDayValidator;
  *
  * @package namespace App\Repositories;
  */
-class FoodDayRepositoryEloquent extends BaseRepository implements AggDayRepository
+class FoodDayRepositoryEloquent extends BaseRepository implements FoodDayRepository
 {
     /**
      * Specify Model class name
@@ -66,6 +66,7 @@ class FoodDayRepositoryEloquent extends BaseRepository implements AggDayReposito
 
     /**
      * @param $id
+     * @param $today
      * @return mixed
      */
     public function checkFoodRemain($id,$today)

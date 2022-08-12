@@ -10,6 +10,8 @@ use App\Repositories\AggMonthRepository;
 use App\Repositories\AggMonthRepositoryEloquent;
 use App\Repositories\AggYearRepository;
 use App\Repositories\AggYearRepositoryEloquent;
+use App\Repositories\FoodDayRepository;
+use App\Repositories\FoodDayRepositoryEloquent;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\FoodOrderRepositoryEloquent;
 use App\Repositories\FoodRepository;
@@ -40,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(TimesheetRepository::class, TimesheetRepositoryEloquent::class);
         $this->app->bind(FoodRepository::class, FoodRepositoryEloquent::class);
-        $this->app->bind(AggDayRepository::class, AggDayRepositoryEloquent::class);
+        $this->app->bind(FoodDayRepository::class, FoodDayRepositoryEloquent::class);
         $this->app->bind(TableRepository::class, TableRepositoryEloquent::class);
         $this->app->bind(OrderRepository::class, OrderRepositoryEloquent::class);
         $this->app->bind(FoodOrderRepository::class, FoodOrderRepositoryEloquent::class);
