@@ -38,7 +38,7 @@
                         <div class="card-body">
                             <div class="row">
                             @foreach($listTables as $key => $table)
-                                <div class="col-4 pt-4" index="{{ $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] }}" rel="{{ $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_id'] ?? '' }}">
+                                <div class="col-4 pt-4" index="{{ $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] }}" rel="{{ $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_id'] ?? '' }}" draft="{{$chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_draft']}}">
                                     <div class="position-relative p-3 {{ $table[\App\Constants\BaseConstant::STATUS_FIELD] == 0 ? 'bg-green' : ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1 ?  'bg-red' : 'bg-yellow') }}" style="height: 180px">
                                         <div class="ribbon-wrapper ribbon">
                                             <div class="ribbon bg-gradient-light ribbon-text">
@@ -47,8 +47,10 @@
                                         </div>
                                         {{ $table[\App\Constants\TableConstant::NAME_FIELD] }}<br />
                                         @if ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1)
-                                            @if ($chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] == 2)
+                                            @if ($chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] == 2 && $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_draft'] == true)
                                                 <small>Có yêu cầu thanh toán</small>
+                                            @elseif($chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] == 2 && $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_draft'] == false)
+                                                <small>Đã xác nhận thanh toán</small>
                                             @else
                                                 <small>Tổng số món order : {{ $lstCount['total_order'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small><br />
                                                 <small>Tổng số món đã xong : {{ $lstCount['total_completed'][$table[\App\Constants\BaseConstant::ID_FIELD]] }}</small><br />
@@ -81,7 +83,15 @@
         $(function() {
             $(document).on('click', '.bg-red', function() {
                 let index = $(this).parent().attr('index');
+                let draft = $(this).parent().attr('draft');
+                let rel = $(this).parent().attr('rel');
                 if (index != 2) {
+                    return;
+                }
+                if (index == 2 && draft == false) {
+                    let url = "{{ route('cashier.detail-order-final', [":index"]) }}";
+                    url = url.replace(':index', rel);
+                    location.href = url;
                     return;
                 }
                 let msgRed = 'Thanh toán cho bàn này?';
@@ -90,14 +100,12 @@
                         let inOrder = $(this).find('.total_inorder').attr('rel');
                         if (parseInt(inOrder) > 0) {
                             if (confirm('Bàn chưa đưa hết đồ ăn lên, có chắc muốn thanh toán?')) {
-                                let rel = $(this).parent().attr('rel');
                                 let url = "{{ route('cashier.detail-order', [":index"]) }}";
                                 url = url.replace(':index', rel);
                                 location.href = url;
                                 return
                             }
                         }
-                        let rel = $(this).parent().attr('rel');
                         let url = "{{ route('cashier.detail-order', [":index"]) }}";
                         url = url.replace(':index', rel);
                         location.href = url;

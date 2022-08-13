@@ -244,7 +244,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @return mixed
      * @throws \Prettus\Validator\Exceptions\ValidatorException
      */
-    public function updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount, $otherMoney)
+    public function updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount, $otherMoney, $userId)
     {
         return $this->update([
             OrderConstant::TOTAL_PRICE_FIELD => $totalPrice,
@@ -253,6 +253,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             OrderConstant::PAID_TYPE_FIELD => $paidType,
             OrderConstant::DISCOUNT_FIELD => $discount,
             OrderConstant::OTHER_MONEY_FIELD => $otherMoney,
+            OrderConstant::CASHIER_ID_FIELD => $userId,
         ], $orderId);
     }
 
@@ -384,13 +385,14 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     {
         $tableOrder = [];
         foreach ($lstId as $id) {
-            $result = $this->select(BaseConstant::ID_FIELD, BaseConstant::STATUS_FIELD)
+            $result = $this->select(BaseConstant::ID_FIELD, BaseConstant::STATUS_FIELD, OrderConstant::DRAFT_FIELD)
                 ->where(OrderConstant::ORDER_DATE_FIELD, $today)
                 ->where(OrderConstant::TABLE_ID_FIELD, $id)
                 ->orderBy(OrderConstant::TABLE_NAME . '.' . BaseConstant::CREATEDAT_FIELD, 'DESC')
                 ->first();
             $tableOrder[$id]['order_id'] = $result[BaseConstant::ID_FIELD] ?? '';
             $tableOrder[$id]['order_status'] = $result[BaseConstant::STATUS_FIELD] ?? '';
+            $tableOrder[$id]['order_draft'] = $result[OrderConstant::DRAFT_FIELD] ?? '';
         }
         return $tableOrder;
     }

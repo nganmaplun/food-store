@@ -12,7 +12,7 @@ channel.bind('waiter-channel', function(data) {
         link = domain + '/waiter/waiter-dashboard';
     }
     if (data.paid) {
-        link = domain + '/waiter/detail/' + data.orderId;
+        link = domain + '/waiter/detail/order/' + data.orderId;
     }
     let bodyText = "<span>Hãy bấm vào <a style='color: red' href='" + link + "'>đây</a> để kiểm tra lại</span>";
     $(document).Toasts('create', {

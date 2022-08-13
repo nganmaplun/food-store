@@ -32,7 +32,7 @@
     <nav class="main-header navbar navbar-expand navbar-white navbar-light bg-red-o {{ $route !== 'waiter-dashboard' ? '' : 'custom-header' }}  {{ $role == 'admin' ? 'bg-nav-admin' : ($role == 'waiter/waitress' ? 'bg-nav-waiter custom-font-color' : ($role == 'cashier' ? 'bg-nav-cashier' : 'bg-nav-chef')) }}">
         @include('layout.nav-bar')
     </nav>
-    @if ($route === 'food-list' || $route === 'food-list-by-menu')
+    @if (in_array($route, ['food-list', 'food-list-by-menu']))
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         @include('layout.food-menu')
     </aside>

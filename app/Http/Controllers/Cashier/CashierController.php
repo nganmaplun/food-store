@@ -11,10 +11,12 @@ use App\Http\Controllers\Controller;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
+use App\Repositories\UserRepository;
 use App\Services\MessageService;
 use App\Services\TableService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CashierController extends Controller
 {
@@ -37,23 +39,31 @@ class CashierController extends Controller
      * @var TableService
      */
     private TableService $tableService;
+
     /**
      * @var
      */
-    private $messageService;
+    private MessageService $messageService;
+
+    /**
+     * @var UserRepository
+     */
+    private UserRepository $userRepository;
 
     public function __construct(
         OrderRepository $orderRepository,
         TableRepository $tableRepository,
         FoodOrderRepository $foodOrderRepository,
         TableService $tableService,
-        MessageService $messageService
+        MessageService $messageService,
+        UserRepository $userRepository
     ) {
         $this->orderRepository = $orderRepository;
         $this->tableRepository = $tableRepository;
         $this->foodOrderRepository = $foodOrderRepository;
         $this->tableService = $tableService;
         $this->messageService = $messageService;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -91,6 +101,19 @@ class CashierController extends Controller
         return view('cashier.detail-order', ['detail' => $detail, 'orderId' => $orderId, 'orderInfo' => $orderInfo]);
     }
 
+    /**
+     * @param $orderId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function detailOrderFinal($orderId)
+    {
+        $detail = $this->orderRepository->getDetailOrder($orderId);
+        $orderInfo = $this->orderRepository->detailOrder($orderId);
+        $cashierName = $this->userRepository->getAllCashierUser();
+
+        return view('cashier.detail-final', ['detail' => $detail, 'orderId' => $orderId, 'orderInfo' => $orderInfo, 'cashierName' => $cashierName]);
+    }
+
     public function checkout(Request $request, $orderId)
     {
         $request = $request->all();
@@ -99,15 +122,16 @@ class CashierController extends Controller
         $otherMoney = $request['other_money'] ?? 0;
         $paidType = $request['paid_type'] ?? 0;
         $detail = $this->orderRepository->getDetailOrder($orderId);
+        $userId = Auth::user()[BaseConstant::ID_FIELD];
         $price = 0;
         foreach ($detail as $dtl) {
             $price = $price + $dtl[FoodOrderConstant::ORDER_NUM_FIELD] * $dtl[FoodConstant::PRICE_FIELD];
         }
-        $totalPrice = $price + $otherMoney + ($price + $otherMoney) * 0.08 - ($price + $otherMoney + ($price + $otherMoney) * 0.08) * $discount / 100;
-        $result = $this->orderRepository->updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount, $otherMoney);
+        $totalPrice = $price + $otherMoney - ($price + $otherMoney) * $discount / 100;
+        $result = $this->orderRepository->updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount, $otherMoney, $userId);
 
         if ($result) {
-            $result = $this->tableRepository->updateTableStatus($result[OrderConstant::TABLE_ID_FIELD]);
+            $result = $this->tableRepository->updateTableStatusToWaiter($result[OrderConstant::TABLE_ID_FIELD]);
             if ($result) {
                 $tableData = $this->tableRepository->getTableName($result[OrderConstant::TABLE_ID_FIELD]);
                 $this->messageService->sendNotify($tableData, $orderId, [], BaseConstant::SEND_WAITER_BACK);
@@ -117,5 +141,30 @@ class CashierController extends Controller
         }
 
         return redirect()->back()->with(['status' => 'Thanh toán thất bại, hãy thử lại']);
+    }
+
+    /**
+     * @param $orderId
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Pusher\ApiErrorException
+     * @throws \Pusher\PusherException
+     */
+    public function updateFinal($orderId)
+    {
+        $result = $this->orderRepository->updateFinal($orderId);
+
+        if ($result) {
+            $this->tableRepository->updateTableStatus($result[OrderConstant::TABLE_ID_FIELD]);
+            return response()->json([
+                'code' => '222',
+                'message' => 'Đã lưu thông tin',
+            ]);
+        }
+
+        return response()->json([
+            'code' => '333',
+            'message' => 'Lỗi hệ thông, vui lòng thử lại'
+        ]);
     }
 }

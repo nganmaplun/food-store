@@ -163,4 +163,14 @@ class TableRepositoryEloquent extends BaseRepository implements TableRepository
         ], $tableId);
     }
 
+    /**
+     * @param mixed $tableId
+     * @return mixed
+     */
+    public function updateTableStatusToWaiter(mixed $tableId)
+    {
+        return $this->update([
+            BaseConstant::STATUS_FIELD => 1
+        ], $tableId);
+    }
 }

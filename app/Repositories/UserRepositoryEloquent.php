@@ -178,4 +178,17 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             return false;
         }
     }
+
+    public function getAllCashierUser()
+    {
+        $results = $this->select(BaseConstant::ID_FIELD, UserConstant::FULLNAME_FIELD)
+            ->where(UserConstant::ROLE_FIELD, BaseConstant::CASHIER_ROLE)
+            ->get();
+        $data = [];
+        foreach ($results as $result) {
+            $data[$result[BaseConstant::ID_FIELD]] = $result[UserConstant::FULLNAME_FIELD];
+        }
+
+        return $data;
+    }
 }

@@ -2,7 +2,7 @@
 use App\Constants\BaseConstant;
 use App\Constants\UserConstant;
 ?>
-@if ($route === 'food-list' || $role === BaseConstant::ADMIN_ROLE)
+@if (in_array($route, ['food-list', 'food-list-by-menu']) || $role === BaseConstant::ADMIN_ROLE)
 <ul class="navbar-nav">
     <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>

@@ -18,4 +18,5 @@ class OrderConstant
     const DRAFT_FIELD = 'is_draft';
     const DISCOUNT_FIELD = 'discount';
     const OTHER_MONEY_FIELD = 'other_money';
+    const CASHIER_ID_FIELD = 'cashier_id';
 }

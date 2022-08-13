@@ -96,7 +96,10 @@ Route::middleware('auth')->group(function () {
         Route::prefix('cashier')->group(function () {
             Route::get('/dashboard', [CashierController::class, 'dashboard'])->name('cashier-dashboard');
             Route::get('/detail/{orderId}', [CashierController::class, 'detailOrder'])->name('cashier.detail-order');
+            Route::get('/detail-final/{orderId}', [CashierController::class, 'detailOrderFinal'])->name('cashier.detail-order-final');
+            Route::get('/detail-final/{orderId}', [CashierController::class, 'detailOrderFinal'])->name('cashier.detail-order-final');
             Route::post('/checkout/{orderId}', [CashierController::class, 'checkout'])->name('checkout');
+            Route::post('/update-final/{orderId}', [CashierController::class, 'updateFinal'])->name('update-final-cashier');
         });
     });
 

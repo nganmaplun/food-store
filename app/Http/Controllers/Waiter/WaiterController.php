@@ -10,6 +10,7 @@ use App\Repositories\FoodOrderRepository;
 use App\Repositories\FoodRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
+use App\Repositories\UserRepository;
 use App\Services\MessageService;
 use App\Services\TableService;
 use Carbon\Carbon;
@@ -47,6 +48,11 @@ class WaiterController extends Controller
     private MessageService $messageService;
 
     /**
+     * @var UserRepository
+     */
+    private UserRepository $userRepository;
+
+    /**
      * @param TableRepository $tableRepository
      * @param FoodRepository $foodRepository
      * @param TableService $tableService
@@ -60,7 +66,8 @@ class WaiterController extends Controller
         TableService $tableService,
         OrderRepository $orderRepository,
         FoodOrderRepository $foodOrderRepository,
-        MessageService $messageService
+        MessageService $messageService,
+        UserRepository $userRepository
     ){
         $this->tableRepository = $tableRepository;
         $this->foodRepository = $foodRepository;
@@ -68,6 +75,7 @@ class WaiterController extends Controller
         $this->orderRepository = $orderRepository;
         $this->foodOrderRepository = $foodOrderRepository;
         $this->messageService = $messageService;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -86,13 +94,15 @@ class WaiterController extends Controller
             $lstId[] = $tbl[BaseConstant::ID_FIELD];
         }
         $lstCount = $this->foodOrderRepository->getListCountOrder($lstId, $today);
+        $chkCheckout = $this->orderRepository->getListCheckoutOrder($lstId, $today);
 
         return view('waiter.dashboard', [
             'listFloors' => $listFloors,
             'listTables' => $listTables,
             'page' => $page,
             'lstCount' => $lstCount,
-            'currentFloor' => $floor
+            'currentFloor' => $floor,
+            'chkCheckout' => $chkCheckout,
         ]);
     }
 
@@ -180,7 +190,7 @@ class WaiterController extends Controller
         $result = $this->orderRepository->updateFinal($orderId);
 
         if ($result) {
-            $this->tableRepository->changeTableStatus($result[OrderConstant::TABLE_ID_FIELD]);
+            $this->tableRepository->updateTableStatusToWaiter($result[OrderConstant::TABLE_ID_FIELD]);
             $tableData = $this->tableRepository->getTableName($result[OrderConstant::TABLE_ID_FIELD]);
             $this->messageService->sendNotify($tableData, $orderId, [], BaseConstant::SEND_CASHIER);
             return response()->json([
@@ -203,8 +213,9 @@ class WaiterController extends Controller
     {
         $detail = $this->orderRepository->getDetailOrder($orderId);
         $orderInfo = $this->orderRepository->detailOrder($orderId);
+        $cashierName = $this->userRepository->getAllCashierUser();
 
-        return view('waiter.detail-order', ['detail' => $detail, 'orderId' => $orderId, 'orderInfo' => $orderInfo]);
+        return view('waiter.detail-order', ['detail' => $detail, 'orderId' => $orderId, 'orderInfo' => $orderInfo, 'cashierName' => $cashierName]);
     }
 
     /**

@@ -93,12 +93,7 @@ use Carbon\Carbon;
                     <input type="number" class="form-control" name="other_money" id="other-money" value="{{ $orderInfo[\App\Constants\OrderConstant::OTHER_MONEY_FIELD] ?? '' }}">
                 </div>
             </div>
-            <div class="col-12 custom-control-inline" style="width: 100%">
-                <div class="col-10 form-group row">
-                    <label class="col-form-label p-1">Thuế : 8%</label>
-                </div>
-            </div>
-            <div class="col-12 custom-control-inline" style="width: 100%">
+            <div class="col-12 custom-control-inline pt-3" style="width: 100%">
                 <div class="col-10 form-group row">
                     <label for="voucher" class="col-form-label p-1">Giảm giá : </label>
                     <select class="form-select offset-sm-1" id="voucher" name="voucher" {{ $route === 'waiter.detail-order' ? 'disabled' : '' }}>

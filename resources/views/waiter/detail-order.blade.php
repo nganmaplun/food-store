@@ -28,7 +28,7 @@ use Carbon\Carbon;
                         <div class="row">
                             Bàn : {{ $orderInfo[\App\Constants\TableConstant::NAME_FIELD] }}<br/>
                             Nhân viên phục vụ : {{ $orderInfo[\App\Constants\UserConstant::FULLNAME_FIELD] }}<br/>
-                            Nhân viên thu nhân : {{ \Auth::user()[\App\Constants\UserConstant::FULLNAME_FIELD] }}<br/>
+                            Nhân viên thu nhân : {{ $cashierName[$orderInfo[\App\Constants\OrderConstant::CASHIER_ID_FIELD]] }}<br/>
                             Ngày : {{ Carbon::now()->format('Y-m-d H:i:s') }}
                         </div>
                     </div>
@@ -80,21 +80,8 @@ use Carbon\Carbon;
         <span>---------------------------------------------------------------------</span>
         <div class="col-12 custom-control-inline" style="width: 100%">
             <div class="col-10 form-group row">
-                <label class="col-form-label p-1" for="tax">Thuế (8%) : </label>
-                <span class="col-form-label p-1" id="tax">{{ number_format($orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] * 0.08 / 1.08) . 'VND'}}</span>
-            </div>
-        </div>
-        <div class="col-12 custom-control-inline" style="width: 100%">
-            <div class="col-10 form-group row">
                 <label class="col-form-label p-1" for="other-money">Tiền phụ thu : </label>
                 <span class="col-form-label p-1" id="other-money">{{ number_format($orderInfo[\App\Constants\OrderConstant::OTHER_MONEY_FIELD]) . 'VND' }}</span>
-            </div>
-        </div>
-        <span>---------------------------------------------------------------------</span>
-        <div class="col-12 custom-control-inline" style="width: 100%">
-            <div class="col-10 form-group row">
-                <label for="voucher" class="col-form-label p-1">Giảm giá ({{ $orderInfo[\App\Constants\OrderConstant::DISCOUNT_FIELD] . '%' ?? '' }}) : </label>
-                <span class="col-form-label p-1" id="voucher">{{ number_format($orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] * $orderInfo[\App\Constants\OrderConstant::DISCOUNT_FIELD] / 100) . 'VND' }}</span>
             </div>
         </div>
         <div class="col-12 custom-control-inline" style="width: 100%">
@@ -104,10 +91,28 @@ use Carbon\Carbon;
             </div>
         </div>
         <span>---------------------------------------------------------------------</span>
+        <div class="col-12 custom-control-inline" style="width: 100%">
+            <div class="col-10 form-group row">
+                <label class="col-form-label p-1" for="tax">Thành tiền : </label>
+                <span class="col-form-label p-1" id="money">{{ number_format($orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] / 0.95) . 'VND'}}</span>
+            </div>
+        </div>
+        <div class="col-12 custom-control-inline" style="width: 100%">
+            <div class="col-10 form-group row">
+                <label class="col-form-label p-1" for="tax">Thuế (8%) : </label>
+                <span class="col-form-label p-1" id="tax">{{ number_format($orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] * 0.08) . 'VND'}}</span>
+            </div>
+        </div>
+        <div class="col-12 custom-control-inline" style="width: 100%">
+            <div class="col-10 form-group row">
+                <label for="voucher" class="col-form-label p-1">Giảm giá ({{ $orderInfo[\App\Constants\OrderConstant::DISCOUNT_FIELD] . '%' ?? '' }}) : </label>
+                <span class="col-form-label p-1" id="voucher">{{ number_format($orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] / 0.95 - $orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD]) . 'VND' }}</span>
+            </div>
+        </div>
         <div class="col-12">
             <div class="col-10 form-group row">
                 <label class="col-form-label p-1" for="total_price">Tổng tiền : </label>
-                <span class="col-form-label p-1" id="total_price">{{ number_format($orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD]) . 'VND' }}</span>
+                <span class="col-form-label p-1" id="total_price">{{ number_format($orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] + $orderInfo[\App\Constants\OrderConstant::TOTAL_PRICE_FIELD] * 0.08) . 'VND' }}</span>
             </div>
         </div>
         <div class="col-12 row justify-content-end">
@@ -122,7 +127,6 @@ use Carbon\Carbon;
 <script>
     var urlPaid = "{{ route('update-final', ['orderId' => $orderId]) }}";
     var urlReEdit = "{{ route('re-edit-order', ['orderId' => $orderId]) }}";
-    var orderId = "{{ $orderId }}";
     setTimeout(function () {
         $('.alert-success').css('display', 'none');
     }, 2000);
@@ -142,7 +146,10 @@ use Carbon\Carbon;
                 url: urlPaid,
                 type: "POST",
                 success:function (response) {
-                    showMessage(1500, response.message)
+                    showMessage(1500, response.message);
+                    setTimeout(function () {
+                        location.href = domain + '/waiter/waiter-dashboard';
+                    }, 2000)
                 }
             });
         })

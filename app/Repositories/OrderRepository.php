@@ -52,7 +52,7 @@ interface OrderRepository extends RepositoryInterface
      * @param mixed $totalPrice
      * @return mixed
      */
-    public function updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount, $otherMoney);
+    public function updateFinalOrder($orderId, $totalPrice, $note, $paidType, $discount, $otherMoney, $userId);
 
     /**
      * @param $orderId
