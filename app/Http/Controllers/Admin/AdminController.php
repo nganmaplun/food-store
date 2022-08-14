@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\FoodDayRepository;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\FoodRepository;
+use App\Repositories\OrderRepository;
 use App\Repositories\TableRepository;
 use App\Repositories\TimesheetRepository;
 use App\Repositories\UserRepository;
@@ -60,6 +61,11 @@ class AdminController  extends Controller
     private FoodOrderRepository $foodOrderRepository;
 
     /**
+     * @var OrderRepository
+     */
+    private OrderRepository $orderRepository;
+
+    /**
      * @param TimesheetRepository $timesheetRepository
      * @param UserRepository $userRepository
      * @param FoodRepository $foodRepository
@@ -75,7 +81,8 @@ class AdminController  extends Controller
         FoodDayRepository    $foodDayRepository,
         TableRepository     $tableRepository,
         TableService        $tableService,
-        FoodOrderRepository $foodOrderRepository
+        FoodOrderRepository $foodOrderRepository,
+        OrderRepository $orderRepository
     ) {
         $this->timesheetRepository = $timesheetRepository;
         $this->userRepository = $userRepository;
@@ -84,6 +91,7 @@ class AdminController  extends Controller
         $this->tableRepository = $tableRepository;
         $this->tableService = $tableService;
         $this->foodOrderRepository = $foodOrderRepository;
+        $this->orderRepository = $orderRepository;
         $this->today = Carbon::now()->toDateString();
     }
 
@@ -103,13 +111,15 @@ class AdminController  extends Controller
             $lstId[] = $tbl[BaseConstant::ID_FIELD];
         }
         $lstCount = $this->foodOrderRepository->getListCountOrder($lstId, $today);
+        $chkCheckout = $this->orderRepository->getListCheckoutOrder($lstId, $today);
 
         return view('admin.dashboard', [
             'listFloors' => $listFloors,
             'listTables' => $listTables,
             'page' => $page,
             'lstCount' => $lstCount,
-            'currentFloor' => $floor
+            'currentFloor' => $floor,
+            'chkCheckout' => $chkCheckout,
         ]);
     }
 

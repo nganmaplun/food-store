@@ -1,7 +1,7 @@
 <?php
 use Carbon\Carbon;
 ?>
-@extends('layout.no-menubar')
+@extends($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'layout.admin-layout' : 'layout.no-menubar')
 @section('other-css')
     <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/responsive.bootstrap4.min.css')}}">
@@ -12,7 +12,7 @@ use Carbon\Carbon;
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <a class="btn btn-primary" href="{{ route('food') }}">Setting món</a>
+                <a class="btn btn-primary" href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin.food' : 'food') }}">Setting món</a>
             </div>
         </div>
     </div><!-- /.container-fluid -->
@@ -20,52 +20,52 @@ use Carbon\Carbon;
 <ul class="nav justify-content-center pt-3">
     <li class="nav-item d-none d-sm-block">
         <a class="nav-link btn btn-default {{ $category == 1 ? 'bg-dark-red' : '' }}"
-            href="{{ route('chef-dashboard', ['category' => 1])}}">{{
+            href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 1])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_SALAD] }}</a>
     </li>
     <li class="nav-item d-none d-sm-block">
         <a class="nav-link btn btn-default {{ $category == 2 ? 'bg-dark-red' : '' }}"
-            href="{{ route('chef-dashboard', ['category' => 2])}}">{{
+            href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 2])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_GRILL] }}</a>
     </li>
     <li class="nav-item d-none d-sm-block">
         <a class="nav-link btn btn-default {{ $category == 3 ? 'bg-dark-red' : '' }}"
-            href="{{ route('chef-dashboard', ['category' => 3])}}">{{
+            href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 3])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_STEAM] }}</a>
     </li>
     <li class="nav-item d-none d-sm-block">
         <a class="nav-link btn btn-default {{ $category == 4 ? 'bg-dark-red' : '' }}"
-            href="{{ route('chef-dashboard', ['category' => 4])}}">{{
+            href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 4])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_DRYING] }}</a>
     </li>
     <li class="nav-item d-none d-sm-block">
         <a class="nav-link btn btn-default {{ $category == 5 ? 'bg-dark-red' : '' }}"
-           href="{{ route('chef-dashboard', ['category' => 5])}}">{{
+           href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 5])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN[\App\Constants\BaseConstant::FOOD_DRINK] }}</a>
     </li>
     <li class="nav-item d-block d-sm-none">
         <a class="nav-link btn btn-default {{ $category == 1 ? 'bg-dark-red' : '' }}"
-            href="{{ route('chef-dashboard', ['category' => 1])}}">{{
+            href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 1])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN_SHORT[\App\Constants\BaseConstant::FOOD_SALAD] }}</a>
     </li>
     <li class="nav-item d-block d-sm-none">
         <a class="nav-link btn btn-default {{ $category == 2 ? 'bg-dark-red' : '' }}"
-            href="{{ route('chef-dashboard', ['category' => 2])}}">{{
+            href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 2])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN_SHORT[\App\Constants\BaseConstant::FOOD_GRILL] }}</a>
     </li>
     <li class="nav-item d-block d-sm-none">
         <a class="nav-link btn btn-default {{ $category == 3 ? 'bg-dark-red' : '' }}"
-            href="{{ route('chef-dashboard', ['category' => 3])}}">{{
+            href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 3])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN_SHORT[\App\Constants\BaseConstant::FOOD_STEAM] }}</a>
     </li>
     <li class="nav-item d-block d-sm-none">
         <a class="nav-link btn btn-default {{ $category == 4 ? 'bg-dark-red' : '' }}"
-            href="{{ route('chef-dashboard', ['category' => 4])}}">{{
+            href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 4])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN_SHORT[\App\Constants\BaseConstant::FOOD_DRYING] }}</a>
     </li>
     <li class="nav-item d-block d-sm-none">
         <a class="nav-link btn btn-default {{ $category == 5 ? 'bg-dark-red' : '' }}"
-           href="{{ route('chef-dashboard', ['category' => 5])}}">{{
+           href="{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin-chef' : 'chef-dashboard', ['category' => 5])}}">{{
             \App\Constants\BaseConstant::ARRAY_KITCHEN_SHORT[\App\Constants\BaseConstant::FOOD_DRINK] }}</a>
     </li>
 </ul>

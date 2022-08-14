@@ -2,7 +2,7 @@
 use Carbon\Carbon;
 ?>
 
-@extends('layout.no-menubar')
+@extends($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'layout.admin-layout' : 'layout.no-menubar')
 
 @section('content')
     <section class="content-header">

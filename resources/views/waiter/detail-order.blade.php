@@ -2,7 +2,7 @@
 use Carbon\Carbon;
 ?>
 
-@extends('layout.no-menubar')
+@extends($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'layout.admin-layout' : 'layout.no-menubar')
 
 @section('content')
 <section class="content-header">
@@ -125,8 +125,8 @@ use Carbon\Carbon;
 @endsection
 @section('script')
 <script>
-    var urlPaid = "{{ route('update-final', ['orderId' => $orderId]) }}";
-    var urlReEdit = "{{ route('re-edit-order', ['orderId' => $orderId]) }}";
+    var urlPaid = "{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin.update-final' : 'update-final', ['orderId' => $orderId]) }}";
+    var urlReEdit = "{{ route($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'admin.re-edit-order' : 're-edit-order', ['orderId' => $orderId]) }}";
     setTimeout(function () {
         $('.alert-success').css('display', 'none');
     }, 2000);
@@ -137,6 +137,9 @@ use Carbon\Carbon;
                 type: "POST",
                 success:function (response) {
                     showMessage(1500, response.message)
+                    setTimeout(function () {
+                        location.href = domain + {{ $role == \App\Constants\BaseConstant::ADMIN_ROLE ? '/admin/admin-dashboard' : '/waiter/waiter-dashboard' }};
+                    }, 1500)
                 }
             });
         })
@@ -148,8 +151,8 @@ use Carbon\Carbon;
                 success:function (response) {
                     showMessage(1500, response.message);
                     setTimeout(function () {
-                        location.href = domain + '/waiter/waiter-dashboard';
-                    }, 2000)
+                        location.href = domain + {{ $role == \App\Constants\BaseConstant::ADMIN_ROLE ? '/admin/admin-dashboard' : '/waiter/waiter-dashboard' }};
+                    }, 1500)
                 }
             });
         })

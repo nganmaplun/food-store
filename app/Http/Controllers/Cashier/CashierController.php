@@ -7,6 +7,7 @@ use App\Constants\FoodConstant;
 use App\Constants\FoodOrderConstant;
 use App\Constants\OrderConstant;
 use App\Constants\TableConstant;
+use App\Constants\UserConstant;
 use App\Http\Controllers\Controller;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\OrderRepository;
@@ -83,7 +84,7 @@ class CashierController extends Controller
         }
         $chkCheckout = $this->orderRepository->getListCheckoutOrder($lstId, $today);
         $lstCount = $this->foodOrderRepository->getListCountOrder($lstId, $today);
-
+//dd($chkCheckout);
         return view('cashier.dashboard', [
             'listFloors' => $listFloors,
             'listTables' => $listTables,
@@ -116,6 +117,7 @@ class CashierController extends Controller
 
     public function checkout(Request $request, $orderId)
     {
+        $role = Auth::user()[UserConstant::ROLE_FIELD];
         $request = $request->all();
         $discount = $request['voucher'] ?? 0;
         $note = $request['other_note'] ?? '';
@@ -135,7 +137,7 @@ class CashierController extends Controller
             if ($result) {
                 $tableData = $this->tableRepository->getTableName($result[OrderConstant::TABLE_ID_FIELD]);
                 $this->messageService->sendNotify($tableData, $orderId, [], BaseConstant::SEND_WAITER_BACK);
-                return redirect()->route('cashier-dashboard')->with(['status' => 'Thanh toán thành công']);
+                return redirect()->route($role == 'admin' ? 'admin-cashier' : 'cashier-dashboard')->with(['status' => 'Thanh toán thành công']);
             }
             return redirect()->back()->with(['status' => 'Thanh toán thất bại, hãy thử lại']);
         }

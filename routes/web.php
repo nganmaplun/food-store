@@ -65,6 +65,19 @@ Route::middleware('auth')->group(function () {
             Route::get('/reset-table', [AdminController::class, 'resetTable'])->name('reset-table');
             // as waiter
             Route::get('/{tableId}/{orderId}', [WaiterController::class, 'orderTable'])->name('admin.view.order');
+            Route::get('/detail-waiter/order/{orderId}', [WaiterController::class, 'detailOrder'])->name('admin.detail-waiter-order');
+            Route::post('/update-final-cashier/{orderId}', [WaiterController::class, 'updateFinal'])->name('admin.update-final');
+            Route::post('/re-edit-order/{orderId}', [WaiterController::class, 'reEditOrder'])->name('admin.re-edit-order');
+            // as cashier
+            Route::get('/cashier-dashboard', [CashierController::class, 'dashboard'])->name('admin-cashier');
+            Route::get('/detail/order/{orderId}', [CashierController::class, 'detailOrder'])->name('admin.detail-order');
+            Route::get('/detail-final/{orderId}', [CashierController::class, 'detailOrderFinal'])->name('admin.detail-order-final');
+            Route::post('/checkout/{orderId}', [CashierController::class, 'checkout'])->name('admin.checkout');
+            Route::post('/update-final/{orderId}', [CashierController::class, 'updateFinal'])->name('admin.update-final-cashier');
+            // as chef
+            Route::get('/dashboard/chef/{category}', [ChefController::class, 'dashboard'])->name('admin-chef');
+            Route::post('/cancel-cooking', [ChefController::class, 'cancelCooking'])->name('cancel-cooking');
+            Route::post('/accept-cooking', [ChefController::class, 'acceptCooking'])->name('accept-cooking');
         });
     });
 
@@ -96,7 +109,6 @@ Route::middleware('auth')->group(function () {
         Route::prefix('cashier')->group(function () {
             Route::get('/dashboard', [CashierController::class, 'dashboard'])->name('cashier-dashboard');
             Route::get('/detail/{orderId}', [CashierController::class, 'detailOrder'])->name('cashier.detail-order');
-            Route::get('/detail-final/{orderId}', [CashierController::class, 'detailOrderFinal'])->name('cashier.detail-order-final');
             Route::get('/detail-final/{orderId}', [CashierController::class, 'detailOrderFinal'])->name('cashier.detail-order-final');
             Route::post('/checkout/{orderId}', [CashierController::class, 'checkout'])->name('checkout');
             Route::post('/update-final/{orderId}', [CashierController::class, 'updateFinal'])->name('update-final-cashier');

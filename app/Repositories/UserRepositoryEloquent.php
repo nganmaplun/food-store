@@ -183,6 +183,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
     {
         $results = $this->select(BaseConstant::ID_FIELD, UserConstant::FULLNAME_FIELD)
             ->where(UserConstant::ROLE_FIELD, BaseConstant::CASHIER_ROLE)
+            ->orWhere(UserConstant::ROLE_FIELD, BaseConstant::ADMIN_ROLE)
             ->get();
         $data = [];
         foreach ($results as $result) {

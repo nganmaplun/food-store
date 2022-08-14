@@ -1,4 +1,4 @@
-@extends('layout.no-menubar')
+@extends($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'layout.admin-layout' : 'layout.no-menubar')
 <?php
     use Illuminate\Support\Facades\URL;
 ?>
@@ -89,7 +89,7 @@
                     return;
                 }
                 if (index == 2 && draft == false) {
-                    let url = "{{ route('cashier.detail-order-final', [":index"]) }}";
+                    let url = "{{ route($role =='admin' ? 'admin.detail-order' : 'cashier.detail-order-final', [":index"]) }}";
                     url = url.replace(':index', rel);
                     location.href = url;
                     return;
@@ -100,13 +100,13 @@
                         let inOrder = $(this).find('.total_inorder').attr('rel');
                         if (parseInt(inOrder) > 0) {
                             if (confirm('Bàn chưa đưa hết đồ ăn lên, có chắc muốn thanh toán?')) {
-                                let url = "{{ route('cashier.detail-order', [":index"]) }}";
+                                let url = "{{ route($role =='admin' ? 'admin.detail-order' : 'cashier.detail-order', [":index"]) }}";
                                 url = url.replace(':index', rel);
                                 location.href = url;
                                 return
                             }
                         }
-                        let url = "{{ route('cashier.detail-order', [":index"]) }}";
+                        let url = "{{ route($role =='admin' ? 'admin.detail-order' : 'cashier.detail-order', [":index"]) }}";
                         url = url.replace(':index', rel);
                         location.href = url;
                         return

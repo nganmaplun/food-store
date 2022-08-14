@@ -37,7 +37,8 @@ use Illuminate\Support\Facades\URL;
                             <div class="row">
                                 @foreach($listTables as $key => $table)
                                     <div class="col-4 pt-4" index="{{ $table[\App\Constants\BaseConstant::ID_FIELD] }}"
-                                         rel="{{ $lstCount['table_order'][$table[\App\Constants\BaseConstant::ID_FIELD]] ?? '' }}">
+                                         rel="{{ $lstCount['table_order'][$table[\App\Constants\BaseConstant::ID_FIELD]] ?? '' }}" status="{{ $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] }}" draft="{{$chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_draft']}}"
+                                    >
                                         <div class="position-relative p-3 {{ $table[\App\Constants\BaseConstant::STATUS_FIELD] == 0 ? 'bg-green' : ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1 ?  'bg-red' : 'bg-yellow') }}"
                                              style="height: 180px">
                                             <div class="ribbon-wrapper ribbon">
@@ -54,24 +55,30 @@ use Illuminate\Support\Facades\URL;
                                             </h5>
                                             <br />
                                             @if ($table[\App\Constants\BaseConstant::STATUS_FIELD] == 1)
-                                                <small class="d-none d-sm-block">Tổng số món order : {{
-                                        $lstCount['total_order'][$table[\App\Constants\BaseConstant::ID_FIELD]]
-                                        }}</small>
-                                                <small class="d-none d-sm-block">Tổng số món đã xong : {{
-                                        $lstCount['total_completed'][$table[\App\Constants\BaseConstant::ID_FIELD]]
-                                        }}</small>
-                                                <small class="d-none d-sm-block">Tổng số món đang order : {{
-                                        $lstCount['total_inorder'][$table[\App\Constants\BaseConstant::ID_FIELD]]
-                                        }}</small>
-                                                <small class="d-block d-sm-none custom-small">Tổng : {{
-                                        $lstCount['total_order'][$table[\App\Constants\BaseConstant::ID_FIELD]]
-                                        }}</small>
-                                                <small class="d-block d-sm-none custom-small">Đã xong : {{
-                                        $lstCount['total_completed'][$table[\App\Constants\BaseConstant::ID_FIELD]]
-                                        }}</small>
-                                                <small class="d-block d-sm-none custom-small">Đang order : {{
-                                        $lstCount['total_inorder'][$table[\App\Constants\BaseConstant::ID_FIELD]]
-                                        }}</small>
+                                                @if ($chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] == 2 && $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_draft'] == true)
+                                                    <small>Xác nhận thanh toán</small>
+                                                @elseif($chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_status'] == 2 && $chkCheckout[$table[\App\Constants\BaseConstant::ID_FIELD]]['order_draft'] == false)
+                                                    <small>Đã xác nhận thanh toán</small>
+                                                @else
+                                                    <small class="d-none d-sm-block">Tổng số món order : {{
+                                                $lstCount['total_order'][$table[\App\Constants\BaseConstant::ID_FIELD]]
+                                                }}</small>
+                                                    <small class="d-none d-sm-block">Tổng số món đã xong : {{
+                                                $lstCount['total_completed'][$table[\App\Constants\BaseConstant::ID_FIELD]]
+                                                }}</small>
+                                                    <small class="d-none d-sm-block">Tổng số món đang order : {{
+                                                $lstCount['total_inorder'][$table[\App\Constants\BaseConstant::ID_FIELD]]
+                                                }}</small>
+                                                    <small class="d-block d-sm-none custom-small">Tổng : {{
+                                                $lstCount['total_order'][$table[\App\Constants\BaseConstant::ID_FIELD]]
+                                                }}</small>
+                                                    <small class="d-block d-sm-none custom-small">Đã xong : {{
+                                                $lstCount['total_completed'][$table[\App\Constants\BaseConstant::ID_FIELD]]
+                                                }}</small>
+                                                    <small class="d-block d-sm-none custom-small">Đang order : {{
+                                                $lstCount['total_inorder'][$table[\App\Constants\BaseConstant::ID_FIELD]]
+                                                }}</small>
+                                                @endif
                                             @endif
                                         </div>
                                     </div>
@@ -148,6 +155,17 @@ use Illuminate\Support\Facades\URL;
                 }
                 if ($(this).hasClass('bg-red')) {
                     let rel = $(this).parent().attr('rel');
+                    let status = $(this).parent().attr('status');
+                    let draft = $(this).parent().attr('draft');
+                    if (status == 2 && draft == false) {
+                        return false;
+                    }
+                    if (status == 2 && draft == true) {
+                        let url = "{{ route('admin.detail-waiter-order', [":index"]) }}";
+                        url = url.replace(':index', rel);
+                        location.href = url;
+                        return
+                    }
                     let url = "{{ route('admin.view.order', [":index", ":orderId"]) }}";
                     url = url.replace(':index', index);
                     url = url.replace(':orderId', rel);

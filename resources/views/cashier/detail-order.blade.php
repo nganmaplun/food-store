@@ -2,7 +2,7 @@
 use Carbon\Carbon;
 ?>
 
-@extends('layout.no-menubar')
+@extends($role == \App\Constants\BaseConstant::ADMIN_ROLE ? 'layout.admin-layout' : 'layout.no-menubar')
 
 @section('content')
 <section class="content-header">
@@ -37,7 +37,7 @@ use Carbon\Carbon;
         </div>
     </div>
 </section>
-<form method="POST" action="{{ $route === 'waiter.detail-order' ? route('update-final', ['orderId' => $orderId]) : route('checkout', ['orderId' => $orderId]) }}">
+<form method="POST" action="{{ $role == \App\Constants\BaseConstant::ADMIN_ROLE ? route('admin.checkout', ['orderId' => $orderId]) : route('checkout', ['orderId' => $orderId]) }}">
     @csrf
     <section class="content pt-3">
         <div class="card">
