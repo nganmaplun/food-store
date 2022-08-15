@@ -78,7 +78,7 @@ class AggregationController extends Controller
         $aggBy['from'] = $request['date_from'] ?? '';
         $aggBy['to'] = $request['date_to'] ?? '';
 
-        $results = $this->orderRepository->aggOrder($aggBy);
+        $results = $this->aggDayRepository->customReport($aggBy);
 
         return response()->json($results);
     }

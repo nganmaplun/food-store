@@ -138,7 +138,7 @@ use Carbon\Carbon;
                 success:function (response) {
                     showMessage(1500, response.message)
                     setTimeout(function () {
-                        location.href = domain + {{ $role == \App\Constants\BaseConstant::ADMIN_ROLE ? '/admin/admin-dashboard' : '/waiter/waiter-dashboard' }};
+                        location.href = domain + "{{ $role == \App\Constants\BaseConstant::ADMIN_ROLE ? '/admin/admin-dashboard' : '/waiter/waiter-dashboard' }}";
                     }, 1500)
                 }
             });
@@ -151,7 +151,7 @@ use Carbon\Carbon;
                 success:function (response) {
                     showMessage(1500, response.message);
                     setTimeout(function () {
-                        location.href = domain + {{ $role == \App\Constants\BaseConstant::ADMIN_ROLE ? '/admin/admin-dashboard' : '/waiter/waiter-dashboard' }};
+                        location.href = domain + "{{ $role == \App\Constants\BaseConstant::ADMIN_ROLE ? '/admin/admin-dashboard' : '/waiter/waiter-dashboard' }}";
                     }, 1500)
                 }
             });

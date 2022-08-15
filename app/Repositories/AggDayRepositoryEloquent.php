@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Constants\AggDayConstant;
+use App\Constants\BaseConstant;
 use App\Entities\AggDay;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -38,5 +40,22 @@ class AggDayRepositoryEloquent extends BaseRepository implements AggDayRepositor
     public function getAll()
     {
         return $this->all();
+    }
+
+    /**
+     * @param array $aggBy
+     * @return mixed
+     */
+    public function customReport(array $aggBy)
+    {
+        $result = $this;
+        if (isset($aggBy['from']) && !empty($aggBy['from'])) {
+            $result = $result->where(AggDayConstant::ORDER_DATE_FIELD, BaseConstant::GREATER_AND_EQUAL_THAN, $aggBy['from']);
+        }
+        if (isset($aggBy['to']) && !empty($aggBy['to'])) {
+            $result = $result->where(AggDayConstant::ORDER_DATE_FIELD, BaseConstant::LESS_AND_EQUAL_THAN, $aggBy['to']);
+        }
+
+        return $result->get();
     }
 }

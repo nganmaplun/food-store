@@ -18,6 +18,7 @@ $(function () {
     });
 
     $('#from-sm, #to-sm').on('change', function() {
+        $('#aggOrders').DataTable().destroy();
         var from = $('#from-sm').val()
         var to = $('#to-sm').val()
         $.ajax({
@@ -28,8 +29,6 @@ $(function () {
                 date_to : to,
             }, success:function (response) {
                 let html = '';
-                console.log($('#aggOrders').find('tbody'))
-                console.log(response.length)
                 $('#aggOrders').find('tbody').html(html);
                 let key = 0;
                 let vie_guest = 0;
@@ -69,7 +68,20 @@ $(function () {
                     html += '</tr>';
                 }
                 $('#aggOrders').find('tbody').html(html);
-                $('#aggOrders').DataTable();
+                $('#aggOrders').DataTable({
+                    paging: true,
+                    lengthChange: true,
+                    searching: false,
+                    ordering: true,
+                    info: false,
+                    autoWidth: false,
+                    responsive: true,
+                    columnDefs: [{
+                        orderable: false,
+                        targets: "no-sort"
+                    }],
+                    lengthMenu: [5, 10, 20, 50, 100],
+                });
             }
         })
     });
